@@ -19,6 +19,12 @@
 - 관리자 기능
 - 레벨 시스템
 
+## 개발환경
+- IDE : IntelliJ IDEA
+- SDK : corretto-17
+- DB : MySQL Workbench 8.0 CE
+- OS : Windows 10
+
 ## 개발일지
 [노션](https://soundbar91.notion.site/Retrospect-Project-f88ed9e690ce480ca348c6914b9103af?pvs=4)
 
