@@ -1,13 +1,17 @@
 package com.soundbar91.retrospect_project.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = PROTECTED)
 @Table(name = "user")
 public class User {
 
@@ -32,4 +36,13 @@ public class User {
     @Column(length = 5)
     @ColumnDefault("'user'")
     private String role;
+
+    @Builder
+    public User(String email, String password, int level, double exp, String role) {
+        this.email = email;
+        this.password = password;
+        this.level = level;
+        this.exp = exp;
+        this.role = role;
+    }
 }
