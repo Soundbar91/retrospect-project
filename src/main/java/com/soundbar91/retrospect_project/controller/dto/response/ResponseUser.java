@@ -9,7 +9,7 @@ public record ResponseUser(
         double exp,
         String rol
 ) {
-    public ResponseUser from(User user) {
+    public static ResponseUser from(User user) {
         return new ResponseUser(
                 user.getId(),
                 user.getEmail(),

@@ -6,10 +6,10 @@ public record RequestCreateUser(
         String email,
         String password
 ) {
-    public User toEntity() {
+    public User toEntity(String password) {
         return User.builder()
                 .email(this.email)
-                .password(this.password)
+                .password(password)
                 .build();
     }
 }
