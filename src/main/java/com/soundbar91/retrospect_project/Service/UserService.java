@@ -19,9 +19,8 @@ public class UserService {
     @Transactional
     public ResponseUser createUser(RequestCreateUser requestCreateUser) {
         String password = passwordEncoder.encode(requestCreateUser.password());
-        userRepository.save(requestCreateUser.toEntity(password));
-        userRepository.flush();
+        User user = userRepository.save(requestCreateUser.toEntity(password));
 
-        return ResponseUser.from(userRepository.getByEmail(requestCreateUser.email()));
+        return ResponseUser.from(user);
     }
 }
