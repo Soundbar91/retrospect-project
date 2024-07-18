@@ -3,6 +3,7 @@ package com.soundbar91.retrospect_project.controller;
 import com.soundbar91.retrospect_project.Service.UserService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<ResponseUser> createUser(
-            @RequestBody RequestCreateUser requestCreateUser
+            @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
         ResponseUser user = userService.createUser(requestCreateUser);
         return ResponseEntity.ok(user);
