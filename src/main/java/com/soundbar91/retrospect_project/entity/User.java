@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -12,6 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@DynamicInsert
 @Table(name = "user")
 public class User {
 
@@ -22,18 +24,18 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(insertable = false)
     @ColumnDefault("1")
     private int level;
 
-    @Column
+    @Column(insertable = false)
     @ColumnDefault("0.0")
     private double exp;
 
-    @Column(length = 5)
+    @Column(length = 5, insertable = false)
     @ColumnDefault("'user'")
     private String role;
 
