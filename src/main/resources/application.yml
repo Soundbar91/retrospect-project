@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: application-mysql.yml
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
