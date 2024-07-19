@@ -2,12 +2,13 @@ package com.soundbar91.retrospect_project.Service;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
+import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
 import com.soundbar91.retrospect_project.entity.User;
 import com.soundbar91.retrospect_project.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,24 @@ public class UserService {
     public ResponseUser createUser(RequestCreateUser requestCreateUser) {
         String password = passwordEncoder.encode(requestCreateUser.password());
         User user = userRepository.save(requestCreateUser.toEntity(password));
+
+        return ResponseUser.from(user);
+    }
+
+    @Transactional
+    public void changePassword(Long id, RequestPasswordChange requestPasswordChange) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+        String newPassword = passwordEncoder.encode(requestPasswordChange.password());
+
+        user.changePassword(newPassword);
+        userRepository.flush();
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseUser getUserByUsername(String username) {
+        User user = userRepository.getByUsername(username);
+        if (user == null) System.out.println("존재하지 않는 유저입니다.");
 
         return ResponseUser.from(user);
     }

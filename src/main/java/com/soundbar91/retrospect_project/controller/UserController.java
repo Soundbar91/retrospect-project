@@ -3,6 +3,7 @@ package com.soundbar91.retrospect_project.controller;
 import com.soundbar91.retrospect_project.Service.UserService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
+import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -21,6 +22,24 @@ public class UserController {
             @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
         ResponseUser user = userService.createUser(requestCreateUser);
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/user/password")
+    public ResponseEntity<Void> changePassword(
+            @Valid @RequestBody RequestPasswordChange requestPasswordChange,
+            HttpServletRequest httpServletRequest
+    ) {
+        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
+        userService.changePassword(id, requestPasswordChange);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<ResponseUser> getUserByUsername(
+            @PathVariable String username
+    ) {
+        ResponseUser user = userService.getUserByUsername(username);
         return ResponseEntity.ok(user);
     }
 
