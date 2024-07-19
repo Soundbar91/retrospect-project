@@ -49,4 +49,9 @@ public class UserService {
         HttpSession session = request.getSession(false);
         session.invalidate();
     }
+
+    @Transactional
+    public void withdrawalUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }
