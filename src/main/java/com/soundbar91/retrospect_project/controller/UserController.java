@@ -36,4 +36,12 @@ public class UserController {
         ResponseUser user = userService.loginUser(requestLoginUser, httpServletRequest);
         return ResponseEntity.ok(user);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logoutUser(
+            HttpServletRequest httpServletRequest
+    ) {
+        userService.logout(httpServletRequest);
+        return ResponseEntity.noContent().build();
+    }
 }
