@@ -2,7 +2,9 @@ package com.soundbar91.retrospect_project.controller;
 
 import com.soundbar91.retrospect_project.Service.UserService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
+import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,15 @@ public class UserController {
             @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
         ResponseUser user = userService.createUser(requestCreateUser);
+        return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseUser> loginUser(
+            @Valid @RequestBody RequestLoginUser requestLoginUser,
+            HttpServletRequest httpServletRequest
+    ) {
+        ResponseUser user = userService.loginUser(requestLoginUser, httpServletRequest);
         return ResponseEntity.ok(user);
     }
 }
