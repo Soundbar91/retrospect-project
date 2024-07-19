@@ -28,8 +28,8 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseUser loginUser(RequestLoginUser requestLoginUser, HttpServletRequest request) {
-        User user = userRepository.getByEmail(requestLoginUser.email());
+    public void loginUser(RequestLoginUser requestLoginUser, HttpServletRequest request) {
+        User user = userRepository.getByUsername(requestLoginUser.username());
         if (user == null) System.out.println("회원가입되지 않은 이메일입니다. ");
 
         boolean matches = passwordEncoder.matches(requestLoginUser.password(), user.getPassword());
@@ -38,10 +38,8 @@ public class UserService {
         request.getSession().invalidate();
         HttpSession session = request.getSession(true);
 
-        session.setAttribute("userEmail", user.getEmail());
+        session.setAttribute("userId", user.getId());
         session.setMaxInactiveInterval(3600);
-
-        return ResponseUser.from(user);
     }
 
     @Transactional

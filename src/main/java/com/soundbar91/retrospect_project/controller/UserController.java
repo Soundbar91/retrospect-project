@@ -11,13 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/member")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping("/user/join")
     public ResponseEntity<ResponseUser> createUser(
             @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
@@ -25,29 +24,29 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseUser> loginUser(
-            @Valid @RequestBody RequestLoginUser requestLoginUser,
+    @DeleteMapping("/user")
+    public ResponseEntity<Void> withdrawUser(
             HttpServletRequest httpServletRequest
     ) {
-        ResponseUser user = userService.loginUser(requestLoginUser, httpServletRequest);
-        return ResponseEntity.ok(user);
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logoutUser(
-            HttpServletRequest httpServletRequest
-    ) {
+        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
+        userService.withdrawalUser(id);
         userService.logout(httpServletRequest);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/withdrawal/{id}")
-    public ResponseEntity<Void> withdrawal(
-            @PathVariable("id") Long id,
+    @PostMapping("/user/login")
+    public ResponseEntity<ResponseUser> loginUser(
+            @Valid @RequestBody RequestLoginUser requestLoginUser,
             HttpServletRequest httpServletRequest
     ) {
-        userService.withdrawalUser(id);
+        userService.loginUser(requestLoginUser, httpServletRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/user/logout")
+    public ResponseEntity<Void> logoutUser(
+            HttpServletRequest httpServletRequest
+    ) {
         userService.logout(httpServletRequest);
         return ResponseEntity.noContent().build();
     }
