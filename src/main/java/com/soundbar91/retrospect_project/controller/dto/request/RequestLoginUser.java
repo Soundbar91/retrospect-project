@@ -1,6 +1,5 @@
 package com.soundbar91.retrospect_project.controller.dto.request;
 
-import com.soundbar91.retrospect_project.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
