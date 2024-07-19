@@ -2,6 +2,7 @@ package com.soundbar91.retrospect_project.Service;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
+import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
 import com.soundbar91.retrospect_project.entity.User;
 import com.soundbar91.retrospect_project.repository.UserRepository;
@@ -25,6 +26,16 @@ public class UserService {
         User user = userRepository.save(requestCreateUser.toEntity(password));
 
         return ResponseUser.from(user);
+    }
+
+    @Transactional
+    public void changePassword(Long id, RequestPasswordChange requestPasswordChange) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+        String newPassword = passwordEncoder.encode(requestPasswordChange.password());
+
+        user.changePassword(newPassword);
+        userRepository.flush();
     }
 
     @Transactional

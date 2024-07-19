@@ -10,7 +10,7 @@ public class CertInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        return request.getSession().getAttribute("userEmail") != null;
+        return request.getSession().getAttribute("userId") != null;
     }
 
 }
