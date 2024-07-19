@@ -38,6 +38,14 @@ public class UserService {
         userRepository.flush();
     }
 
+    @Transactional(readOnly = true)
+    public ResponseUser getUserByUsername(String username) {
+        User user = userRepository.getByUsername(username);
+        if (user == null) System.out.println("존재하지 않는 유저입니다.");
+
+        return ResponseUser.from(user);
+    }
+
     @Transactional
     public void loginUser(RequestLoginUser requestLoginUser, HttpServletRequest request) {
         User user = userRepository.getByUsername(requestLoginUser.username());

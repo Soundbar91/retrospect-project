@@ -35,6 +35,14 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/user/{username}")
+    public ResponseEntity<ResponseUser> getUserByUsername(
+            @PathVariable String username
+    ) {
+        ResponseUser user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(user);
+    }
+
     @DeleteMapping("/user")
     public ResponseEntity<Void> withdrawUser(
             HttpServletRequest httpServletRequest
