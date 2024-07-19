@@ -17,10 +17,5 @@ public record RequestLoginUser(
                 regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.+[!@#$%^&*()/]).{8,20}$")
         String password
 ) {
-    public User toEntity(String password) {
-        return User.builder()
-                .email(this.email)
-                .password(password)
-                .build();
-    }
+
 }
