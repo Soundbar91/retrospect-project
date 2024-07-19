@@ -43,4 +43,10 @@ public class UserService {
 
         return ResponseUser.from(user);
     }
+
+    @Transactional
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        session.invalidate();
+    }
 }
