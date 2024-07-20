@@ -1,0 +1,96 @@
+package com.soundbar91.retrospect_project.entity;
+
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Type;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
+
+import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.PROTECTED;
+
+@Entity
+@Getter
+@Table(name = "problem")
+@NoArgsConstructor(access = PROTECTED)
+public class Problem {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String title;
+
+    @Column(nullable = false, columnDefinition = "text")
+    private String algorithms;
+
+    @Column(nullable = false, columnDefinition = "text")
+    private String explanation;
+
+    @Column(nullable = false, columnDefinition = "text")
+    private String input_explanation;
+
+    @Column(nullable = false, columnDefinition = "text")
+    private String output_explanation;
+
+    @Column(nullable = false)
+    @Min(0) @Max(1024)
+    private int memory;
+
+    @Type(JsonType.class)
+    @Column(nullable = false, columnDefinition = "json")
+    private Map<String, String> runtime;
+
+    @Column(nullable = false)
+    @Min(1) @Max(10)
+    private int level;
+
+    @Type(JsonType.class)
+    @Column(nullable = false, columnDefinition = "json")
+    private List<Map<String, String>> example_inout;
+
+    @Type(JsonType.class)
+    @Column(nullable = false, columnDefinition = "json")
+    private List<Map<String, String>> testcase;
+
+    @Column(insertable = false)
+    @ColumnDefault("false")
+    private boolean isPost;
+
+    @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp create_at;
+
+    @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp modify_at;
+
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "username", nullable = false)
+    private User user;
+
+    @Builder
+    public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
+                   int memory, Map<String, String> runtime, int level, List<Map<String, String>> example_inout, List<Map<String, String>> testcase, User user) {
+        this.title = title;
+        this.algorithms = algorithms;
+        this.explanation = explanation;
+        this.input_explanation = input_explanation;
+        this.output_explanation = output_explanation;
+        this.memory = memory;
+        this.runtime = runtime;
+        this.level = level;
+        this.example_inout = example_inout;
+        this.testcase = testcase;
+        this.user = user;
+    }
+
+}
