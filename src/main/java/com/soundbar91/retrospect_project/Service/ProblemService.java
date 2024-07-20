@@ -21,6 +21,7 @@ public class ProblemService {
     public ResponseProblem createProblem(RequestCreateProblem requestCreateProblem) {
         User user = userRepository.getByUsername(requestCreateProblem.username());
         if (user == null) System.out.println("등록되지 않은 유저입니다.");
+        if (!"admin".equals(user.getRole())) System.out.println("문제 만들기 조건을 달성하지 못했습니다.");
 
         Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
 
