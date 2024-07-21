@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
 
@@ -36,7 +37,7 @@ public class ProblemService {
     @Transactional
     public ResponseProblem updateProblem(Long id, RequestUpdateProblem requestUpdateProblem) {
         Problem problem = problemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("등록되지 않은 문제입니다."));
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
         problem.updateProblem(requestUpdateProblem);
         problemRepository.flush();
 
