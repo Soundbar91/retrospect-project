@@ -5,11 +5,15 @@ import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdatePro
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
 import com.soundbar91.retrospect_project.entity.Problem;
 import com.soundbar91.retrospect_project.entity.User;
+import com.soundbar91.retrospect_project.exception.ApplicationException;
 import com.soundbar91.retrospect_project.repository.ProblemRepository;
 import com.soundbar91.retrospect_project.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +24,9 @@ public class ProblemService {
 
     @Transactional
     public ResponseProblem createProblem(RequestCreateProblem requestCreateProblem) {
-        User user = userRepository.getByUsername(requestCreateProblem.username());
-        if (user == null) System.out.println("등록되지 않은 유저입니다.");
-        if (!"admin".equals(user.getRole())) System.out.println("문제 만들기 조건을 달성하지 못했습니다.");
+        User user = userRepository.findByUsername(requestCreateProblem.username())
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+        if (!"admin".equals(user.getRole())) throw new ApplicationException(NOT_PERMISSION);
 
         Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
 

@@ -5,6 +5,7 @@ import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
 import com.soundbar91.retrospect_project.entity.User;
+import com.soundbar91.retrospect_project.exception.ApplicationException;
 import com.soundbar91.retrospect_project.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -12,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_MATCH_PASSWORD;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +35,7 @@ public class UserService {
     @Transactional
     public void changePassword(Long id, RequestPasswordChange requestPasswordChange) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
         String newPassword = passwordEncoder.encode(requestPasswordChange.password());
 
         user.changePassword(newPassword);
@@ -40,19 +44,19 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public ResponseUser getUserByUsername(String username) {
-        User user = userRepository.getByUsername(username);
-        if (user == null) System.out.println("존재하지 않는 유저입니다.");
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
         return ResponseUser.from(user);
     }
 
     @Transactional
     public void loginUser(RequestLoginUser requestLoginUser, HttpServletRequest request) {
-        User user = userRepository.getByUsername(requestLoginUser.username());
-        if (user == null) System.out.println("회원가입되지 않은 이메일입니다. ");
+        User user = userRepository.findByUsername(requestLoginUser.username())
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
-        boolean matches = passwordEncoder.matches(requestLoginUser.password(), user.getPassword());
-        if (!matches) System.out.println("비밀번호가 틀렸습니다. ");
+        if (!passwordEncoder.matches(requestLoginUser.password(), user.getPassword()))
+            throw new ApplicationException(NOT_MATCH_PASSWORD);
 
         request.getSession().invalidate();
         HttpSession session = request.getSession(true);
