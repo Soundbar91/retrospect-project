@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import static jakarta.persistence.FetchType.EAGER;
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -68,10 +68,10 @@ public class Problem {
     private boolean isPost;
 
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp create_at;
+    private LocalDateTime create_at;
 
     @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-    private Timestamp modify_at;
+    private LocalDateTime modify_at;
 
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "username", nullable = false)
