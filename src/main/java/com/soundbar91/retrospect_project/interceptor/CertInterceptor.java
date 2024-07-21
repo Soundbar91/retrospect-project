@@ -13,7 +13,8 @@ public class CertInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getSession().getAttribute("userId") == null) throw new ApplicationException(NOT_LOGIN);
+        if ("/user".equals(request.getRequestURI()) && "POST".equals(request.getMethod())) return true;
+        else if (request.getSession().getAttribute("userId") == null) throw new ApplicationException(NOT_LOGIN);
         else return true;
     }
 
