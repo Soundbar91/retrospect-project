@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DynamicInsert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -40,6 +42,9 @@ public class User {
     @Column(length = 5, insertable = false)
     @ColumnDefault("'user'")
     private String role;
+
+    @OneToMany(mappedBy = "user")
+    private List<Problem> problem = new ArrayList<>();
 
     @Builder
     public User(String username, String email, String password, int level, double exp, String role) {
