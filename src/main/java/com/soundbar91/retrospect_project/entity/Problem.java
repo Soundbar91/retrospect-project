@@ -104,9 +104,9 @@ public class Problem {
        if (updateProblem.explanation() != null) this.explanation = updateProblem.explanation();
        if (updateProblem.input_explanation() != null) this.input_explanation = updateProblem.input_explanation();
        if (updateProblem.output_explanation() != null) this.output_explanation = updateProblem.output_explanation();
-       if (updateProblem.memory() != 0) this.memory = updateProblem.memory();
+       if (updateProblem.memory() != null) this.memory = updateProblem.memory();
        if (updateProblem.runtime() != null) this.runtime = updateProblem.runtime();
-       if (updateProblem.level() != 0) this.level = updateProblem.level();
+       if (updateProblem.level() != null) this.level = updateProblem.level();
        if (updateProblem.example_inout() != null) this.example_inout = updateProblem.example_inout();
        if (updateProblem.testcase() != null) this.testcase = updateProblem.testcase();
        this.modify_at = LocalDateTime.now();

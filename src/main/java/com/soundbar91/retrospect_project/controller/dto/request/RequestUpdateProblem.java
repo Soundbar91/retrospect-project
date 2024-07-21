@@ -9,9 +9,9 @@ public record RequestUpdateProblem(
         String explanation,
         String input_explanation,
         String output_explanation,
-        int memory,
+        Integer memory,
         Map<String, String> runtime,
-        int level,
+        Integer level,
         List<Map<String, String>> example_inout,
         List<Map<String, String>> testcase
 ) {
