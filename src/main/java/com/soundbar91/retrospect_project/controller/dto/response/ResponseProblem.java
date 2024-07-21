@@ -3,6 +3,7 @@ package com.soundbar91.retrospect_project.controller.dto.response;
 import com.soundbar91.retrospect_project.entity.Problem;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,8 @@ public record ResponseProblem(
         Map<String, String> runtime,
         int level,
         List<Map<String, String>> example_inout,
-        Timestamp create_at,
-        Timestamp modify_at
+        LocalDateTime create_at,
+        LocalDateTime modify_at
 ) {
     public static ResponseProblem from(Problem problem) {
         return new ResponseProblem(

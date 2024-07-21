@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.entity;
 
+import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
@@ -93,4 +94,21 @@ public class Problem {
         this.user = user;
     }
 
+    public void postProblem(boolean post) {
+        this.isPost = post;
+    }
+
+    public void updateProblem(RequestUpdateProblem updateProblem) {
+       if (updateProblem.title() != null) this.title = updateProblem.title();
+       if (updateProblem.algorithms() != null) this.algorithms = updateProblem.algorithms();
+       if (updateProblem.explanation() != null) this.explanation = updateProblem.explanation();
+       if (updateProblem.input_explanation() != null) this.input_explanation = updateProblem.input_explanation();
+       if (updateProblem.output_explanation() != null) this.output_explanation = updateProblem.output_explanation();
+       if (updateProblem.memory() != 0) this.memory = updateProblem.memory();
+       if (updateProblem.runtime() != null) this.runtime = updateProblem.runtime();
+       if (updateProblem.level() != 0) this.level = updateProblem.level();
+       if (updateProblem.example_inout() != null) this.example_inout = updateProblem.example_inout();
+       if (updateProblem.testcase() != null) this.testcase = updateProblem.testcase();
+       this.modify_at = LocalDateTime.now();
+    }
 }
