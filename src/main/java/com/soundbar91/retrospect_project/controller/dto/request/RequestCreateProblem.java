@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 public record RequestCreateProblem(
-        String username,
         String title,
         String algorithms,
         String explanation,

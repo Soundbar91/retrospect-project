@@ -10,6 +10,7 @@ import com.soundbar91.retrospect_project.repository.ProblemRepository;
 import com.soundbar91.retrospect_project.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +30,12 @@ public class ProblemService {
     private final EntityManager entityManager;
 
     @Transactional
-    public ResponseProblem createProblem(RequestCreateProblem requestCreateProblem) {
-        User user = userRepository.findByUsername(requestCreateProblem.username())
+    public ResponseProblem createProblem(
+            RequestCreateProblem requestCreateProblem,
+            HttpServletRequest httpServletRequest
+    ) {
+        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
         if (!"admin".equals(user.getRole())) throw new ApplicationException(NOT_PERMISSION);
 
