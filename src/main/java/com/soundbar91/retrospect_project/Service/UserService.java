@@ -43,7 +43,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseUser getUserByUsername(String username) {
+    public ResponseUser findUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
