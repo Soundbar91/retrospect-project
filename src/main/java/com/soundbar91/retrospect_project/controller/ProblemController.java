@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class ProblemController {
@@ -20,6 +22,17 @@ public class ProblemController {
     ) {
         ResponseProblem responseProblem = problemService.createProblem(requestCreateProblem);
         return ResponseEntity.ok(responseProblem);
+    }
+
+    @GetMapping("/problem")
+    public ResponseEntity<List<ResponseProblem>> findProblemByParams(
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "level", required = false) Integer level,
+            @RequestParam(value = "algorithms", required = false) String algorithms
+    ) {
+        List<ResponseProblem> problemByParams = problemService.findProblemByParams(id, title, level, algorithms);
+        return ResponseEntity.ok(problemByParams);
     }
 
     @PutMapping("/problem/{id}")
