@@ -17,7 +17,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/user/join")
+    @PostMapping("/user")
     public ResponseEntity<ResponseUser> createUser(
             @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
@@ -53,7 +53,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public ResponseEntity<ResponseUser> loginUser(
             @Valid @RequestBody RequestLoginUser requestLoginUser,
             HttpServletRequest httpServletRequest
@@ -62,7 +62,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/user/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Void> logoutUser(
             HttpServletRequest httpServletRequest
     ) {
