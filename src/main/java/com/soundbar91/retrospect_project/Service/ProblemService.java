@@ -45,18 +45,25 @@ public class ProblemService {
     }
 
     public List<ResponseProblem> findProblemByParams(
-            Long id, String title, Integer level, String algorithms
+            Long id, String title, Integer level, String algorithms, String stand
     ) {
-        StringBuilder jpql = getBuilder(id, title, level, algorithms);
+        StringBuilder jpql = getJpql(id, title, level, algorithms, stand);
+
+        String[] algorithm = null;
+        if (algorithms != null) algorithm = algorithms.split(",");
 
         TypedQuery<Problem> query = entityManager.createQuery(jpql.toString(), Problem.class);
         if (id != null) query.setParameter("id", id);
         if (title != null) query.setParameter("title", "%" + title + "%");
         if (level != null) query.setParameter("level", level);
-        if (algorithms != null) query.setParameter("algorithms", "%" + algorithms + "%");
-        List<Problem> resultList = query.getResultList();
+        if (algorithms != null) {
+            for (int i = 0; i < algorithm.length; i++) {
+                query.setParameter("algorithms" + i, "%" + algorithm[i] + "%");
+                System.out.println(algorithm[i]);
+            }
+        }
 
-        return resultList.stream().map(ResponseProblem::from).toList();
+        return query.getResultList().stream().map(ResponseProblem::from).toList();
     }
 
     @Transactional
@@ -69,20 +76,33 @@ public class ProblemService {
         return ResponseProblem.from(problem);
     }
 
-    private static StringBuilder getBuilder(Long id, String title, Integer level, String algorithms) {
+    private static StringBuilder getJpql(Long id, String title, Integer level, String algorithms, String stand) {
         StringBuilder jpql = new StringBuilder("select p from Problem p");
+        String str = stand.equals("true") ? " and " : " or ";
+        List<String> algorithmsList = new ArrayList<>();
         List<String> criteria = new ArrayList<>();
 
         if (id != null) criteria.add(" p.id = :id");
         if (title != null) criteria.add(" p.title like :title");
         if (level != null) criteria.add(" p.level = :level");
-        if (algorithms != null) criteria.add(" p.algorithms like :algorithms");
+        if (algorithms != null) {
+            for (int i = 0; i < algorithms.split(",").length; i++) {
+                algorithmsList.add(" p.algorithms like :algorithms" + i);
+            }
+        }
 
         if (!criteria.isEmpty()) jpql.append(" where ");
-
         for (int i = 0; i < criteria.size(); i++) {
             if (i > 0) jpql.append(" and ");
             jpql.append(criteria.get(i));
+        }
+
+        if (!criteria.isEmpty() && !algorithmsList.isEmpty()) jpql.append(" and ");
+        if (criteria.isEmpty() && !algorithmsList.isEmpty()) jpql.append(" where ");
+
+        for (int i = 0; i < algorithmsList.size(); i++) {
+            if (i > 0) jpql.append(str);
+            jpql.append(algorithmsList.get(i));
         }
 
         return jpql;

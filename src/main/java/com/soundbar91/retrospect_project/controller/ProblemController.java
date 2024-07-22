@@ -32,9 +32,10 @@ public class ProblemController {
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "level", required = false) Integer level,
-            @RequestParam(value = "algorithms", required = false) String algorithms
+            @RequestParam(value = "algorithms", required = false) String algorithms,
+            @RequestParam(value = "stand", required = false, defaultValue = "false") String stand
     ) {
-        List<ResponseProblem> problemByParams = problemService.findProblemByParams(id, title, level, algorithms);
+        List<ResponseProblem> problemByParams = problemService.findProblemByParams(id, title, level, algorithms, stand);
         return ResponseEntity.ok(problemByParams);
     }
 

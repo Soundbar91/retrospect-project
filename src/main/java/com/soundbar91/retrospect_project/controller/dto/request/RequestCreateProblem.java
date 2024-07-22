@@ -16,6 +16,7 @@ public record RequestCreateProblem(
         @Length(message = "문제 제목은 최대 100글자 입니다.", max = 100)
         String title,
 
+        @NotBlank(message = "알고리즘 분류는 필수 입력사항입니다.")
         String algorithms,
 
         @NotBlank(message = "문제 설명은 필수 입력사항입니다.")
