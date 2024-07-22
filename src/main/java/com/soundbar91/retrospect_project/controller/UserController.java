@@ -17,11 +17,12 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/user/join")
+    @PostMapping("/user")
     public ResponseEntity<ResponseUser> createUser(
             @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
-        ResponseUser user = userService.createUser(requestCreateUser);
+        userService.createUser(requestCreateUser);
+        ResponseUser user = userService.findUserByUsername(requestCreateUser.username());
         return ResponseEntity.ok(user);
     }
 
@@ -36,10 +37,10 @@ public class UserController {
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<ResponseUser> getUserByUsername(
+    public ResponseEntity<ResponseUser> findUserByUsername(
             @PathVariable String username
     ) {
-        ResponseUser user = userService.getUserByUsername(username);
+        ResponseUser user = userService.findUserByUsername(username);
         return ResponseEntity.ok(user);
     }
 
@@ -53,7 +54,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/user/login")
+    @PostMapping("/login")
     public ResponseEntity<ResponseUser> loginUser(
             @Valid @RequestBody RequestLoginUser requestLoginUser,
             HttpServletRequest httpServletRequest
@@ -62,7 +63,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/user/logout")
+    @PostMapping("/logout")
     public ResponseEntity<Void> logoutUser(
             HttpServletRequest httpServletRequest
     ) {

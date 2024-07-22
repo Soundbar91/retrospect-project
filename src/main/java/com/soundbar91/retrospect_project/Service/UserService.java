@@ -25,11 +25,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseUser createUser(RequestCreateUser requestCreateUser) {
+    public void createUser(RequestCreateUser requestCreateUser) {
         String password = passwordEncoder.encode(requestCreateUser.password());
-        User user = userRepository.save(requestCreateUser.toEntity(password));
-
-        return ResponseUser.from(user);
+        userRepository.save(requestCreateUser.toEntity(password));
     }
 
     @Transactional
@@ -43,7 +41,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseUser getUserByUsername(String username) {
+    public ResponseUser findUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 

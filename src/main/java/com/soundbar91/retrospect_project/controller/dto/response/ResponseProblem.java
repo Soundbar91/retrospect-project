@@ -18,9 +18,7 @@ public record ResponseProblem(
         int memory,
         Map<String, String> runtime,
         int level,
-        List<Map<String, String>> example_inout,
-        LocalDateTime create_at,
-        LocalDateTime modify_at
+        List<Map<String, String>> example_inout
 ) {
     public static ResponseProblem from(Problem problem) {
         return new ResponseProblem(
@@ -34,9 +32,7 @@ public record ResponseProblem(
                 problem.getMemory(),
                 problem.getRuntime(),
                 problem.getLevel(),
-                problem.getExample_inout(),
-                problem.getCreate_at(),
-                problem.getModify_at()
+                problem.getExample_inout()
         );
     }
 }
