@@ -5,6 +5,7 @@ import com.soundbar91.retrospect_project.controller.dto.request.RequestCreatePro
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ProblemController {
 
     @PostMapping("/problem")
     public ResponseEntity<ResponseProblem> createProblem(
-            @RequestBody RequestCreateProblem requestCreateProblem,
+            @Valid @RequestBody RequestCreateProblem requestCreateProblem,
             HttpServletRequest httpServletRequest
     ) {
         ResponseProblem responseProblem = problemService.createProblem(requestCreateProblem, httpServletRequest);
