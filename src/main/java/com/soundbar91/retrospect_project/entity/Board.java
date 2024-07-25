@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -22,6 +25,9 @@ public class Board {
     @OneToOne(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "problemId")
     private Problem problem;
+
+    @OneToMany(mappedBy = "post")
+    private List<Post> post = new ArrayList<>();
 
     public Board(Problem problem) {
         this.problem = problem;

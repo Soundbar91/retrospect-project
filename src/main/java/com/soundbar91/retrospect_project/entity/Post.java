@@ -9,6 +9,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -41,11 +42,23 @@ public class Post {
     @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
+    // TODO 의존성전이 생각해보기 (게시판 - 게시글, 유저 - 게시글)
+
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "boardId", nullable = false)
+    private Board borad;
+
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "username", nullable = false)
+    private User user;
+
     @Builder
-    public Post(String title, String content, Category category) {
+    public Post(String title, String content, Category category, Board borad, User user) {
         this.title = title;
         this.content = content;
         this.category = category;
+        this.borad = borad;
+        this.user = user;
     }
 
 }
