@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -78,7 +79,7 @@ public class Problem {
     @JoinColumn(name = "username", nullable = false)
     private User user;
 
-    @OneToOne(mappedBy = "problem")
+    @OneToOne(mappedBy = "problem", fetch = LAZY)
     private Board board;
 
     @Builder
