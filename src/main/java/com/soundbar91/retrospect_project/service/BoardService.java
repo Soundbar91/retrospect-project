@@ -1,4 +1,4 @@
-package com.soundbar91.retrospect_project.Service;
+package com.soundbar91.retrospect_project.service;
 
 import com.soundbar91.retrospect_project.entity.Board;
 import com.soundbar91.retrospect_project.entity.Problem;
@@ -23,5 +23,5 @@ public class BoardService {
 
         boardRepository.save(new Board(problem));
     }
-    
+
 }
