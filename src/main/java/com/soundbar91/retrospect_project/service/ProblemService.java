@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.soundbar91.retrospect_project.entity.keyInstance.Role.PLATINUM;
 import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
@@ -37,7 +39,7 @@ public class ProblemService {
         Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-        if (!"admin".equals(user.getRole())) throw new ApplicationException(NOT_PERMISSION);
+        if (user.getRole().compareTo(PLATINUM) < 0) throw new ApplicationException(NOT_PERMISSION);
 
         Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
 
