@@ -23,10 +23,10 @@ public class Board {
     private Long id;
 
     @OneToOne(cascade = ALL, fetch = LAZY)
-    @JoinColumn(name = "problemId")
+    @JoinColumn(name = "problem_id")
     private Problem problem;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "board")
     private List<Post> post = new ArrayList<>();
 
     public Board(Problem problem) {

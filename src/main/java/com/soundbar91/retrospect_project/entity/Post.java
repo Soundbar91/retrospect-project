@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.entity;
 
+import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdatePost;
 import com.soundbar91.retrospect_project.entity.keyInstance.Category;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -34,7 +36,7 @@ public class Post {
 
     @Column(insertable = false)
     @ColumnDefault("0")
-    private int like;
+    private int likes;
 
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
@@ -44,11 +46,11 @@ public class Post {
 
     // TODO 의존성전이 생각해보기 (게시판 - 게시글, 유저 - 게시글)
 
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "boardId", nullable = false)
-    private Board borad;
+    @ManyToOne(fetch = EAGER, cascade = ALL)
+    @JoinColumn(name = "board_id", nullable = false)
+    private Board board;
 
-    @ManyToOne(fetch = EAGER)
+    @ManyToOne(fetch = EAGER, cascade = ALL)
     @JoinColumn(name = "username", nullable = false)
     private User user;
 
@@ -57,8 +59,15 @@ public class Post {
         this.title = title;
         this.content = content;
         this.category = category;
-        this.borad = borad;
+        this.board = borad;
         this.user = user;
+    }
+
+    public void updatePost(RequestUpdatePost requestUpdatePost) {
+        if (requestUpdatePost.title() != null) this.title = requestUpdatePost.title();
+        if (requestUpdatePost.context() != null) this.content = requestUpdatePost.context();
+        if (requestUpdatePost.category() != null) this.category = requestUpdatePost.category();
+        if (requestUpdatePost.likes() != null) this.likes = requestUpdatePost.likes();
     }
 
 }
