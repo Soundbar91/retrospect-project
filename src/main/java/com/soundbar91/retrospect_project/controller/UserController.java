@@ -1,6 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
-import com.soundbar91.retrospect_project.Service.UserService;
+import com.soundbar91.retrospect_project.service.UserService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;

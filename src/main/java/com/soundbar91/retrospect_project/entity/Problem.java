@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -78,9 +79,12 @@ public class Problem {
     @JoinColumn(name = "username", nullable = false)
     private User user;
 
+    @OneToOne(mappedBy = "problem", fetch = LAZY)
+    private Board board;
+
     @Builder
     public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
-                   int memory, Map<String, String> runtime, int level, List<Map<String, String>> example_inout, List<Map<String, String>> testcase, User user) {
+                   int memory, Map<String, String> runtime, int level, List<Map<String, String>> example_inout, List<Map<String, String>> testcase, User user, Board board) {
         this.title = title;
         this.algorithms = algorithms;
         this.explanation = explanation;
@@ -92,6 +96,7 @@ public class Problem {
         this.example_inout = example_inout;
         this.testcase = testcase;
         this.user = user;
+        this.board = board;
     }
 
     public void postProblem(boolean post) {

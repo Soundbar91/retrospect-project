@@ -1,6 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
-import com.soundbar91.retrospect_project.Service.ProblemService;
+import com.soundbar91.retrospect_project.service.ProblemService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateProblem;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;

@@ -1,4 +1,4 @@
-package com.soundbar91.retrospect_project.Service;
+package com.soundbar91.retrospect_project.service;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
