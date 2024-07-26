@@ -49,6 +49,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> post = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comment = new ArrayList<>();
+
     @Builder
     public User(String username, String email, String password, int level, double exp, String role) {
         this.username = username;

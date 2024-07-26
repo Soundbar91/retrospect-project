@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
@@ -46,13 +48,16 @@ public class Post {
 
     // TODO 의존성전이 생각해보기 (게시판 - 게시글, 유저 - 게시글)
 
-    @ManyToOne(fetch = EAGER, cascade = ALL)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-    @ManyToOne(fetch = EAGER, cascade = ALL)
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "username", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comment = new ArrayList<>();
 
     @Builder
     public Post(String title, String content, Category category, Board borad, User user) {
