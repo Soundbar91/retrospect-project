@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -22,11 +23,11 @@ public class Board {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = ALL, fetch = LAZY)
+    @OneToOne(fetch = LAZY, cascade = MERGE)
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", fetch = EAGER)
     private List<Post> post = new ArrayList<>();
 
     public Board(Problem problem) {

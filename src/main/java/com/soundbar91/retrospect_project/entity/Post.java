@@ -46,17 +46,15 @@ public class Post {
     @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
-    // TODO 의존성전이 생각해보기 (게시판 - 게시글, 유저 - 게시글)
-
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "username", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = EAGER, orphanRemoval = true, cascade = ALL)
     private List<Comment> comment = new ArrayList<>();
 
     @Builder
@@ -73,6 +71,10 @@ public class Post {
         if (requestUpdatePost.context() != null) this.content = requestUpdatePost.context();
         if (requestUpdatePost.category() != null) this.category = requestUpdatePost.category();
         if (requestUpdatePost.likes() != null) this.likes = requestUpdatePost.likes();
+    }
+
+    public void deleteUser() {
+        this.user = null;
     }
 
 }
