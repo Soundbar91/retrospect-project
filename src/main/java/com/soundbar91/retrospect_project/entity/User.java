@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.entity;
 
+import com.soundbar91.retrospect_project.entity.keyInstance.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,16 +34,12 @@ public class User {
     private String password;
 
     @Column(insertable = false)
-    @ColumnDefault("1")
-    private int level;
-
-    @Column(insertable = false)
     @ColumnDefault("0.0")
     private double exp;
 
-    @Column(length = 5, insertable = false)
-    @ColumnDefault("'user'")
-    private String role;
+    @Column(insertable = false)
+    @ColumnDefault("0")
+    private Role role;
 
     @OneToMany(mappedBy = "user", fetch = LAZY)
     private List<Problem> problem = new ArrayList<>();
@@ -54,13 +51,10 @@ public class User {
     private List<Comment> comment = new ArrayList<>();
 
     @Builder
-    public User(String username, String email, String password, int level, double exp, String role) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.level = level;
-        this.exp = exp;
-        this.role = role;
     }
 
     public void changePassword(String newPassword) {

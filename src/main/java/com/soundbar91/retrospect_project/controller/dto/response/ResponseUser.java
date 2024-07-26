@@ -5,17 +5,15 @@ import com.soundbar91.retrospect_project.entity.User;
 public record ResponseUser(
         String username,
         String email,
-        int level,
-        double exp,
-        String rol
+        String role,
+        double exp
 ) {
     public static ResponseUser from(User user) {
         return new ResponseUser(
                 user.getUsername(),
                 user.getEmail(),
-                user.getLevel(),
-                user.getExp(),
-                user.getRole()
+                user.getRole().getRoleName(),
+                user.getExp()
         );
     }
 }
