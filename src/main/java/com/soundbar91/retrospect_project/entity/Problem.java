@@ -76,7 +76,7 @@ public class Problem {
     private LocalDateTime modify_at;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "username", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne(mappedBy = "problem", fetch = LAZY)
@@ -101,6 +101,10 @@ public class Problem {
 
     public void postProblem(boolean post) {
         this.isPost = post;
+    }
+
+    public void deleteUser() {
+        this.user = null;
     }
 
     public void updateProblem(RequestUpdateProblem updateProblem) {

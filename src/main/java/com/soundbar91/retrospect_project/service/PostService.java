@@ -82,10 +82,7 @@ public class PostService {
     }
 
     public void deletePost(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
-
-        postRepository.delete(post);
+        postRepository.deleteById(postId);
     }
 
     private static StringBuilder getJpql(String username, Category category) {

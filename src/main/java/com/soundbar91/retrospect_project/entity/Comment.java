@@ -7,11 +7,9 @@ import jakarta.validation.constraints.Min;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -40,7 +38,7 @@ public class Comment {
     private LocalDateTime modify_at;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "username", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = EAGER)
@@ -57,6 +55,10 @@ public class Comment {
     public void updateComment(RequestUpdateComment requestUpdateComment) {
         if (requestUpdateComment.context() != null) this.context = requestUpdateComment.context();
         if (requestUpdateComment.likes() != null) this.likes = requestUpdateComment.likes();
+    }
+
+    public void deleteUser() {
+        this.user = null;
     }
 
 }
