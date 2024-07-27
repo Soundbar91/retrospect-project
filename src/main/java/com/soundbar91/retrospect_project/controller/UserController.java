@@ -30,8 +30,7 @@ public class UserController {
             @Valid @RequestBody RequestPasswordChange requestPasswordChange,
             HttpServletRequest httpServletRequest
     ) {
-        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
-        userService.changePassword(id, requestPasswordChange);
+        userService.changePassword(requestPasswordChange, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -47,8 +46,7 @@ public class UserController {
     public ResponseEntity<Void> withdrawUser(
             HttpServletRequest httpServletRequest
     ) {
-        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
-        userService.withdrawalUser(id);
+        userService.withdrawalUser(httpServletRequest);
         userService.logout(httpServletRequest);
         return ResponseEntity.noContent().build();
     }
