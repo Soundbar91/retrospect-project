@@ -24,7 +24,7 @@ public class Board {
     private Long id;
 
     @OneToOne(fetch = LAZY, cascade = MERGE)
-    @JoinColumn(name = "problem_id")
+    @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
     @OneToMany(mappedBy = "board", fetch = EAGER)

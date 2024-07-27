@@ -68,9 +68,18 @@ public class ProblemService {
     }
 
     @Transactional
-    public ResponseProblem updateProblem(Long id, RequestUpdateProblem requestUpdateProblem) {
+    public ResponseProblem updateProblem(
+            Long id, RequestUpdateProblem requestUpdateProblem,
+            HttpServletRequest httpServletRequest
+    ) {
         Problem problem = problemRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
+
+        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+        if (problem.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+
         problem.updateProblem(requestUpdateProblem);
         problemRepository.flush();
 

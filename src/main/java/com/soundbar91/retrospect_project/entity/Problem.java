@@ -72,7 +72,7 @@ public class Problem {
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
 
-    @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
     @ManyToOne(fetch = EAGER)
@@ -115,6 +115,5 @@ public class Problem {
        if (updateProblem.isPost() != null) this.isPost = updateProblem.isPost();
        if (updateProblem.example_inout() != null) this.example_inout = updateProblem.example_inout();
        if (updateProblem.testcase() != null) this.testcase = updateProblem.testcase();
-       this.modify_at = LocalDateTime.now();
     }
 }

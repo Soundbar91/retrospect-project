@@ -42,7 +42,11 @@ public class UserService {
     }
 
     @Transactional
-    public void changePassword(Long id, RequestPasswordChange requestPasswordChange) {
+    public void changePassword(
+            RequestPasswordChange requestPasswordChange,
+            HttpServletRequest httpServletRequest
+    ) {
+        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
         String newPassword = passwordEncoder.encode(requestPasswordChange.password());
@@ -81,7 +85,9 @@ public class UserService {
     }
 
     @Transactional
-    public void withdrawalUser(Long id) {
+    public void withdrawalUser(HttpServletRequest httpServletRequest) {
+        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
+
         User user = userRepository.findById(id).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
         List<Problem> problemList = problemRepository.findProblemByUser(user);
         for (Problem problem : problemList) problem.deleteUser();
