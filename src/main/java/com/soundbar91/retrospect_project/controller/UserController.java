@@ -22,8 +22,7 @@ public class UserController {
             @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
         userService.createUser(requestCreateUser);
-        ResponseUser user = userService.findUserByUsername(requestCreateUser.username());
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/user/password")

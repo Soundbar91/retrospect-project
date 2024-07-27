@@ -99,10 +99,6 @@ public class Problem {
         this.board = board;
     }
 
-    public void postProblem(boolean post) {
-        this.isPost = post;
-    }
-
     public void deleteUser() {
         this.user = null;
     }
@@ -116,6 +112,7 @@ public class Problem {
        if (updateProblem.memory() != null) this.memory = updateProblem.memory();
        if (updateProblem.runtime() != null) this.runtime = updateProblem.runtime();
        if (updateProblem.level() != null) this.level = updateProblem.level();
+       if (updateProblem.isPost() != null) this.isPost = updateProblem.isPost();
        if (updateProblem.example_inout() != null) this.example_inout = updateProblem.example_inout();
        if (updateProblem.testcase() != null) this.testcase = updateProblem.testcase();
        this.modify_at = LocalDateTime.now();

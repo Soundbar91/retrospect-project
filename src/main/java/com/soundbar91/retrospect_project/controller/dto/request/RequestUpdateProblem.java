@@ -12,6 +12,7 @@ public record RequestUpdateProblem(
         Integer memory,
         Map<String, String> runtime,
         Integer level,
+        Boolean isPost,
         List<Map<String, String>> example_inout,
         List<Map<String, String>> testcase
 ) {
