@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.service.BoardService;
 import com.soundbar91.retrospect_project.service.ProblemService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateProblem;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
@@ -17,6 +18,7 @@ import java.util.List;
 public class ProblemController {
 
     private final ProblemService problemService;
+    private final BoardService boardService;
 
     @PostMapping("/problem")
     public ResponseEntity<ResponseProblem> createProblem(
@@ -24,6 +26,7 @@ public class ProblemController {
             HttpServletRequest httpServletRequest
     ) {
         ResponseProblem responseProblem = problemService.createProblem(requestCreateProblem, httpServletRequest);
+        boardService.createBoard(responseProblem.id());
         return ResponseEntity.ok(responseProblem);
     }
 
