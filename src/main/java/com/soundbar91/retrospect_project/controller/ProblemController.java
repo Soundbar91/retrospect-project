@@ -45,9 +45,10 @@ public class ProblemController {
     @PutMapping("/problem/{id}")
     public ResponseEntity<ResponseProblem> updateProblem(
             @PathVariable Long id,
-            @RequestBody RequestUpdateProblem requestUpdateProblem
+            @RequestBody RequestUpdateProblem requestUpdateProblem,
+            HttpServletRequest httpServletRequest
     ) {
-        ResponseProblem responseProblem = problemService.updateProblem(id, requestUpdateProblem);
+        ResponseProblem responseProblem = problemService.updateProblem(id, requestUpdateProblem, httpServletRequest);
         return ResponseEntity.ok(responseProblem);
     }
     
