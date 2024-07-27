@@ -39,7 +39,6 @@ public class ProblemService {
         Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-        if (user.getRole().compareTo(PLATINUM) < 0) throw new ApplicationException(NOT_PERMISSION);
 
         Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
 
