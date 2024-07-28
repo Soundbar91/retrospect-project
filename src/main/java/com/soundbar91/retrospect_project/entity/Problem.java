@@ -51,11 +51,23 @@ public class Problem {
 
     @Type(JsonType.class)
     @Column(nullable = false, columnDefinition = "json")
-    private Map<String, String> runtime;
+    private Map<String, Integer> runtime;
 
     @Column(nullable = false)
     @Min(1) @Max(10)
     private int level;
+
+    @Column(insertable = false)
+    @ColumnDefault("0")
+    private int submit;
+
+    @Column(insertable = false)
+    @ColumnDefault("0")
+    private int answer;
+
+    @Column(insertable = false)
+    @ColumnDefault("0")
+    private int correct;
 
     @Type(JsonType.class)
     @Column(nullable = false, columnDefinition = "json")
@@ -84,7 +96,7 @@ public class Problem {
 
     @Builder
     public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
-                   int memory, Map<String, String> runtime, int level, List<Map<String, String>> example_inout, List<Map<String, String>> testcase, User user, Board board) {
+                   int memory, Map<String, Integer> runtime, int level, List<Map<String, String>> example_inout, List<Map<String, String>> testcase, User user, Board board) {
         this.title = title;
         this.algorithms = algorithms;
         this.explanation = explanation;
@@ -101,6 +113,12 @@ public class Problem {
 
     public void deleteUser() {
         this.user = null;
+    }
+
+    public void updateSubmitInfo(boolean answer, boolean duplicate) {
+        this.submit++;
+        if (answer) this.answer++;
+        if (!duplicate) this.correct++;
     }
 
     public void updateProblem(RequestUpdateProblem updateProblem) {
