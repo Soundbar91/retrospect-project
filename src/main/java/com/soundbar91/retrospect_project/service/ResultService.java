@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
+import static com.soundbar91.retrospect_project.exception.errorCode.ResultErrorCode.NOT_FOUND_RESULT;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 
 @Service
@@ -78,6 +79,12 @@ public class ResultService {
 
         if (!duplicate) user.solveProblem(problem.getLevel());
 
+        return ResponseResult.from(result);
+    }
+
+    public ResponseResult getResult(Long id) {
+        Result result = resultRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_RESULT));
         return ResponseResult.from(result);
     }
 

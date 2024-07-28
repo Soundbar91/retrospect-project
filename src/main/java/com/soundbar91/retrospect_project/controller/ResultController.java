@@ -7,10 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +23,14 @@ public class ResultController {
     ) {
         ResponseResult result = resultService.createResult(requestCreateResult, httpServletRequest, id);
 
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/result/{id}")
+    public ResponseEntity<ResponseResult> getResult(
+            @PathVariable(value = "id") Long id
+    ) {
+        ResponseResult result = resultService.getResult(id);
         return ResponseEntity.ok(result);
     }
 
