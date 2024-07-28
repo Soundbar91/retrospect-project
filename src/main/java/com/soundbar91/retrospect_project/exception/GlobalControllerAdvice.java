@@ -33,10 +33,4 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
-    @ExceptionHandler(CompilerException.class)
-    public ResponseEntity<ExceptionResponse> compilerException(CompilerException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("COMPILER_ERROR", e.getMessage());
-        return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
-    }
-
 }

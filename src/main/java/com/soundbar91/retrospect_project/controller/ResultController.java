@@ -22,7 +22,6 @@ public class ResultController {
             HttpServletRequest httpServletRequest
     ) {
         ResponseResult result = resultService.createResult(requestCreateResult, httpServletRequest, id);
-
         return ResponseEntity.ok(result);
     }
 

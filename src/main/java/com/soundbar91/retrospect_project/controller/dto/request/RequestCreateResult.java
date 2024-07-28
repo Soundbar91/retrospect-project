@@ -23,7 +23,7 @@ public record RequestCreateResult(
                 .user(user)
                 .language(this.language())
                 .memory((int) httpBody.get("memory"))
-                .errorMessage(httpBody.containsKey("error_message")? (String) httpBody.get("error_message") : "")
+                .errorMessage(httpBody.containsKey("error_message") ? (String) httpBody.get("error_message") : "")
                 .runtime((int) httpBody.get("runtime"))
                 .code(this.code())
                 .codeLength((int) httpBody.get("codeLen"))
