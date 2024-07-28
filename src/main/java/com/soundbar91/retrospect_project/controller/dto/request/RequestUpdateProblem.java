@@ -10,7 +10,7 @@ public record RequestUpdateProblem(
         String input_explanation,
         String output_explanation,
         Integer memory,
-        Map<String, String> runtime,
+        Map<String, Integer> runtime,
         Integer level,
         Boolean isPost,
         List<Map<String, String>> example_inout,
