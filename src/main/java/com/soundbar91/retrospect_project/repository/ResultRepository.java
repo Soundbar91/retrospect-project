@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
     List<Result> findByUserAndGrade(User user, Grade grade);
+    List<Result> findByUser(User user);
 }
