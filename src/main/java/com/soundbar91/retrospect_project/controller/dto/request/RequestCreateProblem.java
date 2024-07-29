@@ -33,7 +33,7 @@ public record RequestCreateProblem(
 
         @NotEmpty(message = "제한 시간은 필수 입력사항입니다.")
         @Size(message = "C++, 자바, 파이선 모두 입력해야 합니다.", min = 3, max = 3)
-        Map<String, String> runtime,
+        Map<String, Integer> runtime,
 
         @NotNull(message = "난이도는 필수 입력사항입니다.")
         Integer level,

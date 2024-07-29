@@ -1,6 +1,6 @@
 spring:
   config:
-    import: application-mysql.yml
+    import: application-mysql.yml, application-flask.yml
   jpa:
     database: mysql
     hibernate:

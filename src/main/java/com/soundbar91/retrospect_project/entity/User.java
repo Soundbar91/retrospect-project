@@ -50,6 +50,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = LAZY)
     private List<Comment> comment = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = LAZY)
+    private List<Result> result = new ArrayList<>();
+
     @Builder
     public User(String username, String email, String password) {
         this.username = username;
@@ -60,4 +63,11 @@ public class User {
     public void changePassword(String newPassword) {
         this.password = newPassword;
     }
+
+    public void solveProblem(int problemLevel) {
+        exp += (problemLevel * 0.8);
+        if (exp > this.role.getEND()) exp = this.role.getEND();
+        if (exp > this.role.getExp() + this.role.getGAP()) role = Role.values()[this.role.ordinal() + 1];
+    }
+
 }

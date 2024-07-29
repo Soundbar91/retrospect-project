@@ -14,7 +14,7 @@ public record ResponseProblem(
         String input_explanation,
         String output_explanation,
         int memory,
-        Map<String, String> runtime,
+        Map<String, Integer> runtime,
         int level,
         List<Map<String, String>> example_inout
 ) {
