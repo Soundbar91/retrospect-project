@@ -9,14 +9,14 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Map;
 
-public record RequestCreateResult(
+public record RequestSubmit(
         @NotNull(message = "언어는 필수 입력사항입니다.")
         Language language,
 
         @NotNull(message = "제출 코드는 필수 입력사항입니다.")
         String code
 ) {
-    public Result toEntity(User user, Problem problem, Map<Object, Object> httpBody) {
+    public Result toEntity(User user, Problem problem, Map<String, Object> httpBody) {
         return Result.builder()
                 .grade(Grade.valueOf((String) httpBody.get("status")))
                 .problem(problem)

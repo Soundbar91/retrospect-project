@@ -70,7 +70,10 @@ public class Post {
         if (requestUpdatePost.title() != null) this.title = requestUpdatePost.title();
         if (requestUpdatePost.context() != null) this.content = requestUpdatePost.context();
         if (requestUpdatePost.category() != null) this.category = requestUpdatePost.category();
-        if (requestUpdatePost.likes() != null) this.likes = requestUpdatePost.likes();
+    }
+
+    public void likePost() {
+        this.likes++;
     }
 
     public void deleteUser() {

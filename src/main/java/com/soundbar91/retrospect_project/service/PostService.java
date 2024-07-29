@@ -24,6 +24,7 @@ import java.util.List;
 import static com.soundbar91.retrospect_project.exception.errorCode.BoardErrorCode.NOT_FOUND_BOARD;
 import static com.soundbar91.retrospect_project.exception.errorCode.PostErrorCode.NOT_FOUND_POST;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class PostService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void createPost(
             RequestCreatePost requestCreatePost,
             Long boardId,
@@ -48,22 +50,32 @@ public class PostService {
         postRepository.save(requestCreatePost.toEntity(user, board));
     }
 
-    public List<ResponsePost> findPostByParam(String username, Category category) {
-        StringBuilder jpql = getJpql(username, category);
+    public List<ResponsePost> getPosts(
+            Long boardId, String username, Category category
+    ) {
+        Board board = null;
+        if (boardId != null) {
+            board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new ApplicationException(NOT_FOUND_BOARD));
+        }
+
+        User user = null;
+        if (username != null) {
+            user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+        }
+
+        StringBuilder jpql = getJpql(board, user, category);
 
         TypedQuery<Post> query = entityManager.createQuery(jpql.toString(), Post.class);
-        if (username != null) {
-            User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-
-            query.setParameter("username", user);
-        }
+        if (user != null) query.setParameter("user", user);
+        if (board != null) query.setParameter("board", board);
         if (category != null) query.setParameter("category", category);
 
         return query.getResultList().stream().map(ResponsePost::from).toList();
     }
 
-    public ResponsePost findPostByPostId(Long postId) {
+    public ResponsePost getPost(Long postId) {
         return postRepository.findById(postId)
                 .map(ResponsePost::from)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
@@ -72,24 +84,34 @@ public class PostService {
     @Transactional
     public void updatePost(
             RequestUpdatePost requestUpdatePost,
+            HttpServletRequest httpServletRequest,
             Long postId
     ) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
-
+        Post post = valid(postId, httpServletRequest);
         post.updatePost(requestUpdatePost);
         postRepository.flush();
     }
 
-    public void deletePost(Long postId) {
+    @Transactional
+    public void likePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
+        post.likePost();
+        postRepository.flush();
+    }
+
+    @Transactional
+    public void deletePost(Long postId, HttpServletRequest httpServletRequest) {
+        valid(postId, httpServletRequest);
         postRepository.deleteById(postId);
     }
 
-    private static StringBuilder getJpql(String username, Category category) {
+    private StringBuilder getJpql(Board board, User user, Category category) {
         StringBuilder jpql = new StringBuilder("select p from Post p");
         List<String> criteria = new ArrayList<>();
 
-        if (username != null) criteria.add(" p.user = :username");
+        if (board != null) criteria.add(" p.board = :board");
+        if (user != null) criteria.add(" p.user = :user");
         if (category != null) criteria.add(" p.category = :category");
         if (!criteria.isEmpty()) jpql.append(" where ");
 
@@ -99,5 +121,17 @@ public class PostService {
         }
 
         return jpql;
+    }
+
+    private Post valid(Long postId, HttpServletRequest httpServletRequest) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
+
+        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+
+        if (post.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+        return post;
     }
 }

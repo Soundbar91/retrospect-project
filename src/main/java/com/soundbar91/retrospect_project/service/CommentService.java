@@ -20,6 +20,7 @@ import java.util.List;
 import static com.soundbar91.retrospect_project.exception.errorCode.CommentErrorCode.NOT_FOUND_COMMENT;
 import static com.soundbar91.retrospect_project.exception.errorCode.PostErrorCode.NOT_FOUND_POST;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
+    @Transactional
     public void createComment(
             RequestCreateComment requestCreateComment,
             Long postId,
@@ -45,7 +47,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public List<ResponseComment> findCommentsByPostId(Long postId) {
+    public List<ResponseComment> getComments(Long postId) {
         return commentRepository.findCommentByPost_Id(postId)
                 .stream().map(ResponseComment::from).toList();
     }
@@ -53,16 +55,38 @@ public class CommentService {
     @Transactional
     public void updateComment(
             RequestUpdateComment requestUpdateComment,
-            Long commentId
+            Long commentId,
+            HttpServletRequest httpServletRequest
     ) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_COMMENT));
-
+        Comment comment = valid(commentId, httpServletRequest);
         comment.updateComment(requestUpdateComment);
         commentRepository.flush();
     }
 
-    public void deleteComment(Long commentId) {
+    @Transactional
+    public void likeComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_COMMENT));
+
+        comment.likeComment();
+        commentRepository.flush();
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, HttpServletRequest httpServletRequest) {
+        valid(commentId, httpServletRequest);
         commentRepository.deleteById(commentId);
+    }
+
+    private Comment valid(Long commentId, HttpServletRequest httpServletRequest) {
+        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_COMMENT));
+
+        if (comment.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+        return comment;
     }
 }

@@ -18,38 +18,48 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/board/{boardId}/post/{postID}/comment")
+    @PostMapping("/post/{postId}/comment")
     public ResponseEntity<Void> createComment(
             @Valid @RequestBody RequestCreateComment requestCreateComment,
-            @PathVariable(value = "postID") Long postId,
+            @PathVariable(value = "postId") Long postId,
             HttpServletRequest httpServletRequest
     ) {
         commentService.createComment(requestCreateComment, postId, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/board/{boardId}/post/{postID}/comment")
-    public ResponseEntity<List<ResponseComment>> findCommentsByPostId(
-            @PathVariable(value = "postID") Long postID
+    @GetMapping("/post/{postId}/comments")
+    public ResponseEntity<List<ResponseComment>> getComments(
+            @PathVariable(value = "postId") Long postID
     ) {
-        List<ResponseComment> commentsByPostId = commentService.findCommentsByPostId(postID);
+        List<ResponseComment> commentsByPostId = commentService.getComments(postID);
         return ResponseEntity.ok(commentsByPostId);
     }
 
-    @PutMapping("/board/{boardId}/post/{postID}/comment/{commentID}")
+    @PutMapping("/comment/{commentId}")
     public ResponseEntity<Void> updateComment(
             @Valid @RequestBody RequestUpdateComment requestUpdateComment,
-            @PathVariable(value = "commentID") Long commentId
+            @PathVariable(value = "commentId") Long commentId,
+            HttpServletRequest httpServletRequest
     ) {
-        commentService.updateComment(requestUpdateComment, commentId);
+        commentService.updateComment(requestUpdateComment, commentId, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/board/{boardId}/post/{postID}/comment/{commentID}")
-    public ResponseEntity<Void> deleteComment(
-            @PathVariable(value = "commentID") Long commentId
+    @PutMapping("/comment/{commentId}/like")
+    public ResponseEntity<Void> likeComment(
+            @PathVariable(value = "commentId") Long commentId
     ) {
-        commentService.deleteComment(commentId);
+        commentService.likeComment(commentId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<Void> deleteComment(
+            @PathVariable(value = "commentId") Long commentId,
+            HttpServletRequest httpServletRequest
+    ) {
+        commentService.deleteComment(commentId, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 

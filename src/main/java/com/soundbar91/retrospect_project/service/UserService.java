@@ -4,15 +4,9 @@ import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUse
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
-import com.soundbar91.retrospect_project.entity.Comment;
-import com.soundbar91.retrospect_project.entity.Post;
-import com.soundbar91.retrospect_project.entity.Problem;
-import com.soundbar91.retrospect_project.entity.User;
+import com.soundbar91.retrospect_project.entity.*;
 import com.soundbar91.retrospect_project.exception.ApplicationException;
-import com.soundbar91.retrospect_project.repository.CommentRepository;
-import com.soundbar91.retrospect_project.repository.PostRepository;
-import com.soundbar91.retrospect_project.repository.ProblemRepository;
-import com.soundbar91.retrospect_project.repository.UserRepository;
+import com.soundbar91.retrospect_project.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +27,7 @@ public class UserService {
     private final ProblemRepository problemRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final ResultRepository resultRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -55,8 +50,7 @@ public class UserService {
         userRepository.flush();
     }
 
-    @Transactional(readOnly = true)
-    public ResponseUser findUserByUsername(String username) {
+    public ResponseUser getUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
@@ -85,18 +79,21 @@ public class UserService {
     }
 
     @Transactional
-    public void withdrawalUser(HttpServletRequest httpServletRequest) {
+    public void deleteUser(HttpServletRequest httpServletRequest) {
         Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
 
         User user = userRepository.findById(id).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-        List<Problem> problemList = problemRepository.findProblemByUser(user);
+        List<Problem> problemList = problemRepository.findByUser(user);
         for (Problem problem : problemList) problem.deleteUser();
 
-        List<Post> postList = postRepository.findPostByUser(user);
+        List<Post> postList = postRepository.findByUser(user);
         for (Post post : postList) post.deleteUser();
 
-        List<Comment> commentList = commentRepository.findCommentByUser(user);
+        List<Comment> commentList = commentRepository.findByUser(user);
         for (Comment comment : commentList) comment.deleteUser();
+
+        List<Result> resultList = resultRepository.findByUser(user);
+        for (Result result : resultList) result.deleteUser();
 
         userRepository.delete(user);
     }

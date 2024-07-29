@@ -35,18 +35,18 @@ public class UserController {
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<ResponseUser> findUserByUsername(
-            @PathVariable String username
+    public ResponseEntity<ResponseUser> getUser(
+            @PathVariable(value = "username") String username
     ) {
-        ResponseUser user = userService.findUserByUsername(username);
+        ResponseUser user = userService.getUser(username);
         return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<Void> withdrawUser(
+    public ResponseEntity<Void> deleteUser(
             HttpServletRequest httpServletRequest
     ) {
-        userService.withdrawalUser(httpServletRequest);
+        userService.deleteUser(httpServletRequest);
         userService.logout(httpServletRequest);
         return ResponseEntity.noContent().build();
     }
