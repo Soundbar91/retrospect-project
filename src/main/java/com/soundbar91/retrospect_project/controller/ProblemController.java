@@ -1,10 +1,13 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.dto.request.RequestSubmit;
+import com.soundbar91.retrospect_project.controller.dto.response.ResponseResult;
 import com.soundbar91.retrospect_project.service.BoardService;
 import com.soundbar91.retrospect_project.service.ProblemService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateProblem;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
+import com.soundbar91.retrospect_project.service.ResultService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import java.util.List;
 public class ProblemController {
 
     private final ProblemService problemService;
+    private final ResultService resultService;
     private final BoardService boardService;
 
     @PostMapping("/problem")
@@ -58,5 +62,15 @@ public class ProblemController {
         problemService.updateProblem(id, requestUpdateProblem, httpServletRequest);
         return ResponseEntity.ok().build();
     }
-    
+
+    @PostMapping("/problem/{problemId}/solution")
+    public ResponseEntity<Void> createResult(
+            @Valid @RequestBody RequestSubmit requestCreateResult,
+            @PathVariable(value = "problemId") Long problemId,
+            HttpServletRequest httpServletRequest
+    ) {
+        resultService.createResult(requestCreateResult, httpServletRequest, problemId);
+        return ResponseEntity.ok().build();
+    }
+
 }

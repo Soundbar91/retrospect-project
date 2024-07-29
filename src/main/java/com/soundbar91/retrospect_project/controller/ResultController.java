@@ -19,16 +19,6 @@ public class ResultController {
 
     private final ResultService resultService;
 
-    @PostMapping("/submit/{id}")
-    public ResponseEntity<ResponseResult> createResult(
-            @Valid @RequestBody RequestSubmit requestCreateResult,
-            @PathVariable(value = "id") Long id,
-            HttpServletRequest httpServletRequest
-    ) {
-        ResponseResult result = resultService.createResult(requestCreateResult, httpServletRequest, id);
-        return ResponseEntity.ok(result);
-    }
-
     @GetMapping("/result/{id}")
     public ResponseEntity<ResponseResult> getResult(
             @PathVariable(value = "id") Long id
@@ -47,6 +37,5 @@ public class ResultController {
         List<ResponseResult> results = resultService.getResults(grade, language, username, problemId);
         return ResponseEntity.ok(results);
     }
-
 
 }

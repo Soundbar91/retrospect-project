@@ -49,7 +49,7 @@ public class ResultService {
     private final EntityManager entityManager;
 
     @Transactional
-    public ResponseResult createResult(
+    public void createResult(
             RequestSubmit requestCreateResult,
             HttpServletRequest httpServletRequest,
             Long problemId
@@ -72,8 +72,6 @@ public class ResultService {
 
         problem.updateSubmitInfo(answer, duplicate);
         if (!duplicate) user.solveProblem(problem.getLevel());
-
-        return ResponseResult.from(result);
     }
 
     public ResponseResult getResult(Long id) {
