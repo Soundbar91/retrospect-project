@@ -93,6 +93,14 @@ public class PostService {
     }
 
     @Transactional
+    public void likePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
+        post.likePost();
+        postRepository.flush();
+    }
+
+    @Transactional
     public void deletePost(Long postId, HttpServletRequest httpServletRequest) {
         valid(postId, httpServletRequest);
         postRepository.deleteById(postId);

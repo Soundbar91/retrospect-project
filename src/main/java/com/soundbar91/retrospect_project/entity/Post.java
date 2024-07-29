@@ -72,6 +72,10 @@ public class Post {
         if (requestUpdatePost.category() != null) this.category = requestUpdatePost.category();
     }
 
+    public void likePost() {
+        this.likes++;
+    }
+
     public void deleteUser() {
         this.user = null;
     }
