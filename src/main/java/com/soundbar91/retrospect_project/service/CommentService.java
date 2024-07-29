@@ -29,6 +29,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
 
+    @Transactional
     public void createComment(
             RequestCreateComment requestCreateComment,
             Long postId,
@@ -62,6 +63,7 @@ public class CommentService {
         commentRepository.flush();
     }
 
+    @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }

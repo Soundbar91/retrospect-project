@@ -28,13 +28,13 @@ public class Comment {
     private String context;
 
     @Column(nullable = false)
-    @Min(0) @Max(9999)
+    @Min(0) @Max(Integer.MAX_VALUE)
     private int likes;
 
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
 
-    @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
     @ManyToOne(fetch = EAGER)
