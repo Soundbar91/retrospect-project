@@ -29,37 +29,40 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/board/{boardId}/post")
-    public ResponseEntity<List<ResponsePost>> getPostByParam(
+    @GetMapping("/posts")
+    public ResponseEntity<List<ResponsePost>> getPosts(
+            @RequestParam(value = "boardId", required = false) Long boardId,
             @RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "category", required = false) Category category
     ) {
-        List<ResponsePost> postByParam = postService.findPostByParam(username, category);
+        List<ResponsePost> postByParam = postService.findPosts(boardId, username, category);
         return ResponseEntity.ok(postByParam);
     }
 
-    @GetMapping("/board/{boardId}/post/{postId}")
+    @GetMapping("/post/{postId}")
     public ResponseEntity<ResponsePost> getPostByPostId(
             @PathVariable(value = "postId") Long postId
     ) {
-        ResponsePost post = postService.findPostByPostId(postId);
+        ResponsePost post = postService.findPost(postId);
         return ResponseEntity.ok().body(post);
     }
 
-    @PutMapping("/board/{boardId}/post/{postId}")
+    @PutMapping("/post/{postId}")
     public ResponseEntity<Void> updatePost(
             @Valid @RequestBody RequestUpdatePost requestUpdatePost,
+            HttpServletRequest httpServletRequest,
             @PathVariable Long postId
     ) {
-        postService.updatePost(requestUpdatePost, postId);
+        postService.updatePost(requestUpdatePost, httpServletRequest, postId);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/board/{boardId}/post/{postId}")
+    @DeleteMapping("/post/{postId}")
     public ResponseEntity<Void> deletePost(
-            @PathVariable(value = "postId") Long postId
+            @PathVariable(value = "postId") Long postId,
+            HttpServletRequest httpServletRequest
     ) {
-        postService.deletePost(postId);
+        postService.deletePost(postId, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 

@@ -11,9 +11,6 @@ public record RequestUpdatePost(
 
         String context,
 
-        Category category,
-
-        @Min(0) @Max(9999)
-        Integer likes
+        Category category
 ) {
 }

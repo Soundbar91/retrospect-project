@@ -28,7 +28,7 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/post/{postId}/comment")
+    @GetMapping("/post/{postId}/comments")
     public ResponseEntity<List<ResponseComment>> findCommentsByPostId(
             @PathVariable(value = "postId") Long postID
     ) {
