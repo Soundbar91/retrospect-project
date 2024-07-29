@@ -87,32 +87,18 @@ public class PostService {
             HttpServletRequest httpServletRequest,
             Long postId
     ) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
-
-        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-
-        if (post.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+        Post post = valid(postId, httpServletRequest);
         post.updatePost(requestUpdatePost);
         postRepository.flush();
     }
 
     @Transactional
     public void deletePost(Long postId, HttpServletRequest httpServletRequest) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
-
-        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-
-        if (post.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+        valid(postId, httpServletRequest);
         postRepository.deleteById(postId);
     }
 
-    private static StringBuilder getJpql(Board board, User user, Category category) {
+    private StringBuilder getJpql(Board board, User user, Category category) {
         StringBuilder jpql = new StringBuilder("select p from Post p");
         List<String> criteria = new ArrayList<>();
 
@@ -129,4 +115,15 @@ public class PostService {
         return jpql;
     }
 
+    private Post valid(Long postId, HttpServletRequest httpServletRequest) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
+
+        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+
+        if (post.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+        return post;
+    }
 }

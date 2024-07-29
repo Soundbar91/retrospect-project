@@ -39,9 +39,10 @@ public class CommentController {
     @PutMapping("/comment/{commentId}")
     public ResponseEntity<Void> updateComment(
             @Valid @RequestBody RequestUpdateComment requestUpdateComment,
-            @PathVariable(value = "commentId") Long commentId
+            @PathVariable(value = "commentId") Long commentId,
+            HttpServletRequest httpServletRequest
     ) {
-        commentService.updateComment(requestUpdateComment, commentId);
+        commentService.updateComment(requestUpdateComment, commentId, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -55,9 +56,10 @@ public class CommentController {
 
     @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<Void> deleteComment(
-            @PathVariable(value = "commentId") Long commentId
+            @PathVariable(value = "commentId") Long commentId,
+            HttpServletRequest httpServletRequest
     ) {
-        commentService.deleteComment(commentId);
+        commentService.deleteComment(commentId, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
