@@ -55,8 +55,7 @@ public class UserService {
         userRepository.flush();
     }
 
-    @Transactional(readOnly = true)
-    public ResponseUser findUserByUsername(String username) {
+    public ResponseUser getUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
@@ -85,7 +84,7 @@ public class UserService {
     }
 
     @Transactional
-    public void withdrawalUser(HttpServletRequest httpServletRequest) {
+    public void deleteUser(HttpServletRequest httpServletRequest) {
         Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
 
         User user = userRepository.findById(id).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
