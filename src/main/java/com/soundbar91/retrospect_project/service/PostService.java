@@ -50,7 +50,7 @@ public class PostService {
         postRepository.save(requestCreatePost.toEntity(user, board));
     }
 
-    public List<ResponsePost> findPosts(
+    public List<ResponsePost> getPosts(
             Long boardId, String username, Category category
     ) {
         Board board = null;
@@ -75,7 +75,7 @@ public class PostService {
         return query.getResultList().stream().map(ResponsePost::from).toList();
     }
 
-    public ResponsePost findPost(Long postId) {
+    public ResponsePost getPost(Long postId) {
         return postRepository.findById(postId)
                 .map(ResponsePost::from)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));

@@ -35,15 +35,15 @@ public class PostController {
             @RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "category", required = false) Category category
     ) {
-        List<ResponsePost> postByParam = postService.findPosts(boardId, username, category);
+        List<ResponsePost> postByParam = postService.getPosts(boardId, username, category);
         return ResponseEntity.ok(postByParam);
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<ResponsePost> getPostByPostId(
+    public ResponseEntity<ResponsePost> getPost(
             @PathVariable(value = "postId") Long postId
     ) {
-        ResponsePost post = postService.findPost(postId);
+        ResponsePost post = postService.getPost(postId);
         return ResponseEntity.ok().body(post);
     }
 

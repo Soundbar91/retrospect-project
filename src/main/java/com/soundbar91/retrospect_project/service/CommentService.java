@@ -47,7 +47,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public List<ResponseComment> findCommentsByPostId(Long postId) {
+    public List<ResponseComment> getComments(Long postId) {
         return commentRepository.findCommentByPost_Id(postId)
                 .stream().map(ResponseComment::from).toList();
     }
