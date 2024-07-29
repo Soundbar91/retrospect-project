@@ -21,35 +21,42 @@ public class ProblemController {
     private final BoardService boardService;
 
     @PostMapping("/problem")
-    public ResponseEntity<ResponseProblem> createProblem(
+    public ResponseEntity<Void> createProblem(
             @Valid @RequestBody RequestCreateProblem requestCreateProblem,
             HttpServletRequest httpServletRequest
     ) {
         ResponseProblem responseProblem = problemService.createProblem(requestCreateProblem, httpServletRequest);
         boardService.createBoard(responseProblem.id());
-        return ResponseEntity.ok(responseProblem);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/problem")
-    public ResponseEntity<List<ResponseProblem>> findProblemByParams(
-            @RequestParam(value = "id", required = false) Long id,
+    @GetMapping("/problem/{problemId}")
+    public ResponseEntity<ResponseProblem> getProblem(
+            @PathVariable(value = "problemId") Long problemId
+    ) {
+        ResponseProblem problem = problemService.getProblem(problemId);
+        return ResponseEntity.ok(problem);
+    }
+
+    @GetMapping("/problems")
+    public ResponseEntity<List<ResponseProblem>> getProblems(
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "level", required = false) Integer level,
             @RequestParam(value = "algorithms", required = false) String algorithms,
             @RequestParam(value = "stand", required = false, defaultValue = "false") String stand
     ) {
-        List<ResponseProblem> problemByParams = problemService.findProblemByParams(id, title, level, algorithms, stand);
-        return ResponseEntity.ok(problemByParams);
+        List<ResponseProblem> problems = problemService.getProblems(title, level, algorithms, stand);
+        return ResponseEntity.ok(problems);
     }
 
     @PutMapping("/problem/{id}")
-    public ResponseEntity<ResponseProblem> updateProblem(
+    public ResponseEntity<Void> updateProblem(
             @PathVariable Long id,
             @RequestBody RequestUpdateProblem requestUpdateProblem,
             HttpServletRequest httpServletRequest
     ) {
-        ResponseProblem responseProblem = problemService.updateProblem(id, requestUpdateProblem, httpServletRequest);
-        return ResponseEntity.ok(responseProblem);
+        problemService.updateProblem(id, requestUpdateProblem, httpServletRequest);
+        return ResponseEntity.ok().build();
     }
     
 }
