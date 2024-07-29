@@ -17,7 +17,6 @@ public record RequestUpdateProblem(
         @Size(message = "C++, 자바, 파이선 모두 입력해야 합니다.", min = 3, max = 3)
         Map<String, Integer> runtime,
         Integer level,
-        Boolean isPost,
         List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, String>> example_inout,
         List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, String>> testcase
 ) {

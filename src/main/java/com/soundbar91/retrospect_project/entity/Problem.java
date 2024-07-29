@@ -77,10 +77,6 @@ public class Problem {
     @Column(nullable = false, columnDefinition = "json")
     private List<Map<String, String>> testcase;
 
-    @Column(insertable = false)
-    @ColumnDefault("false")
-    private boolean isPost;
-
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
 
@@ -130,7 +126,6 @@ public class Problem {
        if (updateProblem.memory() != null) this.memory = updateProblem.memory();
        if (updateProblem.runtime() != null) this.runtime = updateProblem.runtime();
        if (updateProblem.level() != null) this.level = updateProblem.level();
-       if (updateProblem.isPost() != null) this.isPost = updateProblem.isPost();
        if (updateProblem.example_inout() != null) this.example_inout = updateProblem.example_inout();
        if (updateProblem.testcase() != null) this.testcase = updateProblem.testcase();
     }
