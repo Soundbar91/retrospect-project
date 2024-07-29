@@ -53,12 +53,15 @@ public class Comment {
     }
 
     public void updateComment(RequestUpdateComment requestUpdateComment) {
-        if (requestUpdateComment.context() != null) this.context = requestUpdateComment.context();
-        if (requestUpdateComment.likes() != null) this.likes = requestUpdateComment.likes();
+        this.context = requestUpdateComment.context();
     }
 
     public void deleteUser() {
         this.user = null;
+    }
+
+    public void likeComment() {
+        this.likes++;
     }
 
 }

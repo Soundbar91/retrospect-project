@@ -64,6 +64,15 @@ public class CommentService {
     }
 
     @Transactional
+    public void likeComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_COMMENT));
+
+        comment.likeComment();
+        commentRepository.flush();
+    }
+
+    @Transactional
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
