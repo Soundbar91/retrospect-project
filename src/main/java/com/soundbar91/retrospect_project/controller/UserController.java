@@ -1,6 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
-import com.soundbar91.retrospect_project.Service.UserService;
+import com.soundbar91.retrospect_project.service.UserService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
@@ -22,8 +22,7 @@ public class UserController {
             @Valid @RequestBody RequestCreateUser requestCreateUser
     ) {
         userService.createUser(requestCreateUser);
-        ResponseUser user = userService.findUserByUsername(requestCreateUser.username());
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/user/password")
@@ -31,25 +30,23 @@ public class UserController {
             @Valid @RequestBody RequestPasswordChange requestPasswordChange,
             HttpServletRequest httpServletRequest
     ) {
-        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
-        userService.changePassword(id, requestPasswordChange);
+        userService.changePassword(requestPasswordChange, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<ResponseUser> findUserByUsername(
-            @PathVariable String username
+    public ResponseEntity<ResponseUser> getUser(
+            @PathVariable(value = "username") String username
     ) {
-        ResponseUser user = userService.findUserByUsername(username);
+        ResponseUser user = userService.getUser(username);
         return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<Void> withdrawUser(
+    public ResponseEntity<Void> deleteUser(
             HttpServletRequest httpServletRequest
     ) {
-        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
-        userService.withdrawalUser(id);
+        userService.deleteUser(httpServletRequest);
         userService.logout(httpServletRequest);
         return ResponseEntity.noContent().build();
     }

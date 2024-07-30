@@ -1,4 +1,4 @@
-package com.soundbar91.retrospect_project.Service;
+package com.soundbar91.retrospect_project.service;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateProblem;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
@@ -37,29 +38,31 @@ public class ProblemService {
         Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-        if (!"admin".equals(user.getRole())) throw new ApplicationException(NOT_PERMISSION);
 
         Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
-
         return ResponseProblem.from(problem);
     }
 
-    public List<ResponseProblem> findProblemByParams(
-            Long id, String title, Integer level, String algorithms, String stand
+    public ResponseProblem getProblem(Long problemId) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
+        return ResponseProblem.from(problem);
+    }
+
+    public List<ResponseProblem> getProblems(
+            String title, Integer level, String algorithms, String stand
     ) {
-        StringBuilder jpql = getJpql(id, title, level, algorithms, stand);
+        StringBuilder jpql = getJpql(title, level, algorithms, stand);
 
         String[] algorithm = null;
         if (algorithms != null) algorithm = algorithms.split(",");
 
         TypedQuery<Problem> query = entityManager.createQuery(jpql.toString(), Problem.class);
-        if (id != null) query.setParameter("id", id);
         if (title != null) query.setParameter("title", "%" + title + "%");
         if (level != null) query.setParameter("level", level);
         if (algorithms != null) {
             for (int i = 0; i < algorithm.length; i++) {
                 query.setParameter("algorithms" + i, "%" + algorithm[i] + "%");
-                System.out.println(algorithm[i]);
             }
         }
 
@@ -67,22 +70,21 @@ public class ProblemService {
     }
 
     @Transactional
-    public ResponseProblem updateProblem(Long id, RequestUpdateProblem requestUpdateProblem) {
-        Problem problem = problemRepository.findById(id)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
+    public void updateProblem(
+            Long problemId, RequestUpdateProblem requestUpdateProblem,
+            HttpServletRequest httpServletRequest
+    ) {
+        Problem problem = valid(problemId, httpServletRequest);
         problem.updateProblem(requestUpdateProblem);
         problemRepository.flush();
-
-        return ResponseProblem.from(problem);
     }
 
-    private static StringBuilder getJpql(Long id, String title, Integer level, String algorithms, String stand) {
+    private StringBuilder getJpql(String title, Integer level, String algorithms, String stand) {
         StringBuilder jpql = new StringBuilder("select p from Problem p");
         String str = stand.equals("true") ? " and " : " or ";
         List<String> algorithmsList = new ArrayList<>();
         List<String> criteria = new ArrayList<>();
 
-        if (id != null) criteria.add(" p.id = :id");
         if (title != null) criteria.add(" p.title like :title");
         if (level != null) criteria.add(" p.level = :level");
         if (algorithms != null) {
@@ -106,5 +108,17 @@ public class ProblemService {
         }
 
         return jpql;
+    }
+
+    private Problem valid(Long problemId, HttpServletRequest httpServletRequest) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
+
+        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+        if (problem.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+
+        return problem;
     }
 }

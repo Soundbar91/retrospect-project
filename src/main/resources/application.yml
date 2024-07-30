@@ -1,6 +1,6 @@
 spring:
   config:
-    import: application-mysql.yml
+    import: application-mysql.yml, application-flask.yml
   jpa:
     database: mysql
     hibernate:
@@ -9,4 +9,4 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
-    open-in-view: false
+#    open-in-view: false

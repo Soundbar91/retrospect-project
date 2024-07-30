@@ -1,18 +1,20 @@
-package com.soundbar91.retrospect_project.Service;
+package com.soundbar91.retrospect_project.service;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
-import com.soundbar91.retrospect_project.entity.User;
+import com.soundbar91.retrospect_project.entity.*;
 import com.soundbar91.retrospect_project.exception.ApplicationException;
-import com.soundbar91.retrospect_project.repository.UserRepository;
+import com.soundbar91.retrospect_project.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_MATCH_PASSWORD;
@@ -22,6 +24,10 @@ import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCod
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ProblemRepository problemRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final ResultRepository resultRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -31,7 +37,11 @@ public class UserService {
     }
 
     @Transactional
-    public void changePassword(Long id, RequestPasswordChange requestPasswordChange) {
+    public void changePassword(
+            RequestPasswordChange requestPasswordChange,
+            HttpServletRequest httpServletRequest
+    ) {
+        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
         String newPassword = passwordEncoder.encode(requestPasswordChange.password());
@@ -40,8 +50,7 @@ public class UserService {
         userRepository.flush();
     }
 
-    @Transactional(readOnly = true)
-    public ResponseUser findUserByUsername(String username) {
+    public ResponseUser getUser(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
@@ -70,7 +79,23 @@ public class UserService {
     }
 
     @Transactional
-    public void withdrawalUser(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(HttpServletRequest httpServletRequest) {
+        Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
+
+        User user = userRepository.findById(id).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+        List<Problem> problemList = problemRepository.findByUser(user);
+        for (Problem problem : problemList) problem.deleteUser();
+
+        List<Post> postList = postRepository.findByUser(user);
+        for (Post post : postList) post.deleteUser();
+
+        List<Comment> commentList = commentRepository.findByUser(user);
+        for (Comment comment : commentList) comment.deleteUser();
+
+        List<Result> resultList = resultRepository.findByUser(user);
+        for (Result result : resultList) result.deleteUser();
+
+        userRepository.delete(user);
     }
+
 }
