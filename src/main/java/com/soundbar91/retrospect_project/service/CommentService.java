@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     public List<ResponseComment> getComments(Long postId) {
-        return commentRepository.findCommentByPost_Id(postId)
+        return commentRepository.findCommentByPostId(postId)
                 .stream().map(ResponseComment::from).toList();
     }
 

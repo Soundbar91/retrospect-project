@@ -53,13 +53,13 @@ public class ProblemController {
         return ResponseEntity.ok(problems);
     }
 
-    @PutMapping("/problem/{id}")
+    @PutMapping("/problem/{problemId}")
     public ResponseEntity<Void> updateProblem(
-            @PathVariable Long id,
+            @PathVariable(value = "problemId") Long problemId,
             @RequestBody RequestUpdateProblem requestUpdateProblem,
             HttpServletRequest httpServletRequest
     ) {
-        problemService.updateProblem(id, requestUpdateProblem, httpServletRequest);
+        problemService.updateProblem(problemId, requestUpdateProblem, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 

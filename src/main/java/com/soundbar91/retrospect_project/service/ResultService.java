@@ -74,8 +74,8 @@ public class ResultService {
         if (!duplicate) user.solveProblem(problem.getLevel());
     }
 
-    public ResponseResult getResult(Long id) {
-        Result result = resultRepository.findById(id)
+    public ResponseResult getResult(Long resultId) {
+        Result result = resultRepository.findById(resultId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_RESULT));
         return ResponseResult.from(result);
     }
