@@ -110,7 +110,6 @@ public class ResultService {
         Map < String, Object > requestBody = new HashMap < > ();
         requestBody.put("source_code", requestCreateResult.code());
         requestBody.put("language", requestCreateResult.language());
-        requestBody.put("test_cases", problem.getTestcase());
         requestBody.put("memory_limit", problem.getMemory());
         requestBody.put("time_limit", problem.getRuntime().get(String.valueOf(requestCreateResult.language()).toLowerCase()));
         HttpHeaders headers = new HttpHeaders();

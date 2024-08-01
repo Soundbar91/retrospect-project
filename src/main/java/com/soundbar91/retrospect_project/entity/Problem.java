@@ -73,10 +73,6 @@ public class Problem {
     @Column(nullable = false, columnDefinition = "json")
     private List<Map<String, String>> example_inout;
 
-    @Type(JsonType.class)
-    @Column(nullable = false, columnDefinition = "json")
-    private List<Map<String, String>> testcase;
-
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
 
@@ -90,9 +86,12 @@ public class Problem {
     @OneToOne(mappedBy = "problem", fetch = LAZY)
     private Board board;
 
+    @OneToOne(mappedBy = "problem", fetch = EAGER)
+    private TestCase testCase;
+
     @Builder
     public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
-                   int memory, Map<String, Integer> runtime, int level, List<Map<String, String>> example_inout, List<Map<String, String>> testcase, User user, Board board) {
+                   int memory, Map<String, Integer> runtime, int level, List<Map<String, String>> example_inout, User user, Board board) {
         this.title = title;
         this.algorithms = algorithms;
         this.explanation = explanation;
@@ -102,13 +101,20 @@ public class Problem {
         this.runtime = runtime;
         this.level = level;
         this.example_inout = example_inout;
-        this.testcase = testcase;
         this.user = user;
         this.board = board;
     }
 
-    public void deleteUser() {
-        this.user = null;
+    public void updateProblem(RequestUpdateProblem updateProblem) {
+        this.title = updateProblem.title();
+        this.algorithms = updateProblem.algorithms();
+        this.explanation = updateProblem.explanation();
+        this.input_explanation = updateProblem.input_explanation();
+        this.output_explanation = updateProblem.output_explanation();
+        this.memory = updateProblem.memory();
+        this.runtime = updateProblem.runtime();
+        this.level = updateProblem.level();
+        this.example_inout = updateProblem.example_inout();
     }
 
     public void updateSubmitInfo(boolean answer, boolean duplicate) {
@@ -117,16 +123,8 @@ public class Problem {
         if (!duplicate) this.correct++;
     }
 
-    public void updateProblem(RequestUpdateProblem updateProblem) {
-       this.title = updateProblem.title();
-       this.algorithms = updateProblem.algorithms();
-       this.explanation = updateProblem.explanation();
-       this.input_explanation = updateProblem.input_explanation();
-       this.output_explanation = updateProblem.output_explanation();
-       this.memory = updateProblem.memory();
-       this.runtime = updateProblem.runtime();
-       this.level = updateProblem.level();
-       this.example_inout = updateProblem.example_inout();
-       this.testcase = updateProblem.testcase();
+    public void deleteUser() {
+        this.user = null;
     }
+
 }

@@ -55,7 +55,6 @@ public record RequestCreateProblem(
                 .runtime(this.runtime)
                 .level(this.level)
                 .example_inout(this.example_inout)
-                .testcase(this.testcase)
                 .build();
     }
 }
