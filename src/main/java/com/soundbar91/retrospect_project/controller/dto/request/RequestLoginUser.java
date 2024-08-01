@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 public record RequestLoginUser(
         @NotBlank(message = "아이디는 필수 입력 값입니다.")
-        @Size(message = "아이디는 최소 8자리, 최대 20자리입니다.", min = 6, max = 20)
+        @Size(message = "아이디는 최소 6자리, 최대 20자리입니다.", min = 6, max = 20)
         @Pattern(message = "아이디는 영어와 숫자로만 구성되야합니다. ", regexp = "^[a-zA-Z0-9]+$")
         String username,
 

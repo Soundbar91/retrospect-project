@@ -4,9 +4,11 @@ import com.soundbar91.retrospect_project.controller.dto.request.RequestCreatePro
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
 import com.soundbar91.retrospect_project.entity.Problem;
+import com.soundbar91.retrospect_project.entity.TestCase;
 import com.soundbar91.retrospect_project.entity.User;
 import com.soundbar91.retrospect_project.exception.ApplicationException;
 import com.soundbar91.retrospect_project.repository.ProblemRepository;
+import com.soundbar91.retrospect_project.repository.TestCaseRepository;
 import com.soundbar91.retrospect_project.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -26,6 +28,7 @@ import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCod
 @RequiredArgsConstructor
 public class ProblemService {
 
+    private final TestCaseRepository testCaseRepository;
     private final ProblemRepository problemRepository;
     private final UserRepository userRepository;
     private final EntityManager entityManager;
@@ -40,6 +43,8 @@ public class ProblemService {
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
         Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
+        testCaseRepository.save(new TestCase(requestCreateProblem.testcase(), problem));
+
         return ResponseProblem.from(problem);
     }
 
@@ -75,7 +80,10 @@ public class ProblemService {
             HttpServletRequest httpServletRequest
     ) {
         Problem problem = valid(problemId, httpServletRequest);
+        TestCase testcase = testCaseRepository.findByProblem(problem);
         problem.updateProblem(requestUpdateProblem);
+        testcase.updateTestCase(requestUpdateProblem.testcase());
+
         problemRepository.flush();
     }
 

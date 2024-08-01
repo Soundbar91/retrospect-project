@@ -2,10 +2,7 @@ package com.soundbar91.retrospect_project.controller.dto.request;
 
 import com.soundbar91.retrospect_project.entity.Problem;
 import com.soundbar91.retrospect_project.entity.User;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.List;
@@ -36,6 +33,8 @@ public record RequestCreateProblem(
         Map<String, Integer> runtime,
 
         @NotNull(message = "난이도는 필수 입력사항입니다.")
+        @Min(message = "난이도는 최소 1입니다.", value = 1)
+        @Max(message = "난이도는 최대 10입니다.", value = 10)
         Integer level,
 
         @NotEmpty(message = "예제 입출력은 필수 입력사항입니다.")
@@ -56,7 +55,6 @@ public record RequestCreateProblem(
                 .runtime(this.runtime)
                 .level(this.level)
                 .example_inout(this.example_inout)
-                .testcase(this.testcase)
                 .build();
     }
 }
