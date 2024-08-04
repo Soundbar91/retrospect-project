@@ -4,21 +4,26 @@ import com.soundbar91.retrospect_project.controller.dto.request.RequestCreatePro
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
 import com.soundbar91.retrospect_project.entity.Problem;
-import com.soundbar91.retrospect_project.entity.TestCase;
 import com.soundbar91.retrospect_project.entity.User;
 import com.soundbar91.retrospect_project.exception.ApplicationException;
 import com.soundbar91.retrospect_project.repository.ProblemRepository;
-import com.soundbar91.retrospect_project.repository.TestCaseRepository;
 import com.soundbar91.retrospect_project.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
@@ -28,7 +33,9 @@ import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCod
 @RequiredArgsConstructor
 public class ProblemService {
 
-    private final TestCaseRepository testCaseRepository;
+    @Value("${python.server.url}")
+    private String pythonServerUrl;
+
     private final ProblemRepository problemRepository;
     private final UserRepository userRepository;
     private final EntityManager entityManager;
@@ -42,8 +49,9 @@ public class ProblemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
-        Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
-        testCaseRepository.save(new TestCase(requestCreateProblem.testcase(), problem));
+        Problem problem = problemRepository.saveAndFlush(requestCreateProblem.toEntity(user));
+        HttpEntity<Map<String, Object>> request = requestBody(requestCreateProblem.testcase());
+        createTestcase(request, problem.getId());
 
         return ResponseProblem.from(problem);
     }
@@ -80,9 +88,10 @@ public class ProblemService {
             HttpServletRequest httpServletRequest
     ) {
         Problem problem = valid(problemId, httpServletRequest);
-        TestCase testcase = testCaseRepository.findByProblem(problem);
         problem.updateProblem(requestUpdateProblem);
-        testcase.updateTestCase(requestUpdateProblem.testcase());
+
+        HttpEntity<Map<String, Object>> request = requestBody(requestUpdateProblem.testcase());
+        createTestcase(request, problem.getId());
 
         problemRepository.flush();
     }
@@ -128,5 +137,25 @@ public class ProblemService {
         if (problem.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
 
         return problem;
+    }
+
+    private HttpEntity<Map<String, Object>> requestBody(List<Map<String, Object>> testcases) {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("testcases", testcases);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+
+        return new HttpEntity<>(requestBody, headers);
+    }
+
+    private void createTestcase(HttpEntity<Map<String, Object>> entity, Long problemId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        restTemplate.exchange(
+                pythonServerUrl + "/problem/" + problemId + "/testcase",
+                HttpMethod.POST,
+                entity,
+                Void.class
+        );
     }
 }

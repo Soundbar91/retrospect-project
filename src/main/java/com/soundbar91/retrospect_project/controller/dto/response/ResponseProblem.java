@@ -16,7 +16,7 @@ public record ResponseProblem(
         int memory,
         Map<String, Integer> runtime,
         int level,
-        List<Map<String, String>> example_inout
+        List<Map<String, Object>> example_inout
 ) {
     public static ResponseProblem from(Problem problem) {
         return new ResponseProblem(

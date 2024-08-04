@@ -19,12 +19,11 @@ public record RequestSubmit(
 ) {
     public Result toEntity(User user, Problem problem, Map<String, Object> httpBody) {
         return Result.builder()
-                .grade(Grade.valueOf((String) httpBody.get("status")))
+                .grade(Grade.valueOf((String) httpBody.get("result")))
                 .problem(problem)
                 .user(user)
                 .language(this.language())
                 .memory((int) httpBody.get("memory"))
-                .errorMessage(httpBody.containsKey("error_message") ? (String) httpBody.get("error_message") : "")
                 .runtime((int) httpBody.get("runtime"))
                 .code(this.code())
                 .codeLength((int) httpBody.get("codeLen"))
