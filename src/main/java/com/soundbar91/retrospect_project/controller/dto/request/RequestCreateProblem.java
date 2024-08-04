@@ -38,10 +38,10 @@ public record RequestCreateProblem(
         Integer level,
 
         @NotEmpty(message = "예제 입출력은 필수 입력사항입니다.")
-        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, String>> example_inout,
+        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> example_inout,
 
         @NotEmpty(message = "테스트 케이스는 필수 입력사항입니다.")
-        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, String>> testcase
+        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> testcase
 ) {
     public Problem toEntity(User user) {
         return Problem.builder()

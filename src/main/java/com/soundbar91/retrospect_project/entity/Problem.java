@@ -71,7 +71,7 @@ public class Problem {
 
     @Type(JsonType.class)
     @Column(nullable = false, columnDefinition = "json")
-    private List<Map<String, String>> example_inout;
+    private List<Map<String, Object>> example_inout;
 
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
@@ -86,12 +86,9 @@ public class Problem {
     @OneToOne(mappedBy = "problem", fetch = LAZY)
     private Board board;
 
-    @OneToOne(mappedBy = "problem", fetch = EAGER)
-    private TestCase testCase;
-
     @Builder
     public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
-                   int memory, Map<String, Integer> runtime, int level, List<Map<String, String>> example_inout, User user, Board board) {
+                   int memory, Map<String, Integer> runtime, int level, List<Map<String, Object>> example_inout, User user, Board board) {
         this.title = title;
         this.algorithms = algorithms;
         this.explanation = explanation;

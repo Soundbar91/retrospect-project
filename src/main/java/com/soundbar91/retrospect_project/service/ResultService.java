@@ -1,13 +1,10 @@
 package com.soundbar91.retrospect_project.service;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestSubmit;
-import com.soundbar91.retrospect_project.controller.dto.response.ResponsePost;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseResult;
-import com.soundbar91.retrospect_project.entity.Post;
 import com.soundbar91.retrospect_project.entity.Problem;
 import com.soundbar91.retrospect_project.entity.Result;
 import com.soundbar91.retrospect_project.entity.User;
-import com.soundbar91.retrospect_project.entity.keyInstance.Category;
 import com.soundbar91.retrospect_project.entity.keyInstance.Grade;
 import com.soundbar91.retrospect_project.entity.keyInstance.Language;
 import com.soundbar91.retrospect_project.exception.ApplicationException;
@@ -107,11 +104,12 @@ public class ResultService {
     }
 
     private HttpEntity<Map<String, Object>> requestBody(RequestSubmit requestCreateResult, Problem problem) {
-        Map < String, Object > requestBody = new HashMap < > ();
+        Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("source_code", requestCreateResult.code());
         requestBody.put("language", requestCreateResult.language());
         requestBody.put("memory_limit", problem.getMemory());
         requestBody.put("time_limit", problem.getRuntime().get(String.valueOf(requestCreateResult.language()).toLowerCase()));
+        requestBody.put("problem_id", problem.getId());
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
 
