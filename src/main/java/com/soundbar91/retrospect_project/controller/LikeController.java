@@ -12,7 +12,7 @@ public class LikeController {
 
     private final LikeService likesService;
 
-    @PutMapping("/post/{postId}/like")
+    @PostMapping("/post/{postId}/like")
     public ResponseEntity<Void> likePost(
             @PathVariable(value = "postId") Long postId,
             HttpServletRequest httpServletRequest
@@ -38,7 +38,7 @@ public class LikeController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/comment/{commentId}/like")
+    @PostMapping("/comment/{commentId}/like")
     public ResponseEntity<Void> likeComment(
             @PathVariable(value = "commentId") Long commentId,
             HttpServletRequest httpServletRequest
