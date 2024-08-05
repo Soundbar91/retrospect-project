@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     public List<ResponseComment> getComments(Long postId) {
-        return commentRepository.findCommentByPostId(postId)
+        return commentRepository.getByPostId(postId)
                 .stream().map(ResponseComment::from).toList();
     }
 
@@ -58,27 +58,18 @@ public class CommentService {
             Long commentId,
             HttpServletRequest httpServletRequest
     ) {
-        Comment comment = valid(commentId, httpServletRequest);
+        Comment comment = checkPermission(commentId, httpServletRequest);
         comment.updateComment(requestUpdateComment);
         commentRepository.flush();
     }
 
     @Transactional
-    public void likeComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_COMMENT));
-
-        comment.likeComment();
-        commentRepository.flush();
-    }
-
-    @Transactional
     public void deleteComment(Long commentId, HttpServletRequest httpServletRequest) {
-        valid(commentId, httpServletRequest);
+        checkPermission(commentId, httpServletRequest);
         commentRepository.deleteById(commentId);
     }
 
-    private Comment valid(Long commentId, HttpServletRequest httpServletRequest) {
+    private Comment checkPermission(Long commentId, HttpServletRequest httpServletRequest) {
         Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
@@ -89,4 +80,5 @@ public class CommentService {
         if (comment.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
         return comment;
     }
+
 }

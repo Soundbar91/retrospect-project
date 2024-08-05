@@ -1,12 +1,9 @@
 package com.soundbar91.retrospect_project.controller;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateProblem;
-import com.soundbar91.retrospect_project.controller.dto.request.RequestSubmit;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
-import com.soundbar91.retrospect_project.service.BoardService;
 import com.soundbar91.retrospect_project.service.ProblemService;
-import com.soundbar91.retrospect_project.service.ResultService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,22 +11,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 public class ProblemController {
 
     private final ProblemService problemService;
-    private final ResultService resultService;
-    private final BoardService boardService;
 
     @PostMapping("/problem")
     public ResponseEntity<Void> createProblem(
             @Valid @RequestBody RequestCreateProblem requestCreateProblem,
             HttpServletRequest httpServletRequest
     ) {
-        ResponseProblem responseProblem = problemService.createProblem(requestCreateProblem, httpServletRequest);
-        boardService.createBoard(responseProblem.id());
+        problemService.createProblem(requestCreateProblem, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -46,10 +41,19 @@ public class ProblemController {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "level", required = false) Integer level,
             @RequestParam(value = "algorithms", required = false) String algorithms,
-            @RequestParam(value = "stand", required = false, defaultValue = "false") String stand
+            @RequestParam(value = "mode", required = false, defaultValue = "false") String mode
     ) {
-        List<ResponseProblem> problems = problemService.getProblems(title, level, algorithms, stand);
+        List<ResponseProblem> problems = problemService.getProblems(title, level, algorithms, mode);
         return ResponseEntity.ok(problems);
+    }
+
+    @GetMapping("/problem/{problemId}/testcase")
+    public ResponseEntity<List<Map<String, Object>>> getTestcase(
+        @PathVariable(value = "problemId") Long problemId,
+        HttpServletRequest httpServletRequest
+    ) {
+        List<Map<String, Object>> testcase = problemService.getTestcase(problemId, httpServletRequest);
+        return ResponseEntity.ok(testcase);
     }
 
     @PutMapping("/problem/{problemId}")
@@ -59,16 +63,6 @@ public class ProblemController {
             HttpServletRequest httpServletRequest
     ) {
         problemService.updateProblem(problemId, requestUpdateProblem, httpServletRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/problem/{problemId}/solution")
-    public ResponseEntity<Void> createResult(
-            @Valid @RequestBody RequestSubmit requestCreateResult,
-            @PathVariable(value = "problemId") Long problemId,
-            HttpServletRequest httpServletRequest
-    ) {
-        resultService.createResult(requestCreateResult, httpServletRequest, problemId);
         return ResponseEntity.ok().build();
     }
 

@@ -34,14 +34,14 @@ import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCod
 public class ProblemService {
 
     @Value("${python.server.url}")
-    private String pythonServerUrl;
+    private String gradingServerUrl;
 
     private final ProblemRepository problemRepository;
     private final UserRepository userRepository;
     private final EntityManager entityManager;
 
     @Transactional
-    public ResponseProblem createProblem(
+    public void createProblem(
             RequestCreateProblem requestCreateProblem,
             HttpServletRequest httpServletRequest
     ) {
@@ -49,37 +49,37 @@ public class ProblemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
-        Problem problem = problemRepository.saveAndFlush(requestCreateProblem.toEntity(user));
-        HttpEntity<Map<String, Object>> request = requestBody(requestCreateProblem.testcase());
-        createTestcase(request, problem.getId());
-
-        return ResponseProblem.from(problem);
+        Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
+        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateProblem.testcase());
+        callApiToCreateTestcase(requestMessage, problem.getId());
     }
 
     public ResponseProblem getProblem(Long problemId) {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
+
         return ResponseProblem.from(problem);
     }
 
     public List<ResponseProblem> getProblems(
-            String title, Integer level, String algorithms, String stand
+            String title, Integer level, String algorithms, String mode
     ) {
-        StringBuilder jpql = getJpql(title, level, algorithms, stand);
+        StringBuilder jpql = createJpql(title, level, algorithms, mode);
 
         String[] algorithm = null;
         if (algorithms != null) algorithm = algorithms.split(",");
 
         TypedQuery<Problem> query = entityManager.createQuery(jpql.toString(), Problem.class);
-        if (title != null) query.setParameter("title", "%" + title + "%");
-        if (level != null) query.setParameter("level", level);
-        if (algorithms != null) {
-            for (int i = 0; i < algorithm.length; i++) {
-                query.setParameter("algorithms" + i, "%" + algorithm[i] + "%");
-            }
-        }
+        queryParameterBinding(title, level, query, algorithm);
 
         return query.getResultList().stream().map(ResponseProblem::from).toList();
+    }
+
+    public List<Map<String, Object>> getTestcase(
+        Long problemId, HttpServletRequest httpServletRequest
+    ) {
+        checkPermission(problemId, httpServletRequest);
+        return callApiToGetTestcase(problemId);
     }
 
     @Transactional
@@ -87,18 +87,18 @@ public class ProblemService {
             Long problemId, RequestUpdateProblem requestUpdateProblem,
             HttpServletRequest httpServletRequest
     ) {
-        Problem problem = valid(problemId, httpServletRequest);
+        Problem problem = checkPermission(problemId, httpServletRequest);
         problem.updateProblem(requestUpdateProblem);
 
-        HttpEntity<Map<String, Object>> request = requestBody(requestUpdateProblem.testcase());
-        createTestcase(request, problem.getId());
+        HttpEntity<Map<String, Object>> request = createRequestMessage(requestUpdateProblem.testcase());
+        callApiToCreateTestcase(request, problem.getId());
 
         problemRepository.flush();
     }
 
-    private StringBuilder getJpql(String title, Integer level, String algorithms, String stand) {
+    private StringBuilder createJpql(String title, Integer level, String algorithms, String mode) {
         StringBuilder jpql = new StringBuilder("select p from Problem p");
-        String str = stand.equals("true") ? " and " : " or ";
+        String separator = mode.equals("true") ? " and " : " or ";
         List<String> algorithmsList = new ArrayList<>();
         List<String> criteria = new ArrayList<>();
 
@@ -120,14 +120,24 @@ public class ProblemService {
         if (criteria.isEmpty() && !algorithmsList.isEmpty()) jpql.append(" where ");
 
         for (int i = 0; i < algorithmsList.size(); i++) {
-            if (i > 0) jpql.append(str);
+            if (i > 0) jpql.append(separator);
             jpql.append(algorithmsList.get(i));
         }
 
         return jpql;
     }
 
-    private Problem valid(Long problemId, HttpServletRequest httpServletRequest) {
+    private void queryParameterBinding(String title, Integer level, TypedQuery<Problem> query, String[] algorithm) {
+        if (title != null) query.setParameter("title", "%" + title + "%");
+        if (level != null) query.setParameter("level", level);
+        if (algorithm != null) {
+            for (int i = 0; i < algorithm.length; i++) {
+                query.setParameter("algorithms" + i, "%" + algorithm[i] + "%");
+            }
+        }
+    }
+
+    private Problem checkPermission(Long problemId, HttpServletRequest httpServletRequest) {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
 
@@ -139,7 +149,7 @@ public class ProblemService {
         return problem;
     }
 
-    private HttpEntity<Map<String, Object>> requestBody(List<Map<String, Object>> testcases) {
+    private HttpEntity<Map<String, Object>> createRequestMessage(List<Map<String, Object>> testcases) {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("testcases", testcases);
         HttpHeaders headers = new HttpHeaders();
@@ -148,14 +158,23 @@ public class ProblemService {
         return new HttpEntity<>(requestBody, headers);
     }
 
-    private void createTestcase(HttpEntity<Map<String, Object>> entity, Long problemId) {
+    private void callApiToCreateTestcase(HttpEntity<Map<String, Object>> entity, Long problemId) {
         RestTemplate restTemplate = new RestTemplate();
 
         restTemplate.exchange(
-                pythonServerUrl + "/problem/" + problemId + "/testcase",
+                gradingServerUrl + "/problem/" + problemId + "/testcase",
                 HttpMethod.POST,
                 entity,
                 Void.class
         );
+    }
+
+    private List<Map<String, Object>> callApiToGetTestcase(Long problemId) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        return (List<Map<String, Object>>) restTemplate.getForEntity(
+                gradingServerUrl + "/problem/" + problemId + "/testcase",
+                Map.class)
+                .getBody().get("testcases");
     }
 }

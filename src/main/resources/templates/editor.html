@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문제 만들기</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .dynamic-fields {
+            margin-bottom: 20px;
+        }
+        .btn-add {
+            margin-top: 10px;
+        }
+        .btn-remove {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mb-4">문제 만들기</h1>
+
+    <form id="createProblemForm">
+        <div class="form-group">
+            <label for="title">문제 제목</label>
+            <input type="text" id="title" name="title" class="form-control" required maxlength="100">
+        </div>
+
+        <div class="form-group">
+            <label for="algorithms">알고리즘 분류</label>
+            <input type="text" id="algorithms" name="algorithms" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="explanation">문제 설명</label>
+            <textarea id="explanation" name="explanation" class="form-control" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="input_explanation">문제 입력 설명</label>
+            <textarea id="input_explanation" name="input_explanation" class="form-control" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="output_explanation">문제 출력 설명</label>
+            <textarea id="output_explanation" name="output_explanation" class="form-control" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="memory">메모리 제한 (MB)</label>
+            <input type="number" id="memory" name="memory" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label for="level">난이도 (1-10)</label>
+            <input type="number" id="level" name="level" class="form-control" min="1" max="10" required>
+        </div>
+
+        <!-- Dynamic Fields for Example In/Out -->
+        <div class="form-group dynamic-fields" id="exampleInOutFields">
+            <label>예제 입출력</label>
+            <div class="field-group">
+                <input type="text" name="example_inout[0].input" class="form-control mb-2" placeholder="입력" required>
+                <input type="text" name="example_inout[0].output" class="form-control mb-2" placeholder="출력" required>
+                <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
+            </div>
+            <button type="button" class="btn btn-primary btn-add" onclick="addExampleInOutField()">+ 예제 추가</button>
+        </div>
+
+        <!-- Dynamic Fields for Test Cases -->
+        <div class="form-group dynamic-fields" id="testCaseFields">
+            <label>테스트 케이스</label>
+            <div class="field-group">
+                <input type="text" name="testcase[0].input" class="form-control mb-2" placeholder="입력" required>
+                <input type="text" name="testcase[0].output" class="form-control mb-2" placeholder="출력" required>
+                <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
+            </div>
+            <button type="button" class="btn btn-primary btn-add" onclick="addTestCaseField()">+ 테스트 케이스 추가</button>
+        </div>
+
+        <button type="button" class="btn btn-success" onclick="submitForm()">문제 만들기</button>
+    </form>
+
+    <a href="#" class="btn btn-primary mt-3" onclick="window.history.back();">뒤로 가기</a>
+</div>
+
+<!-- Bootstrap JS and Dependencies (Optional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    let exampleInOutIndex = 1;
+    let testCaseIndex = 1;
+
+    function addExampleInOutField() {
+        const container = document.getElementById('exampleInOutFields');
+        const newFieldGroup = document.createElement('div');
+        newFieldGroup.className = 'field-group';
+        newFieldGroup.innerHTML = `
+            <input type="text" name="example_inout[${exampleInOutIndex}].input" class="form-control mb-2" placeholder="입력" required>
+            <input type="text" name="example_inout[${exampleInOutIndex}].output" class="form-control mb-2" placeholder="출력" required>
+            <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
+        `;
+        container.insertBefore(newFieldGroup, container.lastElementChild);
+        exampleInOutIndex++;
+    }
+
+    function addTestCaseField() {
+        const container = document.getElementById('testCaseFields');
+        const newFieldGroup = document.createElement('div');
+        newFieldGroup.className = 'field-group';
+        newFieldGroup.innerHTML = `
+            <input type="text" name="testcase[${testCaseIndex}].input" class="form-control mb-2" placeholder="입력" required>
+            <input type="text" name="testcase[${testCaseIndex}].output" class="form-control mb-2" placeholder="출력" required>
+            <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
+        `;
+        container.insertBefore(newFieldGroup, container.lastElementChild);
+        testCaseIndex++;
+    }
+
+    function removeField(button) {
+        button.parentElement.remove();
+    }
+
+    function submitForm() {
+        const form = document.getElementById('createProblemForm');
+        const formData = new FormData(form);
+
+        const data = {
+            title: '',
+            algorithms: '',
+            explanation: '',
+            input_explanation: '',
+            output_explanation: '',
+            memory: 0,
+            level: 0,
+            example_inout: [],
+            testcase: []
+        };
+
+        formData.forEach((value, key) => {
+            if (key.startsWith('example_inout')) {
+                const index = key.match(/\d+/)[0];
+                if (!data.example_inout[index]) data.example_inout[index] = {};
+                const field = key.split('.').pop();
+                data.example_inout[index][field] = value instanceof File ? value.name : value.toString();
+            } else if (key.startsWith('testcase')) {
+                const index = key.match(/\d+/)[0];
+                if (!data.testcase[index]) data.testcase[index] = {};
+                const field = key.split('.').pop();
+                data.testcase[index][field] = value instanceof File ? value.name : value.toString();
+            } else {
+                // Handle other form fields
+                data[key] = value instanceof File ? value.name : value.toString();
+            }
+        });
+
+        fetch('/problem', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        alert("문제 생성이 성공적으로 완료되었습니다.");
+                        window.location.href = '/'; // Redirect to main page or another page
+                    });
+                } else {
+                    return response.json().then(data => {
+                        alert("문제 생성에 실패하였습니다: " + (data.error || '알 수 없는 오류가 발생했습니다.'));
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("문제 생성 중 오류가 발생하였습니다.");
+            });
+    }
+</script>
+
+</body>
+</html>

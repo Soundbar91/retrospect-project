@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문제 상세</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .problem-details {
+            margin-bottom: 30px;
+        }
+        .problem-details h2 {
+            margin-bottom: 20px;
+        }
+        .example-input-output {
+            margin-bottom: 30px;
+        }
+        .example-input-output pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mb-4">문제 상세</h1>
+
+    <div class="problem-details">
+        <h2 th:text="${problem.title}">A+B</h2>
+        <table class="table table-bordered table-striped">
+            <tbody>
+            <tr>
+                <th>문제 ID</th>
+                <td th:text="${problem.id}">1</td>
+            </tr>
+            <tr>
+                <th>출제자 ID</th>
+                <td th:text="${problem.user_id}">user123</td>
+            </tr>
+            <tr>
+                <th>난이도(Level)</th>
+                <td th:text="${problem.level}">5</td>
+            </tr>
+            <tr>
+                <th>제출 횟수(Submit)</th>
+                <td th:text="${problem.submit}">1137134</td>
+            </tr>
+            <tr>
+                <th>정답 횟수(Answer)</th>
+                <td th:text="${problem.answer}">446350</td>
+            </tr>
+            <tr>
+                <th>정답률(Correct)</th>
+                <td>
+                    <span th:text="${(problem.answer / problem.submit) * 100}">38.88</span>%
+                </td>
+            </tr>
+            <tr>
+                <th>알고리즘</th>
+                <td th:text="${problem.algorithms}">Brute Force</td>
+            </tr>
+            <tr>
+                <th>메모리 제한</th>
+                <td th:text="${problem.memory} + ' MB'">128 MB</td>
+            </tr>
+            <tr>
+                <th>실행 시간</th>
+                <td>
+                    <ul>
+                        <li th:each="entry : ${problem.runtime}">
+                            <span th:text="${entry.key}">Java</span>: <span th:text="${entry.value} + ' ms'">50 ms</span>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3>문제 설명</h3>
+        <p th:text="${problem.explanation}">두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.</p>
+
+        <h3>입력 설명</h3>
+        <p th:text="${problem.input_explanation}">첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)</p>
+
+        <h3>출력 설명</h3>
+        <p th:text="${problem.output_explanation}">첫째 줄에 A+B를 출력한다.</p>
+
+        <h3>예제 입력 및 출력</h3>
+        <div class="example-input-output">
+            <h4>예제 입력</h4>
+            <pre th:text="${problem.example_inout[0]['input']}">1 2</pre>
+            <h4>예제 출력</h4>
+            <pre th:text="${problem.example_inout[0]['output']}">3</pre>
+        </div>
+    </div>
+
+    <a href="#" class="btn btn-primary" onclick="window.history.back();">뒤로 가기</a>
+    <a th:href="'/submit/' + ${problem.id}" class="btn btn-success">코드 제출</a> <!-- Correct Thymeleaf expression -->
+</div>
+
+<!-- Bootstrap JS and Dependencies (Optional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
