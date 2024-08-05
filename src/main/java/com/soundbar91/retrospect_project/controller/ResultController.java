@@ -1,9 +1,12 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.dto.request.RequestSubmit;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseResult;
 import com.soundbar91.retrospect_project.entity.keyInstance.Grade;
 import com.soundbar91.retrospect_project.entity.keyInstance.Language;
 import com.soundbar91.retrospect_project.service.ResultService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,16 @@ import java.util.List;
 public class ResultController {
 
     private final ResultService resultService;
+
+    @PostMapping("/problem/{problemId}/result")
+    public ResponseEntity<Boolean> createResult(
+            @Valid @RequestBody RequestSubmit requestCreateResult,
+            @PathVariable(value = "problemId") Long problemId,
+            HttpServletRequest httpServletRequest
+    ) {
+        boolean result = resultService.createResult(requestCreateResult, httpServletRequest, problemId);
+        return ResponseEntity.ok(result);
+    }
 
     @GetMapping("/result/{resultId}")
     public ResponseEntity<ResponseResult> getResult(

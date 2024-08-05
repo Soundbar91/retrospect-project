@@ -38,7 +38,7 @@ import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCod
 public class ResultService {
 
     @Value("${python.server.url}")
-    private String pythonServerUrl;
+    private String gradingServerUrl;
 
     private final ProblemRepository problemRepository;
     private final ResultRepository resultRepository;
@@ -46,7 +46,7 @@ public class ResultService {
     private final EntityManager entityManager;
 
     @Transactional
-    public void createResult(
+    public boolean createResult(
             RequestSubmit requestCreateResult,
             HttpServletRequest httpServletRequest,
             Long problemId
@@ -63,12 +63,14 @@ public class ResultService {
 
         Result result = resultRepository.save(requestCreateResult.toEntity(user, problem, response.getBody()));
 
-        List<Result> results = resultRepository.findByUserAndGrade(result.getUser(), result.getGrade());
+        List<Result> results = resultRepository.findByProblemAndUserAndGrade(problem, result.getUser(), result.getGrade());
         boolean answer = result.getGrade().ordinal() == 0;
-        boolean duplicate = results.size() > 1;
+        boolean duplicate = answer && results.isEmpty();
 
         problem.updateSubmitInfo(answer, duplicate);
         if (!duplicate) user.solveProblem(problem.getLevel());
+
+        return answer;
     }
 
     public ResponseResult getResult(Long resultId) {
@@ -120,7 +122,7 @@ public class ResultService {
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate.exchange(
-                pythonServerUrl + "/judge",
+                gradingServerUrl + "/judge",
                 HttpMethod.POST,
                 entity,
                 Map.class

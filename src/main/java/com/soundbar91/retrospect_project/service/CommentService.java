@@ -58,7 +58,7 @@ public class CommentService {
             Long commentId,
             HttpServletRequest httpServletRequest
     ) {
-        Comment comment = valid(commentId, httpServletRequest);
+        Comment comment = checkPermission(commentId, httpServletRequest);
         comment.updateComment(requestUpdateComment);
         commentRepository.flush();
     }
@@ -74,11 +74,11 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId, HttpServletRequest httpServletRequest) {
-        valid(commentId, httpServletRequest);
+        checkPermission(commentId, httpServletRequest);
         commentRepository.deleteById(commentId);
     }
 
-    private Comment valid(Long commentId, HttpServletRequest httpServletRequest) {
+    private Comment checkPermission(Long commentId, HttpServletRequest httpServletRequest) {
         Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
