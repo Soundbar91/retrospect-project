@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 400px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content" class="container my-3">
+    <h2>회원가입</h2>
+    <form id="signupForm">
+        <div class="mb-3">
+            <label for="username" class="form-label">아이디</label>
+            <input type="text" name="username" id="username" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">이메일</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">가입하기</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('signupForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Create a JSON object from the form data
+        const formData = {
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        };
+
+        // Send the JSON data to the server using the Fetch API
+        fetch('/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful response
+                    alert('회원가입이 완료되었습니다!');
+                    window.history.back();
+                } else {
+                    // Handle errors by parsing the response JSON
+                    return response.json().then(errorData => {
+                        alert(errorData.message);
+                    });
+                }
+            })
+            .catch(error => {
+                // Handle network errors
+                console.error('Error:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            });
+    });
+</script>
+
+</body>
+</html>
