@@ -1,21 +1,26 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.service.AuthService;
 import com.soundbar91.retrospect_project.service.UserService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/user")
     public ResponseEntity<ResponseUser> createUser(
@@ -47,24 +52,8 @@ public class UserController {
             HttpServletRequest httpServletRequest
     ) {
         userService.deleteUser(httpServletRequest);
-        userService.logout(httpServletRequest);
+        authService.logout(httpServletRequest);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ResponseUser> loginUser(
-            @Valid @RequestBody RequestLoginUser requestLoginUser,
-            HttpServletRequest httpServletRequest
-    ) {
-        userService.loginUser(requestLoginUser, httpServletRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logoutUser(
-            HttpServletRequest httpServletRequest
-    ) {
-        userService.logout(httpServletRequest);
-        return ResponseEntity.noContent().build();
-    }
 }
