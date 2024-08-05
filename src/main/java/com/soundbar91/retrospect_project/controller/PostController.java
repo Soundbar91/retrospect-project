@@ -57,14 +57,6 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/post/{postId}/like")
-    public ResponseEntity<Void> likePost(
-            @PathVariable(value = "postId") Long postId
-    ) {
-        postService.likePost(postId);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping("/post/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable(value = "postId") Long postId,

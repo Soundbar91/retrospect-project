@@ -4,9 +4,11 @@ import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateCom
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -24,12 +26,9 @@ public class Comment {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(nullable = false, columnDefinition = "TEXT")
     private String context;
-
-    @Column(nullable = false)
-    @Min(0) @Max(Integer.MAX_VALUE)
-    private int likes;
 
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
@@ -58,10 +57,6 @@ public class Comment {
 
     public void deleteUser() {
         this.user = null;
-    }
-
-    public void likeComment() {
-        this.likes++;
     }
 
 }

@@ -85,14 +85,6 @@ public class PostService {
     }
 
     @Transactional
-    public void likePost(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_POST));
-        post.likePost();
-        postRepository.flush();
-    }
-
-    @Transactional
     public void deletePost(Long postId, HttpServletRequest httpServletRequest) {
         checkPermission(postId, httpServletRequest);
         postRepository.deleteById(postId);
@@ -132,4 +124,5 @@ public class PostService {
         if (post.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
         return post;
     }
+
 }

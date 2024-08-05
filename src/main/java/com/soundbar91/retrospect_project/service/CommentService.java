@@ -48,7 +48,7 @@ public class CommentService {
     }
 
     public List<ResponseComment> getComments(Long postId) {
-        return commentRepository.findCommentByPostId(postId)
+        return commentRepository.getByPostId(postId)
                 .stream().map(ResponseComment::from).toList();
     }
 
@@ -60,15 +60,6 @@ public class CommentService {
     ) {
         Comment comment = checkPermission(commentId, httpServletRequest);
         comment.updateComment(requestUpdateComment);
-        commentRepository.flush();
-    }
-
-    @Transactional
-    public void likeComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_COMMENT));
-
-        comment.likeComment();
         commentRepository.flush();
     }
 
@@ -89,4 +80,5 @@ public class CommentService {
         if (comment.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
         return comment;
     }
+
 }
