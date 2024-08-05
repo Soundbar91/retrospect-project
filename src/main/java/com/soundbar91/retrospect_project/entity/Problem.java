@@ -12,6 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,12 +84,12 @@ public class Problem {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "problem", fetch = LAZY)
-    private Board board;
+    @OneToMany(mappedBy = "problem", fetch = LAZY)
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
-                   int memory, Map<String, Integer> runtime, int level, List<Map<String, Object>> example_inout, User user, Board board) {
+                   int memory, Map<String, Integer> runtime, int level, List<Map<String, Object>> example_inout, User user) {
         this.title = title;
         this.algorithms = algorithms;
         this.explanation = explanation;
@@ -99,7 +100,6 @@ public class Problem {
         this.level = level;
         this.example_inout = example_inout;
         this.user = user;
-        this.board = board;
     }
 
     public void updateProblem(RequestUpdateProblem updateProblem) {
@@ -114,6 +114,8 @@ public class Problem {
         this.example_inout = updateProblem.example_inout();
     }
 
+    /*correct : 최초 맞은 사람 횟수
+    * answer : 코드 제출 후 정답을 맞은 사람 횟수*/
     public void updateSubmitInfo(boolean answer, boolean duplicate) {
         this.submit++;
         if (answer) this.answer++;

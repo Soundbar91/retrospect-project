@@ -47,23 +47,23 @@ public class Post {
     private LocalDateTime modify_at;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
-
-    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "post", fetch = EAGER, orphanRemoval = true, cascade = ALL)
     private List<Comment> comment = new ArrayList<>();
 
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "problem_id", nullable = false)
+    private Problem problem;
+
     @Builder
-    public Post(String title, String content, Category category, Board borad, User user) {
+    public Post(String title, String content, Category category, User user, Problem problem) {
         this.title = title;
         this.content = content;
         this.category = category;
-        this.board = borad;
         this.user = user;
+        this.problem = problem;
     }
 
     public void updatePost(RequestUpdatePost requestUpdatePost) {

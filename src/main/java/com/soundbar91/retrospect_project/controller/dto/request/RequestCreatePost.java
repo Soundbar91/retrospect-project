@@ -1,7 +1,7 @@
 package com.soundbar91.retrospect_project.controller.dto.request;
 
-import com.soundbar91.retrospect_project.entity.Board;
 import com.soundbar91.retrospect_project.entity.Post;
+import com.soundbar91.retrospect_project.entity.Problem;
 import com.soundbar91.retrospect_project.entity.User;
 import com.soundbar91.retrospect_project.entity.keyInstance.Category;
 import jakarta.validation.constraints.NotBlank;
@@ -19,12 +19,12 @@ public record RequestCreatePost(
         @NotNull(message = "카테고리는 필수 입력사항입니다.")
         Category category
 ) {
-    public Post toEntity(User user, Board board) {
+    public Post toEntity(User user, Problem problem) {
         return Post.builder()
                 .title(this.title)
                 .content(this.context)
                 .category(this.category)
-                .borad(board)
+                .problem(problem)
                 .user(user)
                 .build();
     }
