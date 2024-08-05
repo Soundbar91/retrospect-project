@@ -16,7 +16,6 @@
     - 코드 제출 기능
     - 코드 채점 기능
     - 게시판, 게시글, 댓글
-- 관리자 기능
 - 레벨 시스템
 
 ## 개발환경
@@ -35,3 +34,6 @@
 - 로컬에서 develop 브랜치에서 분기한 feature 브랜치에서 작업을 진행
 - 기능 개발이 끝나면 develop로 merge
 - 매주 화요일 main으로 merge
+
+## 프로그램 흐름도
+![흐름도](https://github.com/user-attachments/assets/e49fb158-6ac0-4e0e-840d-f289e07c72fe)
