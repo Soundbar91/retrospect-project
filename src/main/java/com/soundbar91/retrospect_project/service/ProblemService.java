@@ -57,6 +57,7 @@ public class ProblemService {
     public ResponseProblem getProblem(Long problemId) {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
+
         return ResponseProblem.from(problem);
     }
 

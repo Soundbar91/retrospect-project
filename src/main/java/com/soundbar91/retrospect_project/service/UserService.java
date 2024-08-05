@@ -31,7 +31,7 @@ public class UserService {
 
     @Transactional
     public void createUser(RequestCreateUser requestCreateUser) {
-        checkUserInfo(requestCreateUser);
+        checkUserDuplicate(requestCreateUser);
 
         String password = passwordEncoder.encode(requestCreateUser.password());
         userRepository.save(requestCreateUser.toEntity(password));
@@ -67,7 +67,7 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    private void checkUserInfo(RequestCreateUser requestCreateUser) {
+    private void checkUserDuplicate(RequestCreateUser requestCreateUser) {
         userRepository.findByUsername(requestCreateUser.username())
                 .ifPresent(e -> {throw new ApplicationException(DUPLICATE_USERNAME);});
 
@@ -76,16 +76,16 @@ public class UserService {
     }
 
     private void removeUserAssociations(User user) {
-        List<Problem> problemList = problemRepository.findByUser(user);
+        List<Problem> problemList = problemRepository.getByUser(user);
         for (Problem problem : problemList) problem.deleteUser();
 
-        List<Post> postList = postRepository.findByUser(user);
+        List<Post> postList = postRepository.getByUser(user);
         for (Post post : postList) post.deleteUser();
 
-        List<Comment> commentList = commentRepository.findByUser(user);
+        List<Comment> commentList = commentRepository.getByUser(user);
         for (Comment comment : commentList) comment.deleteUser();
 
-        List<Result> resultList = resultRepository.findByUser(user);
+        List<Result> resultList = resultRepository.getByUser(user);
         for (Result result : resultList) result.deleteUser();
     }
 

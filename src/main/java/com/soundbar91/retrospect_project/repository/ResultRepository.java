@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
-    List<Result> findByProblemAndUserAndGrade(Problem problem, User user, Grade grade);
-    List<Result> findByUser(User user);
+    List<Result> getByProblemAndUserAndGrade(Problem problem, User user, Grade grade);
+    List<Result> getByUser(User user);
 }

@@ -25,8 +25,8 @@ public class ResultController {
             @PathVariable(value = "problemId") Long problemId,
             HttpServletRequest httpServletRequest
     ) {
-        boolean result = resultService.createResult(requestCreateResult, httpServletRequest, problemId);
-        return ResponseEntity.ok(result);
+        boolean answer = resultService.createResult(requestCreateResult, httpServletRequest, problemId);
+        return ResponseEntity.ok(answer);
     }
 
     @GetMapping("/result/{resultId}")
