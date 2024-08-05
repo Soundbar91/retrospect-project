@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,10 +34,6 @@ public class Post {
 
     @Column(nullable = false)
     private Category category;
-
-    @Column(insertable = false)
-    @ColumnDefault("0")
-    private int likes;
 
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
@@ -70,10 +65,6 @@ public class Post {
         this.title = requestUpdatePost.title();
         this.content = requestUpdatePost.context();
         this.category = requestUpdatePost.category();
-    }
-
-    public void likePost() {
-        this.likes++;
     }
 
     public void deleteUser() {

@@ -2,13 +2,10 @@ package com.soundbar91.retrospect_project.entity;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateComment;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 

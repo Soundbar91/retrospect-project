@@ -1,13 +1,16 @@
 package com.soundbar91.retrospect_project.entity;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Table(name = "likes")
-public class Likes {
+@Table(name = "comment_like")
+@NoArgsConstructor(access = PROTECTED)
+public class CommentLike {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -18,8 +21,12 @@ public class Likes {
     private User user;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
+    public CommentLike(User user, Comment comment) {
+        this.user = user;
+        this.comment = comment;
+    }
 
 }
