@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -41,16 +40,19 @@ public class Post {
     @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
-    @ManyToOne(fetch = EAGER)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post", fetch = EAGER, orphanRemoval = true, cascade = ALL)
-    private List<Comment> comment = new ArrayList<>();
-
-    @ManyToOne(fetch = EAGER)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    @OneToMany(mappedBy = "post", fetch = LAZY, orphanRemoval = true)
+    private List<Comment> comment = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", fetch = LAZY, orphanRemoval = true)
+    private List<PostLike> likes = new ArrayList<>();
 
     @Builder
     public Post(String title, String content, Category category, User user, Problem problem) {

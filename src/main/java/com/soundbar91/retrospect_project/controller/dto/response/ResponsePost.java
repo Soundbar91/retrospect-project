@@ -10,6 +10,7 @@ public record ResponsePost(
         String title,
         String context,
         String category,
+        int likes,
         LocalDateTime create_at,
         LocalDateTime modify_at
 ) {
@@ -20,6 +21,7 @@ public record ResponsePost(
                 post.getTitle(),
                 post.getContent(),
                 post.getCategory().getCategoryName(),
+                post.getLikes().size(),
                 post.getCreate_at(),
                 post.getModify_at()
         );
