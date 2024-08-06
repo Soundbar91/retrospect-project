@@ -29,8 +29,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(insertable = false)
-    @ColumnDefault("0.0")
+    @Column(insertable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.0")
     private double exp;
 
     @Column(insertable = false)

@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.soundbar91.retrospect_project.entity.Post;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,10 @@ public record ResponsePost(
         String context,
         String category,
         int likes,
+
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime create_at,
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime modify_at
 ) {
     public static ResponsePost from(Post post) {
