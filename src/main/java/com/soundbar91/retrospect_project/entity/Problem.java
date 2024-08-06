@@ -121,8 +121,4 @@ public class Problem {
         if (!duplicate) this.correct++;
     }
 
-    public void deleteUser() {
-        this.user = null;
-    }
-
 }

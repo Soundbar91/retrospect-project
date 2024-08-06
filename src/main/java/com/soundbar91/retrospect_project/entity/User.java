@@ -7,10 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -41,20 +37,9 @@ public class User {
     @ColumnDefault("0")
     private Role role;
 
-    @OneToMany(mappedBy = "user", fetch = LAZY)
-    private List<Problem> problem = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = LAZY)
-    private List<Post> post = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = LAZY)
-    private List<Comment> comment = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = LAZY)
-    private List<Result> result = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = LAZY)
-    private List<PostLike> likes = new ArrayList<>();
+    @Column(insertable = false)
+    @ColumnDefault("true")
+    private boolean isActive;
 
     @Builder
     public User(String username, String email, String password) {
@@ -71,6 +56,10 @@ public class User {
         exp += (problemLevel * 0.8);
         if (exp > this.role.getEND()) exp = this.role.getEND();
         if (exp > this.role.getExp() + this.role.getGAP()) role = Role.values()[this.role.ordinal() + 1];
+    }
+
+    public void deactivate() {
+        isActive = false;
     }
 
 }

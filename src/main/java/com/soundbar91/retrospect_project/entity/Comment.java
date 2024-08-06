@@ -57,8 +57,4 @@ public class Comment {
         this.context = requestUpdateComment.context();
     }
 
-    public void deleteUser() {
-        this.user = null;
-    }
-
 }

@@ -65,7 +65,4 @@ public class Result {
         this.problem = problem;
     }
 
-    public void deleteUser() {
-        this.user = null;
-    }
 }

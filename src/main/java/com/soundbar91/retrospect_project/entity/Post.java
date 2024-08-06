@@ -69,8 +69,4 @@ public class Post {
         this.category = requestUpdatePost.category();
     }
 
-    public void deleteUser() {
-        this.user = null;
-    }
-
 }
