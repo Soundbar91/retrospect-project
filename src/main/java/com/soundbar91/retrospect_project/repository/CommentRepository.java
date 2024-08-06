@@ -10,5 +10,4 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> getByPostId(Long postId);
-    List<Comment> getByUser(User user);
 }

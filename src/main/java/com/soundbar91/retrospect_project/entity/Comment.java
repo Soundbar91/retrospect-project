@@ -2,7 +2,6 @@ package com.soundbar91.retrospect_project.entity;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateComment;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,14 +24,13 @@ public class Comment {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @NotNull
     @Column(nullable = false, columnDefinition = "TEXT")
     private String context;
 
-    @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
 
-    @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
     @ManyToOne(fetch = LAZY)
