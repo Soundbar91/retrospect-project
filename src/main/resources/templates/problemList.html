@@ -30,23 +30,45 @@
                 <input type="number" id="level" class="form-control" placeholder="난이도" min="1" max="10">
             </div>
             <div class="col">
-                <select id="algorithms" class="form-control" multiple>
-                    <option value="기하">기하</option>
-                    <option value="구현">구현</option>
-                    <option value="그리디">그리디</option>
-                    <option value="문자열">문자열</option>
-                    <option value="자료구조">자료구조</option>
-                    <option value="그래프">그래프</option>
-                    <option value="다이나믹 프로그래밍">다이나믹 프로그래밍</option>
-                </select>
+                <div class="form-group">
+                    <label>알고리즘</label><br>
+                    <div class="form-check">
+                        <input type="checkbox" id="geometry" class="form-check-input" value="기하">
+                        <label class="form-check-label" for="geometry">기하</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="implementation" class="form-check-input" value="구현">
+                        <label class="form-check-label" for="implementation">구현</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="greedy" class="form-check-input" value="그리디">
+                        <label class="form-check-label" for="greedy">그리디</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="string" class="form-check-input" value="문자열">
+                        <label class="form-check-label" for="string">문자열</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="data-structure" class="form-check-input" value="자료구조">
+                        <label class="form-check-label" for="data-structure">자료구조</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="graph" class="form-check-input" value="그래프">
+                        <label class="form-check-label" for="graph">그래프</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="dp" class="form-check-input" value="다이나믹 프로그래밍">
+                        <label class="form-check-label" for="dp">다이나믹 프로그래밍</label>
+                    </div>
+                </div>
             </div>
             <div class="col">
                 <div class="form-check">
-                    <input type="radio" id="or" name="operation" value="or" checked>
+                    <input type="radio" id="or" name="operation" value="false" checked>
                     <label for="or">OR</label>
                 </div>
                 <div class="form-check">
-                    <input type="radio" id="and" name="operation" value="and">
+                    <input type="radio" id="and" name="operation" value="true">
                     <label for="and">AND</label>
                 </div>
             </div>
@@ -68,11 +90,12 @@
 
 <script>
     // API 호출 및 데이터 렌더링 함수
-    function fetchProblems(title = '', level = '', algorithms = [], operation = 'or') {
-        // 알고리즘 배열 처리
-        const algorithmsQuery = algorithms.join(operation === 'or' ? '|' : ','); // OR 또는 AND 조건
+    function fetchProblems(title = '', level = '', algorithms = [], mode = 'false') {
+        // 알고리즘 배열 처리: AND일 경우 ','로 연결
+        const algorithmsQuery = algorithms.join(','); // AND 조건은 ','로 연결
 
-        const url = `/problems?title=${title}&level=${level}&algorithms=${algorithmsQuery}&stand=${operation}`;
+        // stand를 문자열로 변환하여 쿼리 파라미터에 포함
+        const url = `/problems?title=${encodeURIComponent(title)}&level=${encodeURIComponent(level)}&algorithms=${encodeURIComponent(algorithmsQuery)}&mode=${mode}`;
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -135,18 +158,24 @@
         // 입력 값 유효성 검사
         const title = document.getElementById('title').value;
         const level = document.getElementById('level').value;
-        const algorithms = Array.from(document.getElementById('algorithms').selectedOptions)
-            .map(option => option.value);
-        const operation = document.querySelector('input[name="operation"]:checked').value;
+        const algorithms = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+            .map(checkbox => checkbox.value);
+
+        // 디버깅을 위한 로그
+        const selectedOperation = document.querySelector('input[name="operation"]:checked');
+
+        // stand를 문자열로 설정
+        const mode = selectedOperation ? selectedOperation.value : 'false';
 
         if (level && (level < 1 || level > 10)) {
             alert('난이도는 1부터 10까지의 숫자여야 합니다.');
             return;
         }
 
-        fetchProblems(title, level, algorithms, operation);
+        fetchProblems(title, level, algorithms, mode);
     });
 </script>
+
 
 </body>
 </html>

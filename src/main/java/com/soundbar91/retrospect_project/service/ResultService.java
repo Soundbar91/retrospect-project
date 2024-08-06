@@ -46,7 +46,7 @@ public class ResultService {
     private final EntityManager entityManager;
 
     @Transactional
-    public boolean createResult(
+    public ResponseResult createResult(
             RequestSubmit requestCreateResult,
             HttpServletRequest httpServletRequest,
             Long problemId
@@ -137,14 +137,14 @@ public class ResultService {
         if (problem != null) query.setParameter("problem", problem);
     }
 
-    private boolean isAnswer(Problem problem, Result result, User user) {
+    private ResponseResult isAnswer(Problem problem, Result result, User user) {
         List<Result> results = resultRepository.getByProblemAndUserAndGrade(problem, result.getUser(), result.getGrade());
         boolean answer = result.getGrade().ordinal() == 0;
         boolean duplicate = answer && results.isEmpty();
 
         problem.updateSubmitInfo(answer, duplicate);
         if (!duplicate) user.solveProblem(problem.getLevel());
-        return answer;
+        return ResponseResult.from(result);
     }
 
 }
