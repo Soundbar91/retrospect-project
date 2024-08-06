@@ -80,7 +80,7 @@ public class Problem {
     private LocalDateTime modify_at;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "problem", fetch = LAZY)

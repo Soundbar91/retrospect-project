@@ -45,11 +45,11 @@ public class Result {
     private LocalDateTime submit_at;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "problem_id")
+    @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
     @Builder
