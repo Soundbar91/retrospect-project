@@ -19,23 +19,23 @@ public class PostController {
 
     private final PostService postService;
 
-    @PostMapping("/board/{boardId}/post")
+    @PostMapping("/problem/{problemId}/post")
     public ResponseEntity<Void> createPost(
             @Valid @RequestBody RequestCreatePost requestCreatePost,
-            @PathVariable Long boardId,
+            @PathVariable(value = "problemId") Long problemId,
             HttpServletRequest httpServletRequest
     ) {
-        postService.createPost(requestCreatePost, boardId, httpServletRequest);
+        postService.createPost(requestCreatePost, problemId, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/posts")
     public ResponseEntity<List<ResponsePost>> getPosts(
-            @RequestParam(value = "boardId", required = false) Long boardId,
+            @RequestParam(value = "problemId", required = false) Long problemId,
             @RequestParam(value = "username", required = false) String username,
             @RequestParam(value = "category", required = false) Category category
     ) {
-        List<ResponsePost> postByParam = postService.getPosts(boardId, username, category);
+        List<ResponsePost> postByParam = postService.getPosts(problemId, username, category);
         return ResponseEntity.ok(postByParam);
     }
 
@@ -51,17 +51,9 @@ public class PostController {
     public ResponseEntity<Void> updatePost(
             @Valid @RequestBody RequestUpdatePost requestUpdatePost,
             HttpServletRequest httpServletRequest,
-            @PathVariable Long postId
-    ) {
-        postService.updatePost(requestUpdatePost, httpServletRequest, postId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/post/{postId}/like")
-    public ResponseEntity<Void> likePost(
             @PathVariable(value = "postId") Long postId
     ) {
-        postService.likePost(postId);
+        postService.updatePost(requestUpdatePost, httpServletRequest, postId);
         return ResponseEntity.ok().build();
     }
 

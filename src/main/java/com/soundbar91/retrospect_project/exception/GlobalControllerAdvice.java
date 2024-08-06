@@ -1,7 +1,9 @@
 package com.soundbar91.retrospect_project.exception;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.soundbar91.retrospect_project.exception.errorCode.ErrorCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +33,21 @@ public class GlobalControllerAdvice {
 
         ExceptionResponse exceptionResponse = new ExceptionResponse("VERIFICATION_ERROR", list);
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
+    }
+
+    // https://be-student.tistory.com/52
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ExceptionResponse> httpMessageNotReadableException(HttpMessageNotReadableException e) {
+        if (e.getCause() instanceof MismatchedInputException mismatchedInputException) {
+            final String errorMessage = mismatchedInputException.getPath().get(0).getFieldName() + " 필드의 값이 잘못되었습니다.";
+            ExceptionResponse exceptionResponse = new ExceptionResponse("MISSING_ARGUMENT", errorMessage);
+            return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
+        }
+        else {
+            final String errorMessage = "확인할 수 없는 형태의 데이터가 들어왔습니다";
+            ExceptionResponse exceptionResponse = new ExceptionResponse("INVALID_ARGUMENT", errorMessage);
+            return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
+        }
     }
 
 }

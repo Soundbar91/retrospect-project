@@ -1,13 +1,10 @@
 package com.soundbar91.retrospect_project.service;
 
 import com.soundbar91.retrospect_project.controller.dto.request.RequestSubmit;
-import com.soundbar91.retrospect_project.controller.dto.response.ResponsePost;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseResult;
-import com.soundbar91.retrospect_project.entity.Post;
 import com.soundbar91.retrospect_project.entity.Problem;
 import com.soundbar91.retrospect_project.entity.Result;
 import com.soundbar91.retrospect_project.entity.User;
-import com.soundbar91.retrospect_project.entity.keyInstance.Category;
 import com.soundbar91.retrospect_project.entity.keyInstance.Grade;
 import com.soundbar91.retrospect_project.entity.keyInstance.Language;
 import com.soundbar91.retrospect_project.exception.ApplicationException;
@@ -41,7 +38,7 @@ import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCod
 public class ResultService {
 
     @Value("${python.server.url}")
-    private String pythonServerUrl;
+    private String gradingServerUrl;
 
     private final ProblemRepository problemRepository;
     private final ResultRepository resultRepository;
@@ -49,7 +46,7 @@ public class ResultService {
     private final EntityManager entityManager;
 
     @Transactional
-    public void createResult(
+    public ResponseResult createResult(
             RequestSubmit requestCreateResult,
             HttpServletRequest httpServletRequest,
             Long problemId
@@ -61,21 +58,15 @@ public class ResultService {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
 
-        HttpEntity<Map<String, Object>> request = requestBody(requestCreateResult, problem);
-        ResponseEntity<Map> response = responseBody(request);
+        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateResult, problem);
+        ResponseEntity<Map> response = callApiToGrading(requestMessage);
 
         Result result = resultRepository.save(requestCreateResult.toEntity(user, problem, response.getBody()));
-
-        List<Result> results = resultRepository.findByUserAndGrade(result.getUser(), result.getGrade());
-        boolean answer = result.getGrade().ordinal() == 0;
-        boolean duplicate = results.size() > 1;
-
-        problem.updateSubmitInfo(answer, duplicate);
-        if (!duplicate) user.solveProblem(problem.getLevel());
+        return isAnswer(problem, result, user);
     }
 
-    public ResponseResult getResult(Long id) {
-        Result result = resultRepository.findById(id)
+    public ResponseResult getResult(Long resultId) {
+        Result result = resultRepository.findById(resultId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_RESULT));
         return ResponseResult.from(result);
     }
@@ -84,53 +75,44 @@ public class ResultService {
             Grade grade, Language language,
             String username, Long problemId
     ) {
-        User user = null;
-        if (username != null) {
-            user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-        }
+        User user = username != null ?
+                userRepository.findByUsername(username).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER)) : null;
 
-        Problem problem = null;
-        if (problemId != null) {
-            problem = problemRepository.findById(problemId)
-                    .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
-        }
+        Problem problem = problemId != null ?
+                problemRepository.findById(problemId).orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM)) : null;
 
-        StringBuilder jpql = getJpql(grade, language, user, problem);
+        StringBuilder jpql = createJpql(grade, language, user, problem);
         TypedQuery<Result> query = entityManager.createQuery(jpql.toString(), Result.class);
-        if (grade != null) query.setParameter("grade", grade);
-        if (language != null) query.setParameter("language", language);
-        if (user != null) query.setParameter("user", user);
-        if (problem != null) query.setParameter("problem", problem);
+        queryParameterBinding(grade, language, query, user, problem);
 
         return query.getResultList().stream().map(ResponseResult::from).toList();
     }
 
-    private HttpEntity<Map<String, Object>> requestBody(RequestSubmit requestCreateResult, Problem problem) {
-        Map < String, Object > requestBody = new HashMap < > ();
+    private HttpEntity<Map<String, Object>> createRequestMessage(RequestSubmit requestCreateResult, Problem problem) {
+        Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("source_code", requestCreateResult.code());
         requestBody.put("language", requestCreateResult.language());
-        requestBody.put("test_cases", problem.getTestcase());
         requestBody.put("memory_limit", problem.getMemory());
         requestBody.put("time_limit", problem.getRuntime().get(String.valueOf(requestCreateResult.language()).toLowerCase()));
+        requestBody.put("problem_id", problem.getId());
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
 
         return new HttpEntity<>(requestBody, headers);
     }
 
-    private ResponseEntity<Map> responseBody(HttpEntity<Map<String, Object>> entity) {
+    private ResponseEntity<Map> callApiToGrading(HttpEntity<Map<String, Object>> entity) {
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate.exchange(
-                pythonServerUrl + "/judge",
+                gradingServerUrl + "/judge",
                 HttpMethod.POST,
                 entity,
                 Map.class
         );
     }
 
-    private static StringBuilder getJpql(Grade grade, Language language, User user, Problem problem) {
+    private StringBuilder createJpql(Grade grade, Language language, User user, Problem problem) {
         StringBuilder jpql = new StringBuilder("select r from Result r");
         List<String> criteria = new ArrayList<>();
 
@@ -147,4 +129,22 @@ public class ResultService {
 
         return jpql;
     }
+
+    private void queryParameterBinding(Grade grade, Language language, TypedQuery<Result> query, User user, Problem problem) {
+        if (grade != null) query.setParameter("grade", grade);
+        if (language != null) query.setParameter("language", language);
+        if (user != null) query.setParameter("user", user);
+        if (problem != null) query.setParameter("problem", problem);
+    }
+
+    private ResponseResult isAnswer(Problem problem, Result result, User user) {
+        List<Result> results = resultRepository.getByProblemAndUserAndGrade(problem, result.getUser(), result.getGrade());
+        boolean answer = result.getGrade().ordinal() == 0;
+        boolean duplicate = answer && results.isEmpty();
+
+        problem.updateSubmitInfo(answer, duplicate);
+        if (!duplicate) user.solveProblem(problem.getLevel());
+        return ResponseResult.from(result);
+    }
+
 }

@@ -12,6 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -71,11 +72,7 @@ public class Problem {
 
     @Type(JsonType.class)
     @Column(nullable = false, columnDefinition = "json")
-    private List<Map<String, String>> example_inout;
-
-    @Type(JsonType.class)
-    @Column(nullable = false, columnDefinition = "json")
-    private List<Map<String, String>> testcase;
+    private List<Map<String, Object>> example_inout;
 
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
@@ -87,12 +84,12 @@ public class Problem {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "problem", fetch = LAZY)
-    private Board board;
+    @OneToMany(mappedBy = "problem", fetch = LAZY)
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
-                   int memory, Map<String, Integer> runtime, int level, List<Map<String, String>> example_inout, List<Map<String, String>> testcase, User user, Board board) {
+                   int memory, Map<String, Integer> runtime, int level, List<Map<String, Object>> example_inout, User user) {
         this.title = title;
         this.algorithms = algorithms;
         this.explanation = explanation;
@@ -102,31 +99,31 @@ public class Problem {
         this.runtime = runtime;
         this.level = level;
         this.example_inout = example_inout;
-        this.testcase = testcase;
         this.user = user;
-        this.board = board;
     }
 
-    public void deleteUser() {
-        this.user = null;
+    public void updateProblem(RequestUpdateProblem updateProblem) {
+        this.title = updateProblem.title();
+        this.algorithms = updateProblem.algorithms();
+        this.explanation = updateProblem.explanation();
+        this.input_explanation = updateProblem.input_explanation();
+        this.output_explanation = updateProblem.output_explanation();
+        this.memory = updateProblem.memory();
+        this.runtime = updateProblem.runtime();
+        this.level = updateProblem.level();
+        this.example_inout = updateProblem.example_inout();
     }
 
+    /*correct : 최초 맞은 사람 횟수
+    * answer : 코드 제출 후 정답을 맞은 사람 횟수*/
     public void updateSubmitInfo(boolean answer, boolean duplicate) {
         this.submit++;
         if (answer) this.answer++;
         if (!duplicate) this.correct++;
     }
 
-    public void updateProblem(RequestUpdateProblem updateProblem) {
-       if (updateProblem.title() != null) this.title = updateProblem.title();
-       if (updateProblem.algorithms() != null) this.algorithms = updateProblem.algorithms();
-       if (updateProblem.explanation() != null) this.explanation = updateProblem.explanation();
-       if (updateProblem.input_explanation() != null) this.input_explanation = updateProblem.input_explanation();
-       if (updateProblem.output_explanation() != null) this.output_explanation = updateProblem.output_explanation();
-       if (updateProblem.memory() != null) this.memory = updateProblem.memory();
-       if (updateProblem.runtime() != null) this.runtime = updateProblem.runtime();
-       if (updateProblem.level() != null) this.level = updateProblem.level();
-       if (updateProblem.example_inout() != null) this.example_inout = updateProblem.example_inout();
-       if (updateProblem.testcase() != null) this.testcase = updateProblem.testcase();
+    public void deleteUser() {
+        this.user = null;
     }
+
 }

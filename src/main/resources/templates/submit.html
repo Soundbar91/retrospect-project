@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코드 제출</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <!-- CodeMirror Themes (Optional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+        .CodeMirror {
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mb-4">코드 제출</h1>
+
+    <form id="codeForm">
+        <input type="hidden" id="problemId" name="problemId" th:value="${problemId}"><!-- 문제 ID 값을 임시로 지정 -->
+        <div class="form-group">
+            <label for="language">언어 선택</label>
+            <select id="language" name="language" class="form-control">
+                <option value="java">Java</option>
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="code">코드 작성</label>
+            <textarea id="code" name="code" class="form-control" rows="10"></textarea>
+        </div>
+        <button type="button" class="btn btn-success" onclick="submitCode()">제출</button>
+    </form>
+
+    <a href="#" class="btn btn-primary mt-3" onclick="window.history.back();">뒤로 가기</a>
+</div>
+
+<!-- Bootstrap JS and Dependencies (Optional) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/cpp/cpp.min.js"></script>
+<script>
+    // Initialize CodeMirror
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        theme: "dracula",  // You can change the theme here
+        mode: "text/x-java" // Default mode
+    });
+
+    // Update CodeMirror mode based on selected language
+    document.getElementById("language").addEventListener("change", function() {
+        var language = this.value;
+        var mode = "text/x-java";  // Default to Java
+
+        if (language === "python") {
+            mode = "python";
+        } else if (language === "cpp") {
+            mode = "text/x-c++src";
+        }
+
+        editor.setOption("mode", mode);
+    });
+
+    function submitCode() {
+        var problemId = document.getElementById("problemId").value;
+        var language = document.getElementById("language").value.toUpperCase();
+        var code = editor.getValue();
+
+        var requestData = {
+            language: language,
+            code: code
+        };
+
+        fetch(`/problem/${problemId}/result`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        // grade 값에 따른 처리
+                        switch (data.grade) {
+                            case "정답":
+                                alert(`정답입니다!\n메모리 사용량: ${data.memory}KB\n실행 시간: ${data.runtime}ms`);
+                                window.history.back();
+                                break;
+                            case "오답":
+                                alert("오답입니다.");
+                                break;
+                            case "컴파일 에러":
+                                alert("컴파일 에러가 발생했습니다.");
+                                break;
+                            case "런타임 에러":
+                                alert("런타임 에러가 발생했습니다.");
+                                break;
+                            case "시간 초과":
+                                alert("시간 초과가 발생했습니다.");
+                                break;
+                            case "메모리 초과":
+                                alert("메모리 초과가 발생했습니다.");
+                                break;
+                            default:
+                                alert("알 수 없는 응답입니다: ");
+                        }
+                    });
+                } else {
+                    return response.text().then(text => {
+                        alert("코드 제출에 실패하였습니다. 오류: " + text);
+                    });
+                }
+            })
+            .catch(error => {
+                alert("서버와 통신 중 오류가 발생했습니다: " + error.message);
+            });
+    }
+
+    // Set initial mode based on default selection
+    document.getElementById("language").dispatchEvent(new Event("change"));
+</script>
+
+</body>
+</html>

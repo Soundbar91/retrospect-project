@@ -12,7 +12,6 @@ public record ResponseResult(
         String language,
         int codeLength,
         String code,
-        String errorMessage,
         LocalDateTime submit_at
 ) {
     public static ResponseResult from(Result result) {
@@ -24,7 +23,6 @@ public record ResponseResult(
                 result.getLanguage().getName(),
                 result.getCodeLength(),
                 result.getCode(),
-                result.getErrorMessage(),
                 result.getSubmit_at()
         );
     }

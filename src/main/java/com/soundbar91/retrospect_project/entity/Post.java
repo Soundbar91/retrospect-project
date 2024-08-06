@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,19 +35,11 @@ public class Post {
     @Column(nullable = false)
     private Category category;
 
-    @Column(insertable = false)
-    @ColumnDefault("0")
-    private int likes;
-
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
 
     @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
-
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "board_id", nullable = false)
-    private Board board;
 
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "user_id")
@@ -57,23 +48,23 @@ public class Post {
     @OneToMany(mappedBy = "post", fetch = EAGER, orphanRemoval = true, cascade = ALL)
     private List<Comment> comment = new ArrayList<>();
 
+    @ManyToOne(fetch = EAGER)
+    @JoinColumn(name = "problem_id", nullable = false)
+    private Problem problem;
+
     @Builder
-    public Post(String title, String content, Category category, Board borad, User user) {
+    public Post(String title, String content, Category category, User user, Problem problem) {
         this.title = title;
         this.content = content;
         this.category = category;
-        this.board = borad;
         this.user = user;
+        this.problem = problem;
     }
 
     public void updatePost(RequestUpdatePost requestUpdatePost) {
-        if (requestUpdatePost.title() != null) this.title = requestUpdatePost.title();
-        if (requestUpdatePost.context() != null) this.content = requestUpdatePost.context();
-        if (requestUpdatePost.category() != null) this.category = requestUpdatePost.category();
-    }
-
-    public void likePost() {
-        this.likes++;
+        this.title = requestUpdatePost.title();
+        this.content = requestUpdatePost.context();
+        this.category = requestUpdatePost.category();
     }
 
     public void deleteUser() {

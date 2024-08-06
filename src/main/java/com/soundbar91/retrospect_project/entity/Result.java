@@ -41,8 +41,6 @@ public class Result {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String code;
 
-    private String errorMessage;
-
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime submit_at;
 
@@ -56,14 +54,13 @@ public class Result {
 
     @Builder
     public Result(Grade grade, int memory, int runtime, Language language,
-                  int codeLength, String code, String errorMessage, User user, Problem problem) {
+                  int codeLength, String code, User user, Problem problem) {
         this.grade = grade;
         this.memory = memory;
         this.runtime = runtime;
         this.language = language;
         this.codeLength = codeLength;
         this.code = code;
-        this.errorMessage = errorMessage;
         this.user = user;
         this.problem = problem;
     }

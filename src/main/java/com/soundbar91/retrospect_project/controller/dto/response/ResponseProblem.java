@@ -16,7 +16,10 @@ public record ResponseProblem(
         int memory,
         Map<String, Integer> runtime,
         int level,
-        List<Map<String, String>> example_inout
+        int submit,
+        int answer,
+        int correct,
+        List<Map<String, Object>> example_inout
 ) {
     public static ResponseProblem from(Problem problem) {
         return new ResponseProblem(
@@ -30,6 +33,9 @@ public record ResponseProblem(
                 problem.getMemory(),
                 problem.getRuntime(),
                 problem.getLevel(),
+                problem.getSubmit(),
+                problem.getAnswer(),
+                problem.getCorrect(),
                 problem.getExample_inout()
         );
     }

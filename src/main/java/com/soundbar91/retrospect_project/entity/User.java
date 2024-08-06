@@ -53,6 +53,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = LAZY)
     private List<Result> result = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = LAZY)
+    private List<PostLike> likes = new ArrayList<>();
+
     @Builder
     public User(String username, String email, String password) {
         this.username = username;

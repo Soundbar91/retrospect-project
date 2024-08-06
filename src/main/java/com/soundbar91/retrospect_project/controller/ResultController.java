@@ -19,11 +19,21 @@ public class ResultController {
 
     private final ResultService resultService;
 
-    @GetMapping("/result/{id}")
-    public ResponseEntity<ResponseResult> getResult(
-            @PathVariable(value = "id") Long id
+    @PostMapping("/problem/{problemId}/result")
+    public ResponseEntity<ResponseResult> createResult(
+            @Valid @RequestBody RequestSubmit requestCreateResult,
+            @PathVariable(value = "problemId") Long problemId,
+            HttpServletRequest httpServletRequest
     ) {
-        ResponseResult result = resultService.getResult(id);
+        ResponseResult result = resultService.createResult(requestCreateResult, httpServletRequest, problemId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/result/{resultId}")
+    public ResponseEntity<ResponseResult> getResult(
+            @PathVariable(value = "resultId") Long resultId
+    ) {
+        ResponseResult result = resultService.getResult(resultId);
         return ResponseEntity.ok(result);
     }
 
