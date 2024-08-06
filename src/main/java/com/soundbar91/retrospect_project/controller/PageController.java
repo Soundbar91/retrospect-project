@@ -1,6 +1,7 @@
 package com.soundbar91.retrospect_project.controller;
 
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
+import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
 import com.soundbar91.retrospect_project.service.ProblemService;
 import com.soundbar91.retrospect_project.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,6 +66,14 @@ public class PageController {
     @GetMapping("/editor")
     public String editor() {
         return "editor";
+    }
+
+    @GetMapping("/mypage")
+    public String myPage(HttpServletRequest httpServletRequest, Model model) {
+        String username = (String) httpServletRequest.getSession().getAttribute("username");
+        ResponseUser user = userService.getUser(username);
+        model.addAttribute("user", user);
+        return "myPage";
     }
 
 }

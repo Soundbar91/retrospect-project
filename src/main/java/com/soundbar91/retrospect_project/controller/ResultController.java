@@ -20,13 +20,13 @@ public class ResultController {
     private final ResultService resultService;
 
     @PostMapping("/problem/{problemId}/result")
-    public ResponseEntity<Boolean> createResult(
+    public ResponseEntity<ResponseResult> createResult(
             @Valid @RequestBody RequestSubmit requestCreateResult,
             @PathVariable(value = "problemId") Long problemId,
             HttpServletRequest httpServletRequest
     ) {
-        boolean answer = resultService.createResult(requestCreateResult, httpServletRequest, problemId);
-        return ResponseEntity.ok(answer);
+        ResponseResult result = resultService.createResult(requestCreateResult, httpServletRequest, problemId);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/result/{resultId}")

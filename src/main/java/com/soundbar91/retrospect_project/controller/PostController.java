@@ -51,7 +51,7 @@ public class PostController {
     public ResponseEntity<Void> updatePost(
             @Valid @RequestBody RequestUpdatePost requestUpdatePost,
             HttpServletRequest httpServletRequest,
-            @PathVariable Long postId
+            @PathVariable(value = "postId") Long postId
     ) {
         postService.updatePost(requestUpdatePost, httpServletRequest, postId);
         return ResponseEntity.ok().build();

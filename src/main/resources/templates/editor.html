@@ -1,166 +1,215 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문제 만들기</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>문제 생성 폼</title>
     <style>
-        .container {
-            margin-top: 50px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
         .dynamic-fields {
-            margin-bottom: 20px;
-        }
-        .btn-add {
             margin-top: 10px;
         }
-        .btn-remove {
-            margin-left: 10px;
+        .dynamic-fields div {
+            margin-bottom: 10px;
+        }
+        .dynamic-fields button {
+            background-color: #28a745;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .checkbox-group label {
+            margin-right: 15px;
+        }
+        #jsonOutput {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1 class="mb-4">문제 만들기</h1>
-
-    <form id="createProblemForm">
-        <div class="form-group">
-            <label for="title">문제 제목</label>
-            <input type="text" id="title" name="title" class="form-control" required maxlength="100">
+<h1>문제 생성 폼</h1>
+<form id="problemForm">
+    <div class="form-group">
+        <label for="title">문제 제목:</label>
+        <input type="text" id="title" name="title" required maxlength="100">
+    </div>
+    <div class="form-group">
+        <label>알고리즘 분류:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="algorithms" value="기하"> 기하</label>
+            <label><input type="checkbox" name="algorithms" value="구현"> 구현</label>
+            <label><input type="checkbox" name="algorithms" value="그리디"> 그리디</label>
+            <label><input type="checkbox" name="algorithms" value="문자열"> 문자열</label>
+            <label><input type="checkbox" name="algorithms" value="자료구조"> 자료구조</label>
+            <label><input type="checkbox" name="algorithms" value="그래프"> 그래프</label>
+            <label><input type="checkbox" name="algorithms" value="다이나믹 프로그래밍"> 다이나믹 프로그래밍</label>
         </div>
-
-        <div class="form-group">
-            <label for="algorithms">알고리즘 분류</label>
-            <input type="text" id="algorithms" name="algorithms" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="explanation">문제 설명</label>
-            <textarea id="explanation" name="explanation" class="form-control" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="input_explanation">문제 입력 설명</label>
-            <textarea id="input_explanation" name="input_explanation" class="form-control" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="output_explanation">문제 출력 설명</label>
-            <textarea id="output_explanation" name="output_explanation" class="form-control" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="memory">메모리 제한 (MB)</label>
-            <input type="number" id="memory" name="memory" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="level">난이도 (1-10)</label>
-            <input type="number" id="level" name="level" class="form-control" min="1" max="10" required>
-        </div>
-
-        <!-- Dynamic Fields for Example In/Out -->
-        <div class="form-group dynamic-fields" id="exampleInOutFields">
-            <label>예제 입출력</label>
-            <div class="field-group">
-                <input type="text" name="example_inout[0].input" class="form-control mb-2" placeholder="입력" required>
-                <input type="text" name="example_inout[0].output" class="form-control mb-2" placeholder="출력" required>
-                <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
+    </div>
+    <div class="form-group">
+        <label for="explanation">문제 설명:</label>
+        <textarea id="explanation" name="explanation" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="input_explanation">문제 입력 설명:</label>
+        <textarea id="input_explanation" name="input_explanation" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="output_explanation">문제 출력 설명:</label>
+        <textarea id="output_explanation" name="output_explanation" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="memory">메모리 제한 (MB):</label>
+        <input type="number" id="memory" name="memory" required min="1">
+    </div>
+    <div class="form-group">
+        <label for="runtime">제한 시간 (밀리초) - C++, 자바, 파이썬:</label>
+        <div id="runtimeContainer">
+            <div>
+                <label for="runtime_cpp">C++:</label>
+                <input type="number" id="runtime_cpp" name="runtime[c++]" required min="1">
             </div>
-            <button type="button" class="btn btn-primary btn-add" onclick="addExampleInOutField()">+ 예제 추가</button>
-        </div>
-
-        <!-- Dynamic Fields for Test Cases -->
-        <div class="form-group dynamic-fields" id="testCaseFields">
-            <label>테스트 케이스</label>
-            <div class="field-group">
-                <input type="text" name="testcase[0].input" class="form-control mb-2" placeholder="입력" required>
-                <input type="text" name="testcase[0].output" class="form-control mb-2" placeholder="출력" required>
-                <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
+            <div>
+                <label for="runtime_java">자바:</label>
+                <input type="number" id="runtime_java" name="runtime[java]" required min="1">
             </div>
-            <button type="button" class="btn btn-primary btn-add" onclick="addTestCaseField()">+ 테스트 케이스 추가</button>
+            <div>
+                <label for="runtime_python">파이썬:</label>
+                <input type="number" id="runtime_python" name="runtime[python]" required min="1">
+            </div>
         </div>
-
-        <button type="button" class="btn btn-success" onclick="submitForm()">문제 만들기</button>
-    </form>
-
-    <a href="#" class="btn btn-primary mt-3" onclick="window.history.back();">뒤로 가기</a>
+    </div>
+    <div class="form-group">
+        <label for="level">난이도 (1-10):</label>
+        <input type="number" id="level" name="level" required min="1" max="10">
+    </div>
+    <div class="form-group dynamic-fields">
+        <label>예제 입출력:</label>
+        <div id="example_inout_container">
+            <div class="example-inout">
+                <textarea name="example_inout[0][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="example_inout[0][output]" placeholder="출력" rows="2"></textarea>
+            </div>
+        </div>
+        <button type="button" onclick="addExampleInOut()">+ 예제 추가</button>
+    </div>
+    <div class="form-group dynamic-fields">
+        <label>테스트 케이스:</label>
+        <div id="testcase_container">
+            <div class="testcase">
+                <textarea name="testcase[0][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="testcase[0][output]" placeholder="출력" rows="2"></textarea>
+            </div>
+        </div>
+        <button type="button" onclick="addTestCase()">+ 테스트 케이스 추가</button>
+    </div>
+    <div class="form-group">
+        <button type="submit">문제 제출</button>
+    </div>
+</form>
+<div id="jsonOutput">
+    <h2>생성된 JSON 데이터:</h2>
+    <pre id="jsonOutputText"></pre>
 </div>
-
-<!-- Bootstrap JS and Dependencies (Optional) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 <script>
-    let exampleInOutIndex = 1;
-    let testCaseIndex = 1;
+    let exampleInOutCount = 1;
+    let testcaseCount = 1;
 
-    function addExampleInOutField() {
-        const container = document.getElementById('exampleInOutFields');
-        const newFieldGroup = document.createElement('div');
-        newFieldGroup.className = 'field-group';
-        newFieldGroup.innerHTML = `
-            <input type="text" name="example_inout[${exampleInOutIndex}].input" class="form-control mb-2" placeholder="입력" required>
-            <input type="text" name="example_inout[${exampleInOutIndex}].output" class="form-control mb-2" placeholder="출력" required>
-            <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
-        `;
-        container.insertBefore(newFieldGroup, container.lastElementChild);
-        exampleInOutIndex++;
+    function addExampleInOut() {
+        const container = document.getElementById('example_inout_container');
+        const newExampleInOut = document.createElement('div');
+        newExampleInOut.classList.add('example-inout');
+        newExampleInOut.innerHTML = `
+                <textarea name="example_inout[${exampleInOutCount}][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="example_inout[${exampleInOutCount}][output]" placeholder="출력" rows="2"></textarea>
+            `;
+        container.appendChild(newExampleInOut);
+        exampleInOutCount++;
     }
 
-    function addTestCaseField() {
-        const container = document.getElementById('testCaseFields');
-        const newFieldGroup = document.createElement('div');
-        newFieldGroup.className = 'field-group';
-        newFieldGroup.innerHTML = `
-            <input type="text" name="testcase[${testCaseIndex}].input" class="form-control mb-2" placeholder="입력" required>
-            <input type="text" name="testcase[${testCaseIndex}].output" class="form-control mb-2" placeholder="출력" required>
-            <button type="button" class="btn btn-danger btn-remove" onclick="removeField(this)">삭제</button>
-        `;
-        container.insertBefore(newFieldGroup, container.lastElementChild);
-        testCaseIndex++;
+    function addTestCase() {
+        const container = document.getElementById('testcase_container');
+        const newTestCase = document.createElement('div');
+        newTestCase.classList.add('testcase');
+        newTestCase.innerHTML = `
+                <textarea name="testcase[${testcaseCount}][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="testcase[${testcaseCount}][output]" placeholder="출력" rows="2"></textarea>
+            `;
+        container.appendChild(newTestCase);
+        testcaseCount++;
     }
 
-    function removeField(button) {
-        button.parentElement.remove();
-    }
+    document.getElementById('problemForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // 기본 폼 제출 동작 방지
 
-    function submitForm() {
-        const form = document.getElementById('createProblemForm');
-        const formData = new FormData(form);
-
+        const formData = new FormData(this);
         const data = {
-            title: '',
-            algorithms: '',
-            explanation: '',
-            input_explanation: '',
-            output_explanation: '',
-            memory: 0,
-            level: 0,
+            title: formData.get('title'),
+            algorithms: Array.from(formData.getAll('algorithms')).join(', '),
+            explanation: formData.get('explanation'),
+            input_explanation: formData.get('input_explanation'),
+            output_explanation: formData.get('output_explanation'),
+            memory: formData.get('memory'),
+            runtime: {
+                cpp: formData.get('runtime[c++]'),
+                java: formData.get('runtime[java]'),
+                python: formData.get('runtime[python]')
+            },
+            level: formData.get('level'),
             example_inout: [],
             testcase: []
         };
 
-        formData.forEach((value, key) => {
-            if (key.startsWith('example_inout')) {
-                const index = key.match(/\d+/)[0];
-                if (!data.example_inout[index]) data.example_inout[index] = {};
-                const field = key.split('.').pop();
-                data.example_inout[index][field] = value instanceof File ? value.name : value.toString();
-            } else if (key.startsWith('testcase')) {
-                const index = key.match(/\d+/)[0];
-                if (!data.testcase[index]) data.testcase[index] = {};
-                const field = key.split('.').pop();
-                data.testcase[index][field] = value instanceof File ? value.name : value.toString();
-            } else {
-                // Handle other form fields
-                data[key] = value instanceof File ? value.name : value.toString();
+        // Process example_inout data
+        const exampleInOutElements = document.querySelectorAll('#example_inout_container .example-inout');
+        exampleInOutElements.forEach((element) => {
+            const input = element.querySelector('textarea[name$="[input]"]').value.trim();
+            const output = element.querySelector('textarea[name$="[output]"]').value.trim();
+            if (input || output) {
+                data.example_inout.push({ input, output });
             }
         });
 
+        // Process testcase data
+        const testcaseElements = document.querySelectorAll('#testcase_container .testcase');
+        testcaseElements.forEach((element) => {
+            const input = element.querySelector('textarea[name$="[input]"]').value.trim();
+            const output = element.querySelector('textarea[name$="[output]"]').value.trim();
+            if (input || output) {
+                data.testcase.push({ input, output });
+            }
+        });
+
+        // Display JSON data
+        document.getElementById('jsonOutputText').textContent = JSON.stringify(data, null, 2);
+
+        // Optionally send data to server
         fetch('/problem', {
             method: 'POST',
             headers: {
@@ -170,22 +219,17 @@
         })
             .then(response => {
                 if (response.ok) {
-                    return response.json().then(data => {
-                        alert("문제 생성이 성공적으로 완료되었습니다.");
-                        window.location.href = '/'; // Redirect to main page or another page
-                    });
+                    alert('문제가 성공적으로 생성되었습니다!');
                 } else {
-                    return response.json().then(data => {
-                        alert("문제 생성에 실패하였습니다: " + (data.error || '알 수 없는 오류가 발생했습니다.'));
+                    return response.text().then(text => {
+                        alert('문제 생성에 실패하였습니다: ' + text);
                     });
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert("문제 생성 중 오류가 발생하였습니다.");
+                alert('문제 생성 중 오류가 발생하였습니다: ' + error);
             });
-    }
+    });
 </script>
-
 </body>
 </html>
