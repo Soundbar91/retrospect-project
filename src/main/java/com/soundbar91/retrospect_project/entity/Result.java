@@ -41,15 +41,15 @@ public class Result {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String code;
 
-    @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime submit_at;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "problem_id")
+    @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
 
     @Builder
@@ -65,7 +65,4 @@ public class Result {
         this.problem = problem;
     }
 
-    public void deleteUser() {
-        this.user = null;
-    }
 }

@@ -10,5 +10,4 @@ import java.util.List;
 
 public interface ResultRepository extends JpaRepository<Result, Long> {
     List<Result> getByProblemAndUserAndGrade(Problem problem, User user, Grade grade);
-    List<Result> getByUser(User user);
 }

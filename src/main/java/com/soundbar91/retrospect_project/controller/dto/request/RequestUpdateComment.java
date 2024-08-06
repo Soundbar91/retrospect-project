@@ -1,6 +1,5 @@
 package com.soundbar91.retrospect_project.controller.dto.request;
 
-
 import jakarta.validation.constraints.NotBlank;
 
 public record RequestUpdateComment(

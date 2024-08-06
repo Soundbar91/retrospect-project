@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -80,8 +79,8 @@ public class Problem {
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "problem", fetch = LAZY)
@@ -120,10 +119,6 @@ public class Problem {
         this.submit++;
         if (answer) this.answer++;
         if (!duplicate) this.correct++;
-    }
-
-    public void deleteUser() {
-        this.user = null;
     }
 
 }

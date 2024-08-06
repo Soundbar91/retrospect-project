@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -35,22 +34,25 @@ public class Post {
     @Column(nullable = false)
     private Category category;
 
-    @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime create_at;
 
-    @Column(insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "post", fetch = EAGER, orphanRemoval = true, cascade = ALL)
-    private List<Comment> comment = new ArrayList<>();
-
-    @ManyToOne(fetch = EAGER)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "problem_id", nullable = false)
     private Problem problem;
+
+    @OneToMany(mappedBy = "post", fetch = LAZY, orphanRemoval = true)
+    private List<Comment> comment = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", fetch = LAZY, orphanRemoval = true)
+    private List<PostLike> likes = new ArrayList<>();
 
     @Builder
     public Post(String title, String content, Category category, User user, Problem problem) {
@@ -65,10 +67,6 @@ public class Post {
         this.title = requestUpdatePost.title();
         this.content = requestUpdatePost.context();
         this.category = requestUpdatePost.category();
-    }
-
-    public void deleteUser() {
-        this.user = null;
     }
 
 }

@@ -3,30 +3,25 @@ package com.soundbar91.retrospect_project.service;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
-import com.soundbar91.retrospect_project.entity.*;
+import com.soundbar91.retrospect_project.entity.User;
 import com.soundbar91.retrospect_project.exception.ApplicationException;
-import com.soundbar91.retrospect_project.repository.*;
+import com.soundbar91.retrospect_project.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static com.soundbar91.retrospect_project.exception.errorCode.AuthErrorCode.DUPLICATE_EMAIL;
 import static com.soundbar91.retrospect_project.exception.errorCode.AuthErrorCode.DUPLICATE_USERNAME;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.WITHDREW_USER;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ProblemRepository problemRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
-    private final ResultRepository resultRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -55,16 +50,19 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
+        if (!user.isActive()) throw new ApplicationException(WITHDREW_USER);
+
         return ResponseUser.from(user);
     }
 
     @Transactional
     public void deleteUser(HttpServletRequest httpServletRequest) {
         Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
-        User user = userRepository.findById(id).orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+        userRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER))
+                .deactivate();
 
-        removeUserAssociations(user);
-        userRepository.delete(user);
+        userRepository.flush();
     }
 
     private void checkUserDuplicate(RequestCreateUser requestCreateUser) {
@@ -73,20 +71,6 @@ public class UserService {
 
         userRepository.findByEmail(requestCreateUser.email())
                 .ifPresent(e -> {throw new ApplicationException(DUPLICATE_EMAIL);});
-    }
-
-    private void removeUserAssociations(User user) {
-        List<Problem> problemList = problemRepository.getByUser(user);
-        for (Problem problem : problemList) problem.deleteUser();
-
-        List<Post> postList = postRepository.getByUser(user);
-        for (Post post : postList) post.deleteUser();
-
-        List<Comment> commentList = commentRepository.getByUser(user);
-        for (Comment comment : commentList) comment.deleteUser();
-
-        List<Result> resultList = resultRepository.getByUser(user);
-        for (Result result : resultList) result.deleteUser();
     }
 
 }
