@@ -1,19 +1,15 @@
 package com.soundbar91.retrospect_project.controller;
 
-import com.soundbar91.retrospect_project.service.AuthService;
-import com.soundbar91.retrospect_project.service.UserService;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
-import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
+import com.soundbar91.retrospect_project.service.AuthService;
+import com.soundbar91.retrospect_project.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor

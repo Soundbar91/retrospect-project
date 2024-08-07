@@ -75,6 +75,14 @@ public class ProblemService {
         return query.getResultList().stream().map(ResponseProblem::from).toList();
     }
 
+    public List<ResponseProblem> getProblemsByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+
+        List<Problem> problems = problemRepository.findByUser(user);
+        return problems.stream().map(ResponseProblem::from).toList();
+    }
+
     public List<Map<String, Object>> getTestcase(
         Long problemId, HttpServletRequest httpServletRequest
     ) {

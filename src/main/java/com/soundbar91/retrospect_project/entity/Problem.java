@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -66,10 +65,6 @@ public class Problem {
     @ColumnDefault("0")
     private int answer;
 
-    @Column(insertable = false)
-    @ColumnDefault("0")
-    private int correct;
-
     @Type(JsonType.class)
     @Column(nullable = false, columnDefinition = "json")
     private List<Map<String, Object>> example_inout;
@@ -80,8 +75,8 @@ public class Problem {
     @Column(insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime modify_at;
 
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "problem", fetch = LAZY)
@@ -114,16 +109,9 @@ public class Problem {
         this.example_inout = updateProblem.example_inout();
     }
 
-    /*correct : 최초 맞은 사람 횟수
-    * answer : 코드 제출 후 정답을 맞은 사람 횟수*/
-    public void updateSubmitInfo(boolean answer, boolean duplicate) {
+    public void updateSubmitInfo(boolean answer) {
         this.submit++;
         if (answer) this.answer++;
-        if (!duplicate) this.correct++;
-    }
-
-    public void deleteUser() {
-        this.user = null;
     }
 
 }

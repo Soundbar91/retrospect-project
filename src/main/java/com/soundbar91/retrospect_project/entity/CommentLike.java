@@ -3,7 +3,7 @@ package com.soundbar91.retrospect_project.entity;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.FetchType.EAGER;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -16,12 +16,12 @@ public class CommentLike {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = EAGER)
-    @JoinColumn(name = "comment_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
     public CommentLike(User user, Comment comment) {
