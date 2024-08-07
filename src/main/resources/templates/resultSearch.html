@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Results</h1>
+
+    <!-- Filters -->
+    <div class="mb-3">
+        <h4>Filter Results</h4>
+        <form id="filter-form">
+            <div class="row">
+                <div class="col-md-3">
+                    <label for="grade" class="form-label">결과</label>
+                    <select id="grade" class="form-select">
+                        <option value="">모두</option>
+                        <option value="CORRECT">정답</option>
+                        <option value="INCORRECT">오답</option>
+                        <option value="COMPILER_ERROR">컴파일 에러</option>
+                        <option value="RUNTIME_ERROR">런타임 에러</option>
+                        <option value="TIME_ACCESS">시간 초과</option>
+                        <option value="MEMORY_ACCESS">메모리 초과</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="language" class="form-label">언어</label>
+                    <select id="language" class="form-select">
+                        <option value="">모두</option>
+                        <option value="CPP">C++</option>
+                        <option value="Java">Java</option>
+                        <option value="Python">Python</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="username" class="form-label">유저이름</label>
+                    <input type="text" id="username" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label for="problemId" class="form-label">문제 번호</label>
+                    <input type="number" id="problemId" class="form-control">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary mt-3" onclick="fetchResults()">적용하기</button>
+        </form>
+    </div>
+
+    <!-- Results Table -->
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th>제출번호</th>
+            <th>문제 번호</th>
+            <th>제출자</th>
+            <th>결과</th>
+            <th>메모리</th>
+            <th>실행시간</th>
+            <th>언어</th>
+            <th>코드 길이</th>
+            <th>제출 시간</th>
+        </tr>
+        </thead>
+        <tbody id="resultsTableBody">
+        <!-- Results will be inserted here -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Modal for Result Details -->
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultModalLabel">제출 내용</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <pre id="resultCode" style="white-space: pre-wrap;"></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to fetch results from the API
+    function fetchResults(grade = '', language = '', username = '', problemId = '') {
+        // Construct the query string with the filters
+        const queryParams = [];
+
+        if (grade) queryParams.push(`grade=${encodeURIComponent(grade)}`);
+        if (language) queryParams.push(`language=${encodeURIComponent(language)}`);
+        if (username) queryParams.push(`username=${encodeURIComponent(username)}`);
+        if (problemId) queryParams.push(`problemId=${encodeURIComponent(problemId)}`);
+
+        const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+
+        fetch(`/results${queryString}`)
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data);
+            })
+            .catch(error => {
+                console.error('Error fetching results:', error);
+            });
+    }
+
+    // Function to display results in the table
+    function displayResults(results) {
+        const tableBody = document.getElementById('resultsTableBody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        results.forEach(result => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td><a href="#" onclick="showResultDetails(${result.id})">${result.id}</a></td>
+            <td>${result.problemId}</td>
+            <td>${result.username}</td>
+            <td>${result.grade}</td>
+            <td>${result.memory}</td>
+            <td>${result.runtime}</td>
+            <td>${result.language}</td>
+            <td>${result.codeLength}</td>
+            <td>${new Date(result.submit_at).toLocaleString()}</td>
+        `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Function to show result details in a modal
+    function showResultDetails(resultId) {
+        fetch(`/result/${resultId}`)
+            .then(response => response.json())
+            .then(data => {
+                const codePre = document.getElementById('resultCode');
+                let highlightedCode = '';
+
+                switch (data.language) {
+                    case 'CPP':
+                        highlightedCode = `<pre style="color: #0074D9;">${data.code}</pre>`;
+                        break;
+                    case 'JAVA':
+                        highlightedCode = `<pre style="color: #FF4136;">${data.code}</pre>`;
+                        break;
+                    case 'PYTHON':
+                        highlightedCode = `<pre style="color: #2ECC40;">${data.code}</pre>`;
+                        break;
+                    default:
+                        highlightedCode = `<pre>${data.code}</pre>`;
+                }
+
+                codePre.innerHTML = highlightedCode;
+                const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+                resultModal.show();
+            })
+            .catch(error => {
+                console.error('Error fetching result details:', error);
+            });
+    }
+
+    // Initial fetch when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchResults(); // 기본 검색 조건으로 결과 리스트 로드
+    });
+
+    // 필터 폼 제출 시 API 호출
+    document.getElementById('filter-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        // 입력 값 유효성 검사
+        const grade = document.getElementById('grade').value || ''; // 기본값 빈 문자열
+        const language = document.getElementById('language').value || ''; // 기본값 빈 문자열
+        const username = document.getElementById('username').value || ''; // 기본값 빈 문자열
+        const problemId = document.getElementById('problemId').value || ''; // 기본값 빈 문자열
+
+        fetchResults(grade, language, username, problemId);
+    });
+</script>
+</body>
+</html>

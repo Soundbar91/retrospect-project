@@ -202,9 +202,6 @@
             }
         });
 
-        // Display JSON data
-        document.getElementById('jsonOutputText').textContent = JSON.stringify(data, null, 2);
-
         // Optionally send data to server
         fetch('/problem', {
             method: 'POST',
