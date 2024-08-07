@@ -12,8 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.soundbar91.retrospect_project.exception.errorCode.AuthErrorCode.DUPLICATE_EMAIL;
-import static com.soundbar91.retrospect_project.exception.errorCode.AuthErrorCode.DUPLICATE_USERNAME;
+import static com.soundbar91.retrospect_project.exception.errorCode.AuthErrorCode.*;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.WITHDREW_USER;
 
@@ -40,8 +39,10 @@ public class UserService {
         Long id = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-        String newPassword = passwordEncoder.encode(requestPasswordChange.password());
+        if (!passwordEncoder.matches(requestPasswordChange.curPassword(), user.getPassword()))
+            throw new ApplicationException(NOT_MATCH_PASSWORD);
 
+        String newPassword = passwordEncoder.encode(requestPasswordChange.newPassword());
         user.changePassword(newPassword);
         userRepository.flush();
     }
