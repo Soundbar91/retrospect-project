@@ -9,4 +9,5 @@ import java.util.List;
 
 @Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
+    List<Problem> findByUser(User user);
 }

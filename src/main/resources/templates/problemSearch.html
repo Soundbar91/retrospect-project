@@ -103,7 +103,7 @@
                 container.innerHTML = '';
 
                 if (data.length === 0) {
-                    container.innerHTML = '<p>문제를 찾을 수 없습니다.</p>';
+                    container.innerHTML = '<p>검색된 문제가 없습니다.</p>';
                     return;
                 }
 
@@ -116,14 +116,12 @@
                                 <th>난이도</th>
                                 <th>제출 횟수</th>
                                 <th>정답 횟수</th>
-                                <th>정답률</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
 
                 data.forEach(problem => {
-                    const correctPercentage = (problem.answer / problem.submit * 100).toFixed(2);
 
                     table += `
                         <tr>
@@ -132,7 +130,6 @@
                             <td>${problem.level}</td>
                             <td>${problem.submit}</td>
                             <td>${problem.answer}</td>
-                            <td>${correctPercentage}%</td>
                         </tr>
                     `;
                 });

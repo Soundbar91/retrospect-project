@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,16 +44,16 @@ public class PageController {
         return "main";
     }
 
-    @GetMapping("/problemList")
-    public String problemList() {
-        return "problemList";
+    @GetMapping("/problem/search")
+    public String problemSearch() {
+        return "problemSearch";
     }
 
     @GetMapping("/problem/detail/{problemId}")
     public String problemDetail(
             @PathVariable("problemId") Long problemId,
             Model model
-    ) throws IOException {
+    ) {
         ResponseProblem problem = problemService.getProblem(problemId);
         model.addAttribute("problem", problem);
         return "problem";
@@ -63,17 +65,34 @@ public class PageController {
         return "submit";
     }
 
-    @GetMapping("/editor")
+    @GetMapping("/problem/maker")
     public String editor() {
-        return "editor";
+        return "maker";
     }
 
     @GetMapping("/mypage")
     public String myPage(HttpServletRequest httpServletRequest, Model model) {
         String username = (String) httpServletRequest.getSession().getAttribute("username");
         ResponseUser user = userService.getUser(username);
+        List<ResponseProblem> problems = problemService.getProblemsByUsername(username);
+
         model.addAttribute("user", user);
+        model.addAttribute("problems", problems);
         return "myPage";
+    }
+
+    @GetMapping("/problem/{problemId}/editor")
+    public String editor(
+            @PathVariable(value = "problemId") Long problemId,
+            HttpServletRequest httpServletRequest,
+            Model model
+    ) {
+        ResponseProblem problem = problemService.getProblem(problemId);
+        List<Map<String, Object>> testcase = problemService.getTestcase(problemId, httpServletRequest);
+
+        model.addAttribute("problem", problem);
+        model.addAttribute("testcase", testcase);
+        return "editor";
     }
 
 }

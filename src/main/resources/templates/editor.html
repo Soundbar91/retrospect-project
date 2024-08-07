@@ -1,235 +1,243 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문제 생성 폼</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .form-group button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .dynamic-fields {
-            margin-top: 10px;
-        }
-        .dynamic-fields div {
-            margin-bottom: 10px;
-        }
-        .dynamic-fields button {
-            background-color: #28a745;
-        }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .checkbox-group label {
-            margin-right: 15px;
-        }
-        #jsonOutput {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: #f9f9f9;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>문제 만들기</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
-<h1>문제 생성 폼</h1>
-<form id="problemForm">
-    <div class="form-group">
-        <label for="title">문제 제목:</label>
-        <input type="text" id="title" name="title" required maxlength="100">
+<div class="container">
+  <h1 class="mt-5">문제 만들기</h1>
+
+  <!-- Problem Edit Form -->
+  <form id="problemForm" onsubmit="return submitForm()">
+    <!-- Hidden input for problem ID -->
+    <input type="hidden" id="problemId" th:value="${problem.id}" />
+
+    <!-- Problem Details -->
+    <div class="mb-3">
+      <label for="title" class="form-label">제목</label>
+      <input type="text" class="form-control" id="title" name="title" th:value="${problem.title}" required>
+    </div>
+    <div class="mb-3">
+      <label>알고리즘 분류</label>
+      <div class="checkbox-group">
+        <!-- Iterate through possible algorithm categories and check if they are in the problem's algorithms -->
+        <label><input type="checkbox" name="algorithms" value="기하" th:checked="${problem.algorithms.contains('기하')}"> 기하</label>
+        <label><input type="checkbox" name="algorithms" value="구현" th:checked="${problem.algorithms.contains('구현')}"> 구현</label>
+        <label><input type="checkbox" name="algorithms" value="그리디" th:checked="${problem.algorithms.contains('그리디')}"> 그리디</label>
+        <label><input type="checkbox" name="algorithms" value="문자열" th:checked="${problem.algorithms.contains('문자열')}"> 문자열</label>
+        <label><input type="checkbox" name="algorithms" value="자료구조" th:checked="${problem.algorithms.contains('자료구조')}"> 자료구조</label>
+        <label><input type="checkbox" name="algorithms" value="그래프" th:checked="${problem.algorithms.contains('그래프')}"> 그래프</label>
+        <label><input type="checkbox" name="algorithms" value="다이나믹 프로그래밍" th:checked="${problem.algorithms.contains('다이나믹 프로그래밍')}"> 다이나믹 프로그래밍</label>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="explanation" class="form-label">문제 설명</label>
+      <textarea class="form-control" id="explanation" name="explanation" rows="4" required th:text="${problem.explanation}"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="input_explanation" class="form-label">입력 설명</label>
+      <textarea class="form-control" id="input_explanation" name="input_explanation" rows="3" required th:text="${problem.input_explanation}"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="output_explanation" class="form-label">출력 설명</label>
+      <textarea class="form-control" id="output_explanation" name="output_explanation" rows="3" required th:text="${problem.output_explanation}"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="memory" class="form-label">메모리 제한 (MB)</label>
+      <input type="number" class="form-control" id="memory" name="memory" th:value="${problem.memory}" required min="0">
     </div>
     <div class="form-group">
-        <label>알고리즘 분류:</label>
-        <div class="checkbox-group">
-            <label><input type="checkbox" name="algorithms" value="기하"> 기하</label>
-            <label><input type="checkbox" name="algorithms" value="구현"> 구현</label>
-            <label><input type="checkbox" name="algorithms" value="그리디"> 그리디</label>
-            <label><input type="checkbox" name="algorithms" value="문자열"> 문자열</label>
-            <label><input type="checkbox" name="algorithms" value="자료구조"> 자료구조</label>
-            <label><input type="checkbox" name="algorithms" value="그래프"> 그래프</label>
-            <label><input type="checkbox" name="algorithms" value="다이나믹 프로그래밍"> 다이나믹 프로그래밍</label>
+      <label for="runtime">제한 시간 (ms)</label>
+      <div id="runtimeContainer">
+        <div>
+          <label for="runtime_cpp">C++:</label>
+          <input type="number" id="runtime_cpp" name="runtime[c++]" th:value="${problem.runtime['cpp']}" required min="1">
         </div>
-    </div>
-    <div class="form-group">
-        <label for="explanation">문제 설명:</label>
-        <textarea id="explanation" name="explanation" rows="4" required></textarea>
-    </div>
-    <div class="form-group">
-        <label for="input_explanation">문제 입력 설명:</label>
-        <textarea id="input_explanation" name="input_explanation" rows="4" required></textarea>
-    </div>
-    <div class="form-group">
-        <label for="output_explanation">문제 출력 설명:</label>
-        <textarea id="output_explanation" name="output_explanation" rows="4" required></textarea>
-    </div>
-    <div class="form-group">
-        <label for="memory">메모리 제한 (MB):</label>
-        <input type="number" id="memory" name="memory" required min="1">
-    </div>
-    <div class="form-group">
-        <label for="runtime">제한 시간 (밀리초) - C++, 자바, 파이썬:</label>
-        <div id="runtimeContainer">
-            <div>
-                <label for="runtime_cpp">C++:</label>
-                <input type="number" id="runtime_cpp" name="runtime[c++]" required min="1">
-            </div>
-            <div>
-                <label for="runtime_java">자바:</label>
-                <input type="number" id="runtime_java" name="runtime[java]" required min="1">
-            </div>
-            <div>
-                <label for="runtime_python">파이썬:</label>
-                <input type="number" id="runtime_python" name="runtime[python]" required min="1">
-            </div>
+        <div>
+          <label for="runtime_java">자바:</label>
+          <input type="number" id="runtime_java" name="runtime[java]" th:value="${problem.runtime['java']}" required min="1">
         </div>
-    </div>
-    <div class="form-group">
-        <label for="level">난이도 (1-10):</label>
-        <input type="number" id="level" name="level" required min="1" max="10">
-    </div>
-    <div class="form-group dynamic-fields">
-        <label>예제 입출력:</label>
-        <div id="example_inout_container">
-            <div class="example-inout">
-                <textarea name="example_inout[0][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="example_inout[0][output]" placeholder="출력" rows="2"></textarea>
-            </div>
+        <div>
+          <label for="runtime_python">파이썬:</label>
+          <input type="number" id="runtime_python" name="runtime[python]" th:value="${problem.runtime['python']}" required min="1">
         </div>
-        <button type="button" onclick="addExampleInOut()">+ 예제 추가</button>
+      </div>
     </div>
-    <div class="form-group dynamic-fields">
-        <label>테스트 케이스:</label>
-        <div id="testcase_container">
-            <div class="testcase">
-                <textarea name="testcase[0][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="testcase[0][output]" placeholder="출력" rows="2"></textarea>
-            </div>
-        </div>
-        <button type="button" onclick="addTestCase()">+ 테스트 케이스 추가</button>
+    <div class="mb-3">
+      <label for="level" class="form-label">난이도</label>
+      <input type="number" class="form-control" id="level" name="level" th:value="${problem.level}" required min="1" max="10">
     </div>
-    <div class="form-group">
-        <button type="submit">문제 제출</button>
+
+    <!-- Example Input/Output -->
+    <div class="mb-5">
+      <h2>예제 입출력</h2>
+      <table class="table table-striped mt-3" id="exampleInoutTable">
+        <thead>
+        <tr>
+          <th>예제 입력</th>
+          <th>예제 출력</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="example, iterStat : ${problem.example_inout}">
+          <td>
+            <textarea class="form-control" name="example_inout_input" rows="2" th:text="${example['input']}"></textarea>
+          </td>
+          <td>
+            <textarea class="form-control" name="example_inout_output" rows="2" th:text="${example['output']}"></textarea>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <button type="button" class="btn btn-success mt-3" id="addExampleInout">예제 입출력 추가</button>
     </div>
-</form>
-<div id="jsonOutput">
-    <h2>생성된 JSON 데이터:</h2>
-    <pre id="jsonOutputText"></pre>
+
+    <!-- Test Cases Section -->
+    <div class="mt-5">
+      <h2>테스트 케이스</h2>
+      <table class="table table-striped mt-3" id="testcaseTable">
+        <thead>
+        <tr>
+          <th>입력</th>
+          <th>출력</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tc : ${testcase}">
+          <td>
+            <textarea class="form-control" name="testcase_input" rows="2" th:text="${tc['input']}"></textarea>
+          </td>
+          <td>
+            <textarea class="form-control" name="testcase_output" rows="2" th:text="${tc['output']}"></textarea>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <button type="button" class="btn btn-success mt-3" id="addTestcase">테스트 케이스 추가</button>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-5">수정하기</button>
+  </form>
 </div>
+
+<!-- Bootstrap JS and custom script to add new rows -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    let exampleInOutCount = 1;
-    let testcaseCount = 1;
+  // Add new Example Input/Output
+  document.getElementById('addExampleInout').addEventListener('click', function () {
+    const table = document.getElementById('exampleInoutTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+    const newCellInput = newRow.insertCell(0);
+    const newCellOutput = newRow.insertCell(1);
 
-    function addExampleInOut() {
-        const container = document.getElementById('example_inout_container');
-        const newExampleInOut = document.createElement('div');
-        newExampleInOut.classList.add('example-inout');
-        newExampleInOut.innerHTML = `
-                <textarea name="example_inout[${exampleInOutCount}][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="example_inout[${exampleInOutCount}][output]" placeholder="출력" rows="2"></textarea>
-            `;
-        container.appendChild(newExampleInOut);
-        exampleInOutCount++;
+    newCellInput.innerHTML = '<textarea class="form-control" name="example_inout_input" rows="2"></textarea>';
+    newCellOutput.innerHTML = '<textarea class="form-control" name="example_inout_output" rows="2"></textarea>';
+  });
+
+  // Add new Test Case
+  document.getElementById('addTestcase').addEventListener('click', function () {
+    const table = document.getElementById('testcaseTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+    const newCellInput = newRow.insertCell(0);
+    const newCellOutput = newRow.insertCell(1);
+
+    newCellInput.innerHTML = '<textarea class="form-control" name="testcase_input" rows="2"></textarea>';
+    newCellOutput.innerHTML = '<textarea class="form-control" name="testcase_output" rows="2"></textarea>';
+  });
+
+  // Form submission handler
+  function submitForm() {
+    // Collect form data
+    const problemId = document.getElementById('problemId').value;
+    const title = document.getElementById('title').value;
+
+    // Collect selected algorithms and join them into a comma-separated string
+    const algorithms = Array.from(document.querySelectorAll('input[name="algorithms"]:checked'))
+            .map(checkbox => checkbox.value)
+            .join(',');
+
+    const explanation = document.getElementById('explanation').value;
+    const inputExplanation = document.getElementById('input_explanation').value;
+    const outputExplanation = document.getElementById('output_explanation').value;
+    const memory = parseInt(document.getElementById('memory').value);
+    const level = parseInt(document.getElementById('level').value);
+
+    // Validate memory and level
+    if (memory < 0) {
+      alert('Memory limit must be a non-negative number.');
+      return false;
+    }
+    if (level < 1 || level > 10) {
+      alert('Level must be between 1 and 10.');
+      return false;
     }
 
-    function addTestCase() {
-        const container = document.getElementById('testcase_container');
-        const newTestCase = document.createElement('div');
-        newTestCase.classList.add('testcase');
-        newTestCase.innerHTML = `
-                <textarea name="testcase[${testcaseCount}][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="testcase[${testcaseCount}][output]" placeholder="출력" rows="2"></textarea>
-            `;
-        container.appendChild(newTestCase);
-        testcaseCount++;
+    const runtime = {
+      'c++': parseInt(document.getElementById('runtime_cpp').value),
+      'java': parseInt(document.getElementById('runtime_java').value),
+      'python': parseInt(document.getElementById('runtime_python').value)
+    };
+
+    // Collect example input/output data
+    const exampleInout = [];
+    const exampleInputs = document.getElementsByName('example_inout_input');
+    const exampleOutputs = document.getElementsByName('example_inout_output');
+    for (let i = 0; i < exampleInputs.length; i++) {
+      exampleInout.push({
+        input: exampleInputs[i].value,
+        output: exampleOutputs[i].value
+      });
     }
 
-    document.getElementById('problemForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // 기본 폼 제출 동작 방지
+    // Collect test case data
+    const testCases = [];
+    const testcaseInputs = document.getElementsByName('testcase_input');
+    const testcaseOutputs = document.getElementsByName('testcase_output');
+    for (let i = 0; i < testcaseInputs.length; i++) {
+      testCases.push({
+        input: testcaseInputs[i].value,
+        output: testcaseOutputs[i].value
+      });
+    }
 
-        const formData = new FormData(this);
-        const data = {
-            title: formData.get('title'),
-            algorithms: Array.from(formData.getAll('algorithms')).join(', '),
-            explanation: formData.get('explanation'),
-            input_explanation: formData.get('input_explanation'),
-            output_explanation: formData.get('output_explanation'),
-            memory: formData.get('memory'),
-            runtime: {
-                cpp: formData.get('runtime[c++]'),
-                java: formData.get('runtime[java]'),
-                python: formData.get('runtime[python]')
-            },
-            level: formData.get('level'),
-            example_inout: [],
-            testcase: []
-        };
+    // Construct JSON payload
+    const data = {
+      title: title,
+      algorithms: algorithms, // Use the comma-separated string
+      explanation: explanation,
+      input_explanation: inputExplanation,
+      output_explanation: outputExplanation,
+      memory: memory,
+      runtime: runtime,
+      level: level,
+      example_inout: exampleInout,
+      testcase: testCases
+    };
 
-        // Process example_inout data
-        const exampleInOutElements = document.querySelectorAll('#example_inout_container .example-inout');
-        exampleInOutElements.forEach((element) => {
-            const input = element.querySelector('textarea[name$="[input]"]').value.trim();
-            const output = element.querySelector('textarea[name$="[output]"]').value.trim();
-            if (input || output) {
-                data.example_inout.push({ input, output });
-            }
-        });
-
-        // Process testcase data
-        const testcaseElements = document.querySelectorAll('#testcase_container .testcase');
-        testcaseElements.forEach((element) => {
-            const input = element.querySelector('textarea[name$="[input]"]').value.trim();
-            const output = element.querySelector('textarea[name$="[output]"]').value.trim();
-            if (input || output) {
-                data.testcase.push({ input, output });
-            }
-        });
-
-        // Display JSON data
-        document.getElementById('jsonOutputText').textContent = JSON.stringify(data, null, 2);
-
-        // Optionally send data to server
-        fetch('/problem', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('문제가 성공적으로 생성되었습니다!');
-                } else {
-                    return response.text().then(text => {
-                        alert('문제 생성에 실패하였습니다: ' + text);
-                    });
-                }
-            })
-            .catch(error => {
-                alert('문제 생성 중 오류가 발생하였습니다: ' + error);
-            });
+    // Send data to server
+    fetch(`/problem/${problemId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(response => {
+      if (response.ok) {
+        alert('문제 업데이트를 성공했습니다.');
+        window.history.back();
+      } else {
+        alert('문제 업데이트를 실패했습니다.');
+      }
+    }).catch(error => {
+      console.error('Error:', error);
+      alert('에러가 발생했습니다.');
     });
+
+    // Prevent form from submitting the traditional way
+    return false;
+  }
 </script>
 </body>
 </html>
