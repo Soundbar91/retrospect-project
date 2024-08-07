@@ -95,4 +95,9 @@ public class PageController {
         return "editor";
     }
 
+    @GetMapping("/result/search")
+    public String resultSearch() {
+        return "resultSearch";
+    }
+
 }

@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 public record ResponseResult(
         Long id,
+        Long problemId,
+        String username,
         String grade,
         int memory,
         int runtime,
@@ -20,6 +22,8 @@ public record ResponseResult(
     public static ResponseResult from(Result result) {
         return new ResponseResult(
                 result.getId(),
+                result.getProblem().getId(),
+                result.getUser().getUsername(),
                 result.getGrade().getName(),
                 result.getMemory(),
                 result.getRuntime(),
