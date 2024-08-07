@@ -65,10 +65,6 @@ public class Problem {
     @ColumnDefault("0")
     private int answer;
 
-    @Column(insertable = false)
-    @ColumnDefault("0")
-    private int correct;
-
     @Type(JsonType.class)
     @Column(nullable = false, columnDefinition = "json")
     private List<Map<String, Object>> example_inout;
@@ -113,12 +109,9 @@ public class Problem {
         this.example_inout = updateProblem.example_inout();
     }
 
-    /*correct : 최초 맞은 사람 횟수
-    * answer : 코드 제출 후 정답을 맞은 사람 횟수*/
-    public void updateSubmitInfo(boolean answer, boolean duplicate) {
+    public void updateSubmitInfo(boolean answer) {
         this.submit++;
         if (answer) this.answer++;
-        if (!duplicate) this.correct++;
     }
 
 }

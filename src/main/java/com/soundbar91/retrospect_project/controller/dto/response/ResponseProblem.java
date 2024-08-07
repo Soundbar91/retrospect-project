@@ -18,7 +18,6 @@ public record ResponseProblem(
         int level,
         int submit,
         int answer,
-        int correct,
         List<Map<String, Object>> example_inout
 ) {
     public static ResponseProblem from(Problem problem) {
@@ -35,7 +34,6 @@ public record ResponseProblem(
                 problem.getLevel(),
                 problem.getSubmit(),
                 problem.getAnswer(),
-                problem.getCorrect(),
                 problem.getExample_inout()
         );
     }
