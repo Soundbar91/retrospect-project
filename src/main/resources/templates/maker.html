@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>문제 생성 폼</title>
+    <title>문제 만들기</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,14 +54,14 @@
     </style>
 </head>
 <body>
-<h1>문제 생성 폼</h1>
+<h1>문제 만들기</h1>
 <form id="problemForm">
     <div class="form-group">
-        <label for="title">문제 제목:</label>
+        <label for="title">문제 제목</label>
         <input type="text" id="title" name="title" required maxlength="100">
     </div>
     <div class="form-group">
-        <label>알고리즘 분류:</label>
+        <label>알고리즘 분류</label>
         <div class="checkbox-group">
             <label><input type="checkbox" name="algorithms" value="기하"> 기하</label>
             <label><input type="checkbox" name="algorithms" value="구현"> 구현</label>
@@ -73,23 +73,23 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="explanation">문제 설명:</label>
+        <label for="explanation">문제 설명</label>
         <textarea id="explanation" name="explanation" rows="4" required></textarea>
     </div>
     <div class="form-group">
-        <label for="input_explanation">문제 입력 설명:</label>
+        <label for="input_explanation">문제 입력 설명</label>
         <textarea id="input_explanation" name="input_explanation" rows="4" required></textarea>
     </div>
     <div class="form-group">
-        <label for="output_explanation">문제 출력 설명:</label>
+        <label for="output_explanation">문제 출력 설명</label>
         <textarea id="output_explanation" name="output_explanation" rows="4" required></textarea>
     </div>
     <div class="form-group">
-        <label for="memory">메모리 제한 (MB):</label>
+        <label for="memory">메모리 제한 (MB)</label>
         <input type="number" id="memory" name="memory" required min="1">
     </div>
     <div class="form-group">
-        <label for="runtime">제한 시간 (밀리초) - C++, 자바, 파이썬:</label>
+        <label for="runtime">제한 시간 (ms)</label>
         <div id="runtimeContainer">
             <div>
                 <label for="runtime_cpp">C++:</label>
@@ -106,11 +106,11 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="level">난이도 (1-10):</label>
+        <label for="level">난이도</label>
         <input type="number" id="level" name="level" required min="1" max="10">
     </div>
     <div class="form-group dynamic-fields">
-        <label>예제 입출력:</label>
+        <label>예제 입출력</label>
         <div id="example_inout_container">
             <div class="example-inout">
                 <textarea name="example_inout[0][input]" placeholder="입력" rows="2"></textarea>
@@ -120,7 +120,7 @@
         <button type="button" onclick="addExampleInOut()">+ 예제 추가</button>
     </div>
     <div class="form-group dynamic-fields">
-        <label>테스트 케이스:</label>
+        <label>테스트 케이스</label>
         <div id="testcase_container">
             <div class="testcase">
                 <textarea name="testcase[0][input]" placeholder="입력" rows="2"></textarea>
@@ -130,13 +130,9 @@
         <button type="button" onclick="addTestCase()">+ 테스트 케이스 추가</button>
     </div>
     <div class="form-group">
-        <button type="submit">문제 제출</button>
+        <button type="submit">문제 만들기</button>
     </div>
 </form>
-<div id="jsonOutput">
-    <h2>생성된 JSON 데이터:</h2>
-    <pre id="jsonOutputText"></pre>
-</div>
 <script>
     let exampleInOutCount = 1;
     let testcaseCount = 1;

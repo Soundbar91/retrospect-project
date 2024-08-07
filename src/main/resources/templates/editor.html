@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Problem Editor</title>
+  <title>문제 만들기</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-  <h1 class="mt-5">Problem Editor</h1>
+  <h1 class="mt-5">문제 만들기</h1>
 
   <!-- Problem Edit Form -->
   <form id="problemForm" onsubmit="return submitForm()">
@@ -16,11 +16,11 @@
 
     <!-- Problem Details -->
     <div class="mb-3">
-      <label for="title" class="form-label">Title</label>
+      <label for="title" class="form-label">제목</label>
       <input type="text" class="form-control" id="title" name="title" th:value="${problem.title}" required>
     </div>
     <div class="mb-3">
-      <label>알고리즘 분류:</label>
+      <label>알고리즘 분류</label>
       <div class="checkbox-group">
         <!-- Iterate through possible algorithm categories and check if they are in the problem's algorithms -->
         <label><input type="checkbox" name="algorithms" value="기하" th:checked="${problem.algorithms.contains('기하')}"> 기하</label>
@@ -33,23 +33,23 @@
       </div>
     </div>
     <div class="mb-3">
-      <label for="explanation" class="form-label">Explanation</label>
+      <label for="explanation" class="form-label">문제 설명</label>
       <textarea class="form-control" id="explanation" name="explanation" rows="4" required th:text="${problem.explanation}"></textarea>
     </div>
     <div class="mb-3">
-      <label for="input_explanation" class="form-label">Input Explanation</label>
+      <label for="input_explanation" class="form-label">입력 설명</label>
       <textarea class="form-control" id="input_explanation" name="input_explanation" rows="3" required th:text="${problem.input_explanation}"></textarea>
     </div>
     <div class="mb-3">
-      <label for="output_explanation" class="form-label">Output Explanation</label>
+      <label for="output_explanation" class="form-label">출력 설명</label>
       <textarea class="form-control" id="output_explanation" name="output_explanation" rows="3" required th:text="${problem.output_explanation}"></textarea>
     </div>
     <div class="mb-3">
-      <label for="memory" class="form-label">Memory Limit (MB)</label>
+      <label for="memory" class="form-label">메모리 제한 (MB)</label>
       <input type="number" class="form-control" id="memory" name="memory" th:value="${problem.memory}" required min="0">
     </div>
     <div class="form-group">
-      <label for="runtime">제한 시간 (밀리초) - C++, 자바, 파이썬:</label>
+      <label for="runtime">제한 시간 (ms)</label>
       <div id="runtimeContainer">
         <div>
           <label for="runtime_cpp">C++:</label>
@@ -66,18 +66,18 @@
       </div>
     </div>
     <div class="mb-3">
-      <label for="level" class="form-label">Level</label>
+      <label for="level" class="form-label">난이도</label>
       <input type="number" class="form-control" id="level" name="level" th:value="${problem.level}" required min="1" max="10">
     </div>
 
     <!-- Example Input/Output -->
     <div class="mb-5">
-      <h2>Example Input/Output</h2>
+      <h2>예제 입출력</h2>
       <table class="table table-striped mt-3" id="exampleInoutTable">
         <thead>
         <tr>
-          <th>Example Input</th>
-          <th>Example Output</th>
+          <th>예제 입력</th>
+          <th>예제 출력</th>
         </tr>
         </thead>
         <tbody>
@@ -91,17 +91,17 @@
         </tr>
         </tbody>
       </table>
-      <button type="button" class="btn btn-success mt-3" id="addExampleInout">Add New Example</button>
+      <button type="button" class="btn btn-success mt-3" id="addExampleInout">예제 입출력 추가</button>
     </div>
 
     <!-- Test Cases Section -->
     <div class="mt-5">
-      <h2>Test Cases</h2>
+      <h2>테스트 케이스</h2>
       <table class="table table-striped mt-3" id="testcaseTable">
         <thead>
         <tr>
-          <th>Input</th>
-          <th>Expected Output</th>
+          <th>입력</th>
+          <th>출력</th>
         </tr>
         </thead>
         <tbody>
@@ -115,10 +115,10 @@
         </tr>
         </tbody>
       </table>
-      <button type="button" class="btn btn-success mt-3" id="addTestcase">Add New Test Case</button>
+      <button type="button" class="btn btn-success mt-3" id="addTestcase">테스트 케이스 추가</button>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-5">Save Changes</button>
+    <button type="submit" class="btn btn-primary mt-5">수정하기</button>
   </form>
 </div>
 
@@ -225,14 +225,14 @@
       body: JSON.stringify(data)
     }).then(response => {
       if (response.ok) {
-        alert('Problem updated successfully');
+        alert('문제 업데이트를 성공했습니다.');
         window.history.back();
       } else {
-        alert('Error updating problem');
+        alert('문제 업데이트를 실패했습니다.');
       }
     }).catch(error => {
       console.error('Error:', error);
-      alert('Error updating problem');
+      alert('에러가 발생했습니다.');
     });
 
     // Prevent form from submitting the traditional way

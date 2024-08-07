@@ -32,43 +32,43 @@
     <h1 class="mb-4">문제 상세</h1>
 
     <div class="problem-details">
-        <h2 th:text="${problem.title}">A+B</h2>
+        <h2 th:text="${problem.title}"></h2>
         <table class="table table-bordered table-striped">
             <tbody>
             <tr>
                 <th>문제 ID</th>
-                <td th:text="${problem.id}">1</td>
+                <td th:text="${problem.id}"></td>
             </tr>
             <tr>
                 <th>출제자 ID</th>
-                <td th:text="${problem.user_id}">user123</td>
+                <td th:text="${problem.user_id}"></td>
             </tr>
             <tr>
-                <th>난이도(Level)</th>
-                <td th:text="${problem.level}">5</td>
+                <th>난이도</th>
+                <td th:text="${problem.level}"></td>
             </tr>
             <tr>
-                <th>제출 횟수(Submit)</th>
-                <td th:text="${problem.submit}">1137134</td>
+                <th>제출 횟수</th>
+                <td th:text="${problem.submit}"></td>
             </tr>
             <tr>
-                <th>정답 횟수(Answer)</th>
-                <td th:text="${problem.answer}">446350</td>
+                <th>정답 횟수</th>
+                <td th:text="${problem.answer}"></td>
             </tr>
             <tr>
                 <th>알고리즘</th>
-                <td th:text="${problem.algorithms}">Brute Force</td>
+                <td th:text="${problem.algorithms}"></td>
             </tr>
             <tr>
                 <th>메모리 제한</th>
-                <td th:text="${problem.memory} + ' MB'">128 MB</td>
+                <td th:text="${problem.memory} + ' MB'"></td>
             </tr>
             <tr>
                 <th>실행 시간</th>
                 <td>
                     <ul>
                         <li th:each="entry : ${problem.runtime}">
-                            <span th:text="${entry.key}">Java</span>: <span th:text="${entry.value} + ' ms'">50 ms</span>
+                            <span th:text="${entry.key}"></span>: <span th:text="${entry.value} + ' ms'"></span>
                         </li>
                     </ul>
                 </td>
@@ -77,20 +77,20 @@
         </table>
 
         <h3>문제 설명</h3>
-        <p th:text="${problem.explanation}">두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.</p>
+        <p th:text="${problem.explanation}"></p>
 
         <h3>입력 설명</h3>
-        <p th:text="${problem.input_explanation}">첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)</p>
+        <p th:text="${problem.input_explanation}"></p>
 
         <h3>출력 설명</h3>
-        <p th:text="${problem.output_explanation}">첫째 줄에 A+B를 출력한다.</p>
+        <p th:text="${problem.output_explanation}"></p>
 
         <h3>예제 입력 및 출력</h3>
         <div class="example-input-output">
             <h4>예제 입력</h4>
-            <pre th:text="${problem.example_inout[0]['input']}">1 2</pre>
+            <pre th:text="${problem.example_inout[0]['input']}"></pre>
             <h4>예제 출력</h4>
-            <pre th:text="${problem.example_inout[0]['output']}">3</pre>
+            <pre th:text="${problem.example_inout[0]['output']}"></pre>
         </div>
     </div>
 
