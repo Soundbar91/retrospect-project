@@ -62,8 +62,10 @@ public class ResultService {
         HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateResult, problem);
         ResponseEntity<Map> response = callApiToGrading(requestMessage);
 
-        Result result = resultRepository.save(requestCreateResult.toEntity(user, problem, response.getBody()));
-        return isAnswer(problem, result, user);
+        Result result = requestCreateResult.toEntity(user, problem, response.getBody());
+        checkAnswerAndUpdateAssociateInfo(result, problem, user);
+
+        return ResponseResult.from(resultRepository.save(result));
     }
 
     public ResponseResult getResult(Long resultId) {
@@ -138,13 +140,14 @@ public class ResultService {
         if (problem != null) query.setParameter("problem", problem);
     }
 
-    private ResponseResult isAnswer(Problem problem, Result result, User user) {
+    private void checkAnswerAndUpdateAssociateInfo(Result result, Problem problem, User user) {
         List<Result> results = resultRepository.getByProblemAndUserAndGrade(problem, result.getUser(), CORRECT);
         boolean answer = result.getGrade().ordinal() == 0;
 
         problem.updateSubmitInfo(answer);
-        if (!results.isEmpty()) user.solveProblem(problem.getLevel());
-        return ResponseResult.from(result);
+        problemRepository.flush();
+
+        if (results.isEmpty()) user.solveProblem(problem.getLevel());
     }
 
 }
