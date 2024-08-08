@@ -59,7 +59,7 @@ public class ResultService {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
 
-        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateResult, problem);
+        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateResult, problem, userId);
         ResponseEntity<Map> response = callApiToGrading(requestMessage);
 
         Result result = requestCreateResult.toEntity(user, problem, response.getBody());
@@ -91,13 +91,14 @@ public class ResultService {
         return query.getResultList().stream().map(ResponseResult::from).toList();
     }
 
-    private HttpEntity<Map<String, Object>> createRequestMessage(RequestSubmit requestCreateResult, Problem problem) {
+    private HttpEntity<Map<String, Object>> createRequestMessage(RequestSubmit requestCreateResult, Problem problem, Long userId) {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("source_code", requestCreateResult.code());
         requestBody.put("language", requestCreateResult.language());
         requestBody.put("memory_limit", problem.getMemory());
         requestBody.put("time_limit", problem.getRuntime().get(String.valueOf(requestCreateResult.language()).toLowerCase()));
         requestBody.put("problem_id", problem.getId());
+        requestBody.put("user_id", userId);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
 
