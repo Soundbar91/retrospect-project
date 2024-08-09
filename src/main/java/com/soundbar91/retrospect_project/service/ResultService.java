@@ -59,11 +59,13 @@ public class ResultService {
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
 
-        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateResult, problem);
+        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateResult, problem, userId);
         ResponseEntity<Map> response = callApiToGrading(requestMessage);
 
-        Result result = resultRepository.save(requestCreateResult.toEntity(user, problem, response.getBody()));
-        return isAnswer(problem, result, user);
+        Result result = requestCreateResult.toEntity(user, problem, response.getBody());
+        checkAnswerAndUpdateAssociateInfo(result, problem, user);
+
+        return ResponseResult.from(resultRepository.save(result));
     }
 
     public ResponseResult getResult(Long resultId) {
@@ -89,13 +91,14 @@ public class ResultService {
         return query.getResultList().stream().map(ResponseResult::from).toList();
     }
 
-    private HttpEntity<Map<String, Object>> createRequestMessage(RequestSubmit requestCreateResult, Problem problem) {
+    private HttpEntity<Map<String, Object>> createRequestMessage(RequestSubmit requestCreateResult, Problem problem, Long userId) {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("source_code", requestCreateResult.code());
         requestBody.put("language", requestCreateResult.language());
         requestBody.put("memory_limit", problem.getMemory());
         requestBody.put("time_limit", problem.getRuntime().get(String.valueOf(requestCreateResult.language()).toLowerCase()));
         requestBody.put("problem_id", problem.getId());
+        requestBody.put("user_id", userId);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
 
@@ -138,13 +141,14 @@ public class ResultService {
         if (problem != null) query.setParameter("problem", problem);
     }
 
-    private ResponseResult isAnswer(Problem problem, Result result, User user) {
+    private void checkAnswerAndUpdateAssociateInfo(Result result, Problem problem, User user) {
         List<Result> results = resultRepository.getByProblemAndUserAndGrade(problem, result.getUser(), CORRECT);
         boolean answer = result.getGrade().ordinal() == 0;
 
         problem.updateSubmitInfo(answer);
-        if (!results.isEmpty()) user.solveProblem(problem.getLevel());
-        return ResponseResult.from(result);
+        problemRepository.flush();
+
+        if (results.isEmpty()) user.solveProblem(problem.getLevel());
     }
 
 }
