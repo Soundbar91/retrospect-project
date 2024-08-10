@@ -2,6 +2,13 @@
 
 - 함께 만드는 알고리즘 저지 사이트
 
+## 사이트
+[배포 사이트](https://retrospect-project.n-e.kr/)
+
+[Swagger](https://retrospect-project.n-e.kr/swagger-ui/index.html)
+
+[노션](https://soundbar91.notion.site/Retrospect-Project-f88ed9e690ce480ca348c6914b9103af?pvs=4)
+
 ## 구현 기능
 
 - 유저
@@ -22,18 +29,8 @@
 - IDE : IntelliJ IDEA
 - SDK : corretto-17
 - DB : MySQL Workbench 8.0 CE
-- OS : Windows 10
-
-## 개발일지
-[노션](https://soundbar91.notion.site/Retrospect-Project-f88ed9e690ce480ca348c6914b9103af?pvs=4)
-
-## 브랜치
-- main : 배포 버전
-- develop : 개발 버전
-- feature : 기능 개발
-- 로컬에서 develop 브랜치에서 분기한 feature 브랜치에서 작업을 진행
-- 기능 개발이 끝나면 develop로 merge
-- 매주 화요일 main으로 merge
+- OS : Windows 10, Ubuntu 22.04.4 LTS
 
 ## 프로그램 흐름도
-![흐름도](https://github.com/user-attachments/assets/e49fb158-6ac0-4e0e-840d-f289e07c72fe)
+![흐름도](https://github.com/user-attachments/assets/511d80da-678f-42b3-897c-0c5683de757e)
+

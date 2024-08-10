@@ -19,7 +19,7 @@ import java.util.List;
 public interface PostApi {
     
     @Operation(summary = "게시글 작성", description = """
-            카테고리의 경우 ERROR, QUESTION, COUNTEREXAMPLE 중 하나의 값을 입력해야합니다. 
+            카테고리의 경우 ERROR, QUESTION, COUNTEREXAMPLE 중 하나의 값을 입력해야합니다.
             """)
     @ApiResponse(responseCode = "200", description = "게시글 작성 성공", content = @Content(mediaType = "application/json"))
     @PostMapping("/problem/{problemId}/post")
@@ -29,7 +29,9 @@ public interface PostApi {
             HttpServletRequest httpServletRequest
     );
 
-    @Operation(summary = "게시글 필터 조회")
+    @Operation(summary = "게시글 리스트 조회", description = """
+            ERROR: 오류, QUESTION: 질문, COUNTEREXAMPLE: 반례
+            """)
     @ApiResponse(responseCode = "200", description = "게시글 리스트 조회 성공", content = @Content(mediaType = "application/json"))
     @GetMapping("/posts")
     ResponseEntity<List<ResponsePost>> getPosts(
@@ -38,7 +40,7 @@ public interface PostApi {
             @RequestParam(value = "category", required = false) Category category
     );
 
-    @Operation(summary = "게시글 번호 조회")
+    @Operation(summary = "게시글 조회")
     @ApiResponse(responseCode = "200", description = "게시글 조회 성공", content = @Content(mediaType = "application/json"))
     @GetMapping("/post/{postId}")
     ResponseEntity<ResponsePost> getPost(

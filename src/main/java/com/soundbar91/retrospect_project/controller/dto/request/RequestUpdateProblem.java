@@ -1,17 +1,18 @@
 package com.soundbar91.retrospect_project.controller.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.Map;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
-public record RequestUpdateProblem(
+public record RequestUpdateProblem (
         @NotBlank(message = "문제 제목은 필수 입력사항입니다.")
-        @Length(message = "문제 제목은 최대 100글자 입니다.", max = 100)
         @Schema(description = "문제 제목", defaultValue = "A + B", requiredMode = REQUIRED)
         String title,
 
@@ -23,19 +24,19 @@ public record RequestUpdateProblem(
         @Schema(description = "문제 설명", defaultValue = """
                 두 정수 A와 B를 입력받은 다음, A+B를 출력하는 프로그램을 작성하시오.
                 """, requiredMode = REQUIRED)
-        String explanation,
+        String problemExplanation,
 
         @NotBlank(message = "문제 입력 설명은 필수 입력사항입니다.")
         @Schema(description = "문제 입력 설명", defaultValue = """
                 첫째 줄에 A와 B가 주어진다. (0 < A, B < 10)
                 """, requiredMode = REQUIRED)
-        String input_explanation,
+        String inputExplanation,
 
         @NotBlank(message = "문제 출력 설명은 필수 입력사항입니다.")
         @Schema(description = "문제 출력 설명", defaultValue = """
                 첫째 줄에 A+B를 출력한다.
                 """, requiredMode = REQUIRED)
-        String output_explanation,
+        String outputExplanation,
 
         @NotNull(message = "메모리 제한은 필수 입력사항입니다.")
         @Schema(description = "메모리 제한", defaultValue = "128", requiredMode = REQUIRED)
@@ -53,8 +54,6 @@ public record RequestUpdateProblem(
         Map<String, Integer> runtime,
 
         @NotNull(message = "난이도는 필수 입력사항입니다.")
-        @Min(message = "난이도는 최소 1입니다.", value = 1)
-        @Max(message = "난이도는 최대 10입니다.", value = 10)
         @Schema(description = "난이도", defaultValue = "1", requiredMode = REQUIRED)
         Integer level,
 
@@ -67,7 +66,7 @@ public record RequestUpdateProblem(
                     }
                   ]
                 """, requiredMode = REQUIRED)
-        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> example_inout,
+        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> exampleInOut,
 
         @NotEmpty(message = "테스트 케이스는 필수 입력사항입니다.")
         @Schema(description = "테스트 케이스", defaultValue = """
@@ -78,6 +77,6 @@ public record RequestUpdateProblem(
                     }
                   ]
                 """, requiredMode = REQUIRED)
-        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> testcase
+        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> testcases
 ) {
 }

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.soundbar91.retrospect_project.exception.errorCode.PostErrorCode.INVALID_TITLE_LEN;
 import static com.soundbar91.retrospect_project.exception.errorCode.PostErrorCode.NOT_FOUND_POST;
 import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
@@ -41,6 +42,8 @@ public class PostService {
             Long problemId,
             HttpServletRequest httpServletRequest
     ) {
+        postTitleValidation(requestCreatePost.title());
+
         Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
@@ -80,6 +83,7 @@ public class PostService {
             Long postId
     ) {
         Post post = checkPermission(postId, httpServletRequest);
+        postTitleValidation(requestUpdatePost.title());
         post.updatePost(requestUpdatePost);
         postRepository.flush();
     }
@@ -125,4 +129,9 @@ public class PostService {
         return post;
     }
 
+    private void postTitleValidation(String title) {
+        final int maxLength = 100;
+
+        if (title.length() > maxLength) throw new ApplicationException(INVALID_TITLE_LEN);
+    }
 }

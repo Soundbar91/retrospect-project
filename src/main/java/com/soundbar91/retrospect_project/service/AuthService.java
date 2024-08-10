@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.soundbar91.retrospect_project.exception.errorCode.AuthErrorCode.NOT_MATCH_PASSWORD;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.WITHDREW_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,8 @@ public class AuthService {
     private User authenticateUser(RequestLoginUser requestLoginUser) {
         User user = userRepository.findByUsername(requestLoginUser.username())
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+
+        if (!user.isActive()) throw new ApplicationException(WITHDREW_USER);
 
         if (!passwordEncoder.matches(requestLoginUser.password(), user.getPassword()))
             throw new ApplicationException(NOT_MATCH_PASSWORD);

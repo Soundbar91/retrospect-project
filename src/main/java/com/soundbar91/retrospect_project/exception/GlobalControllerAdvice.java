@@ -8,10 +8,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 @RestControllerAdvice
 public class GlobalControllerAdvice {
@@ -35,7 +37,6 @@ public class GlobalControllerAdvice {
         return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
     }
 
-    // https://be-student.tistory.com/52
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ExceptionResponse> httpMessageNotReadableException(HttpMessageNotReadableException e) {
         if (e.getCause() instanceof MismatchedInputException mismatchedInputException) {
@@ -48,6 +49,13 @@ public class GlobalControllerAdvice {
             ExceptionResponse exceptionResponse = new ExceptionResponse("INVALID_ARGUMENT", errorMessage);
             return new ResponseEntity<>(exceptionResponse, BAD_REQUEST);
         }
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    public ResponseEntity<ExceptionResponse> connectException(ConnectException e) {
+        final String errorMessage = "채점 서버와 연결이 끊어졌습니다.";
+        ExceptionResponse exceptionResponse = new ExceptionResponse("CONNECT_ERROR", errorMessage);
+        return new ResponseEntity<>(exceptionResponse, SERVICE_UNAVAILABLE);
     }
 
 }

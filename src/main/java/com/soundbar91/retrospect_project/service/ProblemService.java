@@ -22,8 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
-import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUNT_ALGORITHM_CATEGORY;
+import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.*;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
 
@@ -47,8 +46,10 @@ public class ProblemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
+        createProblemRequestValidation(requestCreateProblem);
         Problem problem = problemRepository.save(requestCreateProblem.toEntity(user));
-        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateProblem.testcase());
+
+        HttpEntity<Map<String, Object>> requestMessage = createRequestMessage(requestCreateProblem.testcases());
         callApiToCreateTestcase(requestMessage, problem.getId());
     }
 
@@ -65,7 +66,7 @@ public class ProblemService {
         String[] algorithm = null;
         if (algorithms != null) {
             algorithm = algorithms.split(",");
-            checkAlgorithms(algorithm);
+            problemAlgorithmsValidation(algorithm);
         }
 
         StringBuilder jpql = createJpql(title, level, algorithms, mode);
@@ -97,19 +98,98 @@ public class ProblemService {
             HttpServletRequest httpServletRequest
     ) {
         Problem problem = checkPermission(problemId, httpServletRequest);
+        updateProblemRequestValidation(requestUpdateProblem);
         problem.updateProblem(requestUpdateProblem);
 
-        HttpEntity<Map<String, Object>> request = createRequestMessage(requestUpdateProblem.testcase());
+        HttpEntity<Map<String, Object>> request = createRequestMessage(requestUpdateProblem.testcases());
         callApiToCreateTestcase(request, problem.getId());
 
         problemRepository.flush();
     }
 
-    private void checkAlgorithms(String[] algorithms) {
+    private Problem checkPermission(Long problemId, HttpServletRequest httpServletRequest) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
+
+        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
+        if (problem.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
+
+        return problem;
+    }
+
+    private void createProblemRequestValidation(RequestCreateProblem requestCreateProblem) {
+        problemTitleValidation(requestCreateProblem.title());
+        problemAlgorithmsValidation(requestCreateProblem.algorithms().split(","));
+        problemMemoryValidation(requestCreateProblem.memory());
+        problemRuntimeValidation(requestCreateProblem.runtime());
+        problemLevelValidation(requestCreateProblem.level());
+        problemExampleValidation(requestCreateProblem.exampleInOut());
+        problemTestcasesValidation(requestCreateProblem.testcases());
+    }
+
+    private void updateProblemRequestValidation(RequestUpdateProblem requestUpdateProblem) {
+        problemTitleValidation(requestUpdateProblem.title());
+        problemAlgorithmsValidation(requestUpdateProblem.algorithms().split(","));
+        problemMemoryValidation(requestUpdateProblem.memory());
+        problemRuntimeValidation(requestUpdateProblem.runtime());
+        problemLevelValidation(requestUpdateProblem.level());
+        problemTestcasesValidation(requestUpdateProblem.testcases());
+    }
+
+    private void problemTitleValidation(String title) {
+        final int minLen = 1, maxLen = 100;
+
+        if (title.length() < minLen || title.length() > maxLen) throw new ApplicationException(INVALID_TITLE);
+    }
+
+    private void problemAlgorithmsValidation(String[] algorithms) {
         final Set<String> algorithmSet = Set.of("기하", "구현", "그리디", "문자열", "자료구조", "그래프", "다이나믹 프로그래밍");
 
         for (String algorithm : algorithms) {
-            if (!algorithmSet.contains(algorithm)) throw new ApplicationException(NOT_FOUNT_ALGORITHM_CATEGORY);
+            if (!algorithmSet.contains(algorithm)) throw new ApplicationException(INVALID_ALGORITHM);
+        }
+    }
+
+    private void problemMemoryValidation(int memory) {
+        final int minMemory = 1, maxMemory = 2048;
+
+        if (memory < minMemory || memory > maxMemory) throw new ApplicationException(INVALID_MEMORY);
+    }
+
+    private void problemRuntimeValidation(Map<String, Integer> runtime) {
+        final Set<String> languageSet = Set.of("cpp", "java", "python");
+        final int minRuntime = 100, maxRuntime = 20000;
+
+        Set<String> language = runtime.keySet();
+        if (!language.equals(languageSet)) throw new ApplicationException(INVALID_RUNTIME_KEY);
+
+        for (Map.Entry<String, Integer> entry : runtime.entrySet()) {
+            int time = entry.getValue();
+            if (time < minRuntime || time > maxRuntime) throw new ApplicationException(INVALID_RUNTIME_VALUE);
+        }
+    }
+
+    private void problemLevelValidation(int level) {
+        final int minLevel = 1, maxLevel = 10;
+
+        if (level < minLevel || level > maxLevel) throw new ApplicationException(INVALID_LEVEL);
+    }
+
+    private void problemExampleValidation(List<Map<String, Object>> exampleInOut) {
+        final Set<String> keySet = Set.of("input", "output");
+
+        for (Map<String, Object> example : exampleInOut) {
+            if (!example.keySet().equals(keySet)) throw new ApplicationException(INVALID_EXAMPLE_KEY);
+        }
+    }
+
+    private void problemTestcasesValidation(List<Map<String, Object>> testcases) {
+        final Set<String> keySet = Set.of("input", "output");
+
+        for (Map<String, Object> testcase : testcases) {
+            if (!testcase.keySet().equals(keySet)) throw new ApplicationException(INVALID_EXAMPLE_KEY);
         }
     }
 
@@ -152,18 +232,6 @@ public class ProblemService {
                 query.setParameter("algorithms" + i, "%" + algorithm[i] + "%");
             }
         }
-    }
-
-    private Problem checkPermission(Long problemId, HttpServletRequest httpServletRequest) {
-        Problem problem = problemRepository.findById(problemId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_PROBLEM));
-
-        Long userId = (Long) httpServletRequest.getSession().getAttribute("userId");
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
-        if (problem.getUser() != user) throw new ApplicationException(NOT_PERMISSION);
-
-        return problem;
     }
 
     private HttpEntity<Map<String, Object>> createRequestMessage(List<Map<String, Object>> testcases) {
