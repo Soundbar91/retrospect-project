@@ -34,7 +34,7 @@ public interface CommentApi {
             @PathVariable(value = "postId") Long postID
     );
 
-    @Operation(summary = "댓글 수정")
+    @Operation(summary = "댓글 수정", description = "댓글 작성자만 가능합니다.")
     @ApiResponse(responseCode = "200", description = "댓글 수정 성공", content = @Content(mediaType = "application/json"))
     @PutMapping("/comment/{commentId}")
     ResponseEntity<Void> updateComment(
@@ -43,7 +43,7 @@ public interface CommentApi {
             HttpServletRequest httpServletRequest
     );
 
-    @Operation(summary = "댓글 삭제")
+    @Operation(summary = "댓글 삭제", description = "댓글 작성자만 가능합니다.")
     @ApiResponse(responseCode = "200", description = "댓글 삭제 성공", content = @Content(mediaType = "application/json"))
     @DeleteMapping("/comment/{commentId}")
     ResponseEntity<Void> deleteComment(

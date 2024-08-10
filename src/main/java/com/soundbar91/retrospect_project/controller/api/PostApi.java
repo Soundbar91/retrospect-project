@@ -18,7 +18,9 @@ import java.util.List;
 @Tag(name = "게시글 API")
 public interface PostApi {
     
-    @Operation(summary = "게시글 작성")
+    @Operation(summary = "게시글 작성", description = """
+            카테고리의 경우 ERROR, QUESTION, COUNTEREXAMPLE 중 하나의 값을 입력해야합니다. 
+            """)
     @ApiResponse(responseCode = "200", description = "게시글 작성 성공", content = @Content(mediaType = "application/json"))
     @PostMapping("/problem/{problemId}/post")
     ResponseEntity<Void> createPost(
@@ -43,7 +45,7 @@ public interface PostApi {
             @PathVariable(value = "postId") Long postId
     );
 
-    @Operation(summary = "게시글 업데이트")
+    @Operation(summary = "게시글 업데이트", description = "게시글 작성자만 가능합니다.")
     @ApiResponse(responseCode = "200", description = "게시글 수정 성공", content = @Content(mediaType = "application/json"))
     @PutMapping("/post/{postId}")
     ResponseEntity<Void> updatePost(
@@ -52,7 +54,7 @@ public interface PostApi {
             @PathVariable(value = "postId") Long postId
     );
 
-    @Operation(summary = "게시글 삭제")
+    @Operation(summary = "게시글 삭제", description = "게시글 작성자만 가능합니다.")
     @ApiResponse(responseCode = "200", description = "게시글 삭제 성공", content = @Content(mediaType = "application/json"))
     @DeleteMapping("/post/{postId}")
     ResponseEntity<Void> deletePost(
