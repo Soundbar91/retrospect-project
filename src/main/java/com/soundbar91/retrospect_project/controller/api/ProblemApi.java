@@ -29,14 +29,14 @@ public interface ProblemApi {
             HttpServletRequest httpServletRequest
     );
 
-    @Operation(summary = "번호로 조회")
+    @Operation(summary = "알고리즘 문제 조회")
     @ApiResponse(responseCode = "200", description = "문제 조회 성공", content = @Content(mediaType = "application/json"))
     @GetMapping("/problem/{problemId}")
     ResponseEntity<ResponseProblem> getProblem(
             @PathVariable(value = "problemId") Long problemId
     );
 
-    @Operation(summary = "필터 설정으로 조회", description = """
+    @Operation(summary = "알고리즘 문제 리스트 조회", description = """
             모드는 true와 false 중 하나의 값을 입력하셔야 합니다.
             (true : 입력한 알고리즘을 모두 포함하는 문제, false : 입력한 알고리즘 중 하나라도 포함한 문제)
             \n알고리즘의 경우 기하, 구현, 그리디, 문자열, 자료구조, 그래프, 그리고 다이나믹 프로그래밍 중에서 입력하셔야 하며,
@@ -59,7 +59,7 @@ public interface ProblemApi {
             HttpServletRequest httpServletRequest
     );
 
-    @Operation(summary = "문제 업데이트", description = "문제 제작자만 가능합니다.")
+    @Operation(summary = "알고리즘 문제 업데이트", description = "문제 제작자만 가능합니다.")
     @ApiResponse(responseCode = "200", description = "문제 업데이트 성공", content = @Content(mediaType = "application/json"))
     @PutMapping("/problem/{problemId}")
     ResponseEntity<Void> updateProblem(
