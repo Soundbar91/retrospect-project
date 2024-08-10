@@ -81,12 +81,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="example, iterStat : ${problem.exampleInOut}">
+        <tr th:each="example, iterStat : ${problem.exampleInOut()}">
           <td>
-            <textarea class="form-control" name="exampleInOut[${iterStat.index}][input]" rows="2" th:text="${example['input']}"></textarea>
+            <textarea class="form-control" name="example_inout_input" rows="2" th:text="${example['input']}"></textarea>
           </td>
           <td>
-            <textarea class="form-control" name="exampleInOut[${iterStat.index}][output]" rows="2" th:text="${example['output']}"></textarea>
+            <textarea class="form-control" name="example_inout_output" rows="2" th:text="${example['output']}"></textarea>
           </td>
         </tr>
         </tbody>
@@ -105,12 +105,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="tc, iterStat : ${testcases}">
+        <tr th:each="tc : ${testcases}">
           <td>
-            <textarea class="form-control" name="testcases[${iterStat.index}][input]" rows="2" th:text="${tc['input']}"></textarea>
+            <textarea class="form-control" name="testcase_input" rows="2" th:text="${tc['input']}"></textarea>
           </td>
           <td>
-            <textarea class="form-control" name="testcases[${iterStat.index}][output]" rows="2" th:text="${tc['output']}"></textarea>
+            <textarea class="form-control" name="testcase_output" rows="2" th:text="${tc['output']}"></textarea>
           </td>
         </tr>
         </tbody>
@@ -132,9 +132,8 @@
     const newCellInput = newRow.insertCell(0);
     const newCellOutput = newRow.insertCell(1);
 
-    newCellInput.innerHTML = '<textarea class="form-control" name="exampleInOut[' + exampleInOutCount + '][input]" rows="2"></textarea>';
-    newCellOutput.innerHTML = '<textarea class="form-control" name="exampleInOut[' + exampleInOutCount + '][output]" rows="2"></textarea>';
-    exampleInOutCount++;
+    newCellInput.innerHTML = '<textarea class="form-control" name="example_inout_input" rows="2"></textarea>';
+    newCellOutput.innerHTML = '<textarea class="form-control" name="example_inout_output" rows="2"></textarea>';
   });
 
   // Add new Test Case
@@ -144,9 +143,8 @@
     const newCellInput = newRow.insertCell(0);
     const newCellOutput = newRow.insertCell(1);
 
-    newCellInput.innerHTML = '<textarea class="form-control" name="testcases[' + testcaseCount + '][input]" rows="2"></textarea>';
-    newCellOutput.innerHTML = '<textarea class="form-control" name="testcases[' + testcaseCount + '][output]" rows="2"></textarea>';
-    testcaseCount++;
+    newCellInput.innerHTML = '<textarea class="form-control" name="testcase_input" rows="2"></textarea>';
+    newCellOutput.innerHTML = '<textarea class="form-control" name="testcase_output" rows="2"></textarea>';
   });
 
   // Form submission handler
@@ -183,22 +181,22 @@
     };
 
     // Collect example input/output data
-    const exampleInOut = [];
-    const exampleInputs = document.getElementsByName('exampleInOut[][input]');
-    const exampleOutputs = document.getElementsByName('exampleInOut[][output]');
+    const exampleInout = [];
+    const exampleInputs = document.getElementsByName('example_inout_input');
+    const exampleOutputs = document.getElementsByName('example_inout_output');
     for (let i = 0; i < exampleInputs.length; i++) {
-      exampleInOut.push({
+      exampleInout.push({
         input: exampleInputs[i].value,
         output: exampleOutputs[i].value
       });
     }
 
     // Collect test case data
-    const testcases = [];
-    const testcaseInputs = document.getElementsByName('testcases[][input]');
-    const testcaseOutputs = document.getElementsByName('testcases[][output]');
+    const testCases = [];
+    const testcaseInputs = document.getElementsByName('testcase_input');
+    const testcaseOutputs = document.getElementsByName('testcase_output');
     for (let i = 0; i < testcaseInputs.length; i++) {
-      testcases.push({
+      testCases.push({
         input: testcaseInputs[i].value,
         output: testcaseOutputs[i].value
       });
@@ -215,8 +213,8 @@
       memory: memory,
       runtime: runtime,
       level: level,
-      exampleInOut: exampleInOut,
-      testcases: testcases
+      exampleInOut: exampleInout,
+      testcases: testCases
     };
 
     // Send data to server

@@ -86,7 +86,7 @@
         <p th:text="${problem.outputExplanation}"></p>
 
         <h3>예제 입력 및 출력</h3>
-        <div class="example-input-output" th:each="example, iterStat : ${problem.example_inout}">
+        <div class="example-input-output" th:each="example, iterStat : ${problem.exampleInOut()}">
             <h4>예제 입력 <span th:text="${iterStat.index + 1}"></span></h4>
             <pre th:text="${example.input}"></pre>
             <h4>예제 출력 <span th:text="${iterStat.index + 1}"></span></h4>
