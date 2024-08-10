@@ -41,7 +41,7 @@ public class Result {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String code;
 
-    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime submit_at;
 
     @ManyToOne(fetch = EAGER)

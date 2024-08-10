@@ -29,14 +29,14 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(insertable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.0")
+    @Column(insertable = false, nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.0")
     private double exp;
 
-    @Column(insertable = false)
+    @Column(insertable = false, nullable = false)
     @ColumnDefault("0")
     private Role role;
 
-    @Column(insertable = false)
+    @Column(insertable = false, nullable = false)
     @ColumnDefault("true")
     private boolean isActive;
 
