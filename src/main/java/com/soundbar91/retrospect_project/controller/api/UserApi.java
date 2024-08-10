@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "유저 API")
 public interface UserApi {
 
-    @Operation(summary = "유저 회원 가입")
+    @Operation(summary = "회원 가입")
     @ApiResponse(responseCode = "200", description = "회원 가입 성공", content = @Content(mediaType = "application/json"))
     @PostMapping("/user")
     ResponseEntity<ResponseUser> createUser(
             @Valid @RequestBody RequestCreateUser requestCreateUser
     );
 
-    @Operation(summary = "유저 비밀번호 변경")
+    @Operation(summary = "비밀번호 변경")
     @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공", content = @Content(mediaType = "application/json"))
     @PutMapping("/user/password")
     ResponseEntity<Void> changePassword(
@@ -30,14 +30,14 @@ public interface UserApi {
             HttpServletRequest httpServletRequest
     );
 
-    @Operation(summary = "유저 이름으로 유저 조회")
+    @Operation(summary = "유저 조회")
     @ApiResponse(responseCode = "200", description = "유저 조회 성공", content = @Content(mediaType = "application/json"))
     @GetMapping("/user/{username}")
     ResponseEntity<ResponseUser> getUser(
             @PathVariable(value = "username") String username
     );
 
-    @Operation(summary = "유저 탈퇴")
+    @Operation(summary = "회원 탈퇴")
     @ApiResponse(responseCode = "204", description = "회원 탈퇴 성공", content = @Content(mediaType = "application/json"))
     @DeleteMapping("/user")
     ResponseEntity<Void> deleteUser(

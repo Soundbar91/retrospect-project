@@ -87,10 +87,10 @@ public class PageController {
             Model model
     ) {
         ResponseProblem problem = problemService.getProblem(problemId);
-        List<Map<String, Object>> testcase = problemService.getTestcase(problemId, httpServletRequest);
+        List<Map<String, Object>> testcases = problemService.getTestcase(problemId, httpServletRequest);
 
         model.addAttribute("problem", problem);
-        model.addAttribute("testcase", testcase);
+        model.addAttribute("testcases", testcases);
         return "editor";
     }
 

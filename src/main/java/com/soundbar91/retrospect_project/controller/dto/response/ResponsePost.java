@@ -14,9 +14,9 @@ public record ResponsePost(
         int likes,
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        LocalDateTime create_at,
+        LocalDateTime createAt,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        LocalDateTime modify_at
+        LocalDateTime modifyAt
 ) {
     public static ResponsePost from(Post post) {
         return new ResponsePost(
@@ -26,8 +26,8 @@ public record ResponsePost(
                 post.getContent(),
                 post.getCategory().getCategoryName(),
                 post.getLikes().size(),
-                post.getCreate_at(),
-                post.getModify_at()
+                post.getCreateAt(),
+                post.getModifyAt()
         );
     }
 }

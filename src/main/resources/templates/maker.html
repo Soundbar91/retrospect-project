@@ -73,16 +73,16 @@
         </div>
     </div>
     <div class="form-group">
-        <label for="explanation">문제 설명</label>
-        <textarea id="explanation" name="explanation" rows="4" required></textarea>
+        <label for="problemExplanation">문제 설명</label>
+        <textarea id="problemExplanation" name="problemExplanation" rows="4" required></textarea>
     </div>
     <div class="form-group">
-        <label for="input_explanation">문제 입력 설명</label>
-        <textarea id="input_explanation" name="input_explanation" rows="4" required></textarea>
+        <label for="inputExplanation">문제 입력 설명</label>
+        <textarea id="inputExplanation" name="inputExplanation" rows="4" required></textarea>
     </div>
     <div class="form-group">
-        <label for="output_explanation">문제 출력 설명</label>
-        <textarea id="output_explanation" name="output_explanation" rows="4" required></textarea>
+        <label for="outputExplanation">문제 출력 설명</label>
+        <textarea id="outputExplanation" name="outputExplanation" rows="4" required></textarea>
     </div>
     <div class="form-group">
         <label for="memory">메모리 제한 (MB)</label>
@@ -93,7 +93,7 @@
         <div id="runtimeContainer">
             <div>
                 <label for="runtime_cpp">C++:</label>
-                <input type="number" id="runtime_cpp" name="runtime[c++]" required min="1">
+                <input type="number" id="runtime_cpp" name="runtime[cpp]" required min="1">
             </div>
             <div>
                 <label for="runtime_java">자바:</label>
@@ -113,8 +113,8 @@
         <label>예제 입출력</label>
         <div id="example_inout_container">
             <div class="example-inout">
-                <textarea name="example_inout[0][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="example_inout[0][output]" placeholder="출력" rows="2"></textarea>
+                <textarea name="exampleInOut[0][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="exampleInOut[0][output]" placeholder="출력" rows="2"></textarea>
             </div>
         </div>
         <button type="button" onclick="addExampleInOut()">+ 예제 추가</button>
@@ -123,8 +123,8 @@
         <label>테스트 케이스</label>
         <div id="testcase_container">
             <div class="testcase">
-                <textarea name="testcase[0][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="testcase[0][output]" placeholder="출력" rows="2"></textarea>
+                <textarea name="testcases[0][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="testcases[0][output]" placeholder="출력" rows="2"></textarea>
             </div>
         </div>
         <button type="button" onclick="addTestCase()">+ 테스트 케이스 추가</button>
@@ -142,8 +142,8 @@
         const newExampleInOut = document.createElement('div');
         newExampleInOut.classList.add('example-inout');
         newExampleInOut.innerHTML = `
-                <textarea name="example_inout[${exampleInOutCount}][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="example_inout[${exampleInOutCount}][output]" placeholder="출력" rows="2"></textarea>
+                <textarea name="exampleInOut[${exampleInOutCount}][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="exampleInOut[${exampleInOutCount}][output]" placeholder="출력" rows="2"></textarea>
             `;
         container.appendChild(newExampleInOut);
         exampleInOutCount++;
@@ -154,8 +154,8 @@
         const newTestCase = document.createElement('div');
         newTestCase.classList.add('testcase');
         newTestCase.innerHTML = `
-                <textarea name="testcase[${testcaseCount}][input]" placeholder="입력" rows="2"></textarea>
-                <textarea name="testcase[${testcaseCount}][output]" placeholder="출력" rows="2"></textarea>
+                <textarea name="testcases[${testcaseCount}][input]" placeholder="입력" rows="2"></textarea>
+                <textarea name="testcases[${testcaseCount}][output]" placeholder="출력" rows="2"></textarea>
             `;
         container.appendChild(newTestCase);
         testcaseCount++;
@@ -168,37 +168,37 @@
         const data = {
             title: formData.get('title'),
             algorithms: Array.from(formData.getAll('algorithms')).join(', '),
-            explanation: formData.get('explanation'),
-            input_explanation: formData.get('input_explanation'),
-            output_explanation: formData.get('output_explanation'),
+            problemExplanation: formData.get('problemExplanation'),
+            inputExplanation: formData.get('inputExplanation'),
+            outputExplanation: formData.get('outputExplanation'),
             memory: formData.get('memory'),
             runtime: {
-                cpp: formData.get('runtime[c++]'),
+                cpp: formData.get('runtime[cpp]'),
                 java: formData.get('runtime[java]'),
                 python: formData.get('runtime[python]')
             },
             level: formData.get('level'),
-            example_inout: [],
-            testcase: []
+            exampleInOut: [],
+            testcases: []
         };
 
-        // Process example_inout data
+        // Process exampleInOut data
         const exampleInOutElements = document.querySelectorAll('#example_inout_container .example-inout');
         exampleInOutElements.forEach((element) => {
             const input = element.querySelector('textarea[name$="[input]"]').value.trim();
             const output = element.querySelector('textarea[name$="[output]"]').value.trim();
             if (input || output) {
-                data.example_inout.push({ input, output });
+                data.exampleInOut.push({ input, output });
             }
         });
 
-        // Process testcase data
+        // Process testcases data
         const testcaseElements = document.querySelectorAll('#testcase_container .testcase');
         testcaseElements.forEach((element) => {
             const input = element.querySelector('textarea[name$="[input]"]').value.trim();
             const output = element.querySelector('textarea[name$="[output]"]').value.trim();
             if (input || output) {
-                data.testcase.push({ input, output });
+                data.testcases.push({ input, output });
             }
         });
 

@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <th>출제자 ID</th>
-                <td th:text="${problem.user_id}"></td>
+                <td th:text="${problem.username}"></td>
             </tr>
             <tr>
                 <th>난이도</th>
@@ -77,16 +77,16 @@
         </table>
 
         <h3>문제 설명</h3>
-        <p th:text="${problem.explanation}"></p>
+        <p th:text="${problem.problemExplanation}"></p>
 
         <h3>입력 설명</h3>
-        <p th:text="${problem.input_explanation}"></p>
+        <p th:text="${problem.inputExplanation}"></p>
 
         <h3>출력 설명</h3>
-        <p th:text="${problem.output_explanation}"></p>
+        <p th:text="${problem.outputExplanation}"></p>
 
         <h3>예제 입력 및 출력</h3>
-        <div class="example-input-output" th:each="example, iterStat : ${problem.example_inout}">
+        <div class="example-input-output" th:each="example, iterStat : ${problem.exampleInOut()}">
             <h4>예제 입력 <span th:text="${iterStat.index + 1}"></span></h4>
             <pre th:text="${example.input}"></pre>
             <h4>예제 출력 <span th:text="${iterStat.index + 1}"></span></h4>

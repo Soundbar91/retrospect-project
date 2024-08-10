@@ -7,18 +7,18 @@ import java.util.Map;
 
 public record ResponseProblem(
         Long id,
-        String user_id,
+        String username,
         String title,
         String algorithms,
-        String explanation,
-        String input_explanation,
-        String output_explanation,
+        String problemExplanation,
+        String inputExplanation,
+        String outputExplanation,
         int memory,
         Map<String, Integer> runtime,
         int level,
         int submit,
         int answer,
-        List<Map<String, Object>> example_inout
+        List<Map<String, Object>> exampleInOut
 ) {
     public static ResponseProblem from(Problem problem) {
         return new ResponseProblem(
@@ -26,15 +26,15 @@ public record ResponseProblem(
                 problem.getUser().getUsername(),
                 problem.getTitle(),
                 problem.getAlgorithms(),
-                problem.getExplanation(),
-                problem.getInput_explanation(),
-                problem.getOutput_explanation(),
+                problem.getProblemExplanation(),
+                problem.getInputExplanation(),
+                problem.getOutputExplanation(),
                 problem.getMemory(),
                 problem.getRuntime(),
                 problem.getLevel(),
                 problem.getSubmit(),
                 problem.getAnswer(),
-                problem.getExample_inout()
+                problem.getExampleInOut()
         );
     }
 }

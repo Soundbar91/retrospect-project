@@ -33,16 +33,16 @@
       </div>
     </div>
     <div class="mb-3">
-      <label for="explanation" class="form-label">문제 설명</label>
-      <textarea class="form-control" id="explanation" name="explanation" rows="4" required th:text="${problem.explanation}"></textarea>
+      <label for="problemExplanation" class="form-label">문제 설명</label>
+      <textarea class="form-control" id="problemExplanation" name="problemExplanation" rows="4" required th:text="${problem.problemExplanation}"></textarea>
     </div>
     <div class="mb-3">
-      <label for="input_explanation" class="form-label">입력 설명</label>
-      <textarea class="form-control" id="input_explanation" name="input_explanation" rows="3" required th:text="${problem.input_explanation}"></textarea>
+      <label for="inputExplanation" class="form-label">입력 설명</label>
+      <textarea class="form-control" id="inputExplanation" name="inputExplanation" rows="3" required th:text="${problem.inputExplanation}"></textarea>
     </div>
     <div class="mb-3">
-      <label for="output_explanation" class="form-label">출력 설명</label>
-      <textarea class="form-control" id="output_explanation" name="output_explanation" rows="3" required th:text="${problem.output_explanation}"></textarea>
+      <label for="outputExplanation" class="form-label">출력 설명</label>
+      <textarea class="form-control" id="outputExplanation" name="outputExplanation" rows="3" required th:text="${problem.outputExplanation}"></textarea>
     </div>
     <div class="mb-3">
       <label for="memory" class="form-label">메모리 제한 (MB)</label>
@@ -53,7 +53,7 @@
       <div id="runtimeContainer">
         <div>
           <label for="runtime_cpp">C++:</label>
-          <input type="number" id="runtime_cpp" name="runtime[c++]" th:value="${problem.runtime['cpp']}" required min="1">
+          <input type="number" id="runtime_cpp" name="runtime[cpp]" th:value="${problem.runtime['cpp']}" required min="1">
         </div>
         <div>
           <label for="runtime_java">자바:</label>
@@ -81,7 +81,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="example, iterStat : ${problem.example_inout}">
+        <tr th:each="example, iterStat : ${problem.exampleInOut()}">
           <td>
             <textarea class="form-control" name="example_inout_input" rows="2" th:text="${example['input']}"></textarea>
           </td>
@@ -105,7 +105,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="tc : ${testcase}">
+        <tr th:each="tc : ${testcases}">
           <td>
             <textarea class="form-control" name="testcase_input" rows="2" th:text="${tc['input']}"></textarea>
           </td>
@@ -158,9 +158,9 @@
             .map(checkbox => checkbox.value)
             .join(',');
 
-    const explanation = document.getElementById('explanation').value;
-    const inputExplanation = document.getElementById('input_explanation').value;
-    const outputExplanation = document.getElementById('output_explanation').value;
+    const problemExplanation = document.getElementById('problemExplanation').value;
+    const inputExplanation = document.getElementById('inputExplanation').value;
+    const outputExplanation = document.getElementById('outputExplanation').value;
     const memory = parseInt(document.getElementById('memory').value);
     const level = parseInt(document.getElementById('level').value);
 
@@ -175,7 +175,7 @@
     }
 
     const runtime = {
-      'c++': parseInt(document.getElementById('runtime_cpp').value),
+      'cpp': parseInt(document.getElementById('runtime_cpp').value),
       'java': parseInt(document.getElementById('runtime_java').value),
       'python': parseInt(document.getElementById('runtime_python').value)
     };
@@ -204,16 +204,17 @@
 
     // Construct JSON payload
     const data = {
+      id: problemId,
       title: title,
       algorithms: algorithms, // Use the comma-separated string
-      explanation: explanation,
-      input_explanation: inputExplanation,
-      output_explanation: outputExplanation,
+      problemExplanation: problemExplanation,
+      inputExplanation: inputExplanation,
+      outputExplanation: outputExplanation,
       memory: memory,
       runtime: runtime,
       level: level,
-      example_inout: exampleInout,
-      testcase: testCases
+      exampleInOut: exampleInout,
+      testcases: testCases
     };
 
     // Send data to server
@@ -228,7 +229,9 @@
         alert('문제 업데이트를 성공했습니다.');
         window.history.back();
       } else {
-        alert('문제 업데이트를 실패했습니다.');
+        return response.text().then(text => {
+          alert('문제 생성에 실패하였습니다: ' + text);
+        });
       }
     }).catch(error => {
       console.error('Error:', error);
@@ -238,6 +241,10 @@
     // Prevent form from submitting the traditional way
     return false;
   }
+
+  // Initialize counters for dynamic elements
+  let exampleInOutCount = document.getElementById('exampleInoutTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr').length;
+  let testcaseCount = document.getElementById('testcaseTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr').length;
 </script>
 </body>
 </html>

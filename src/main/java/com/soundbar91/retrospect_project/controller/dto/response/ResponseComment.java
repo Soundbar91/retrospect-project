@@ -20,8 +20,8 @@ public record ResponseComment(
                 comment.getUser().getUsername(),
                 comment.getContext(),
                 comment.getLikes().size(),
-                comment.getCreate_at(),
-                comment.getModify_at()
+                comment.getCreateAt(),
+                comment.getModifyAt()
         );
     }
 }

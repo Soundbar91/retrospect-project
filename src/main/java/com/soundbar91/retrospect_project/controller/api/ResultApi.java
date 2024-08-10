@@ -27,14 +27,18 @@ public interface ResultApi {
             HttpServletRequest httpServletRequest
     );
 
-    @Operation(summary = "결과 번호 조회")
+    @Operation(summary = "결과 조회", description = """
+            CORRECT: 정답, INCORRECT: 오답, COMPILER_ERROR: 컴파일 에러\s
+            RUNTIME_ERROR: 런타임 에러, TIME_ACCESS: 시간 초과, MEMORY_ACCESS: 메모리 초과\s
+            결과는 AND 연산입니다.
+            """)
     @ApiResponse(responseCode = "200", description = "결과 조회 성공", content = @Content(mediaType = "application/json"))
     @GetMapping("/result/{resultId}")
     ResponseEntity<ResponseResult> getResult(
             @PathVariable(value = "resultId") Long resultId
     );
 
-    @Operation(summary = "결과 필터 조회")
+    @Operation(summary = "결과 리스트 조회")
     @ApiResponse(responseCode = "200", description = "결과 리스트 조회 성공", content = @Content(mediaType = "application/json"))
     @GetMapping("/results")
     ResponseEntity<List<ResponseResult>> getResults(
