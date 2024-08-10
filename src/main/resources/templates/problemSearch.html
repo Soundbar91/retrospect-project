@@ -64,7 +64,7 @@
             </div>
             <div class="col">
                 <div class="form-check">
-                    <input type="radio" id="or" name="operation" value="false" checked>
+                    <input type="radio" id="or" name="operation" value="false">
                     <label for="or">OR</label>
                 </div>
                 <div class="form-check">
@@ -90,12 +90,36 @@
 
 <script>
     // API 호출 및 데이터 렌더링 함수
-    function fetchProblems(title = '', level = '', algorithms = [], mode = 'false') {
-        // 알고리즘 배열 처리: AND일 경우 ','로 연결
-        const algorithmsQuery = algorithms.join(','); // AND 조건은 ','로 연결
+    function fetchProblems(title = '', level = '', algorithms = [], mode = '') {
+        let url = '/problems';
+        let params = [];
 
-        // stand를 문자열로 변환하여 쿼리 파라미터에 포함
-        const url = `/problems?title=${encodeURIComponent(title)}&level=${encodeURIComponent(level)}&algorithms=${encodeURIComponent(algorithmsQuery)}&mode=${mode}`;
+        // title 쿼리 파라미터 추가
+        if (title) {
+            params.push(`title=${encodeURIComponent(title)}`);
+        }
+
+        // level 쿼리 파라미터 추가
+        if (level) {
+            params.push(`level=${encodeURIComponent(level)}`);
+        }
+
+        // 알고리즘 쿼리 파라미터 추가
+        if (algorithms.length > 0) {
+            const algorithmsQuery = algorithms.join(',');
+            params.push(`algorithms=${encodeURIComponent(algorithmsQuery)}`);
+        }
+
+        // mode 쿼리 파라미터 추가
+        if (mode) {
+            params.push(`mode=${encodeURIComponent(mode)}`);
+        }
+
+        // 파라미터를 쿼리 문자열로 변환
+        if (params.length > 0) {
+            url += '?' + params.join('&');
+        }
+
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -122,7 +146,6 @@
                 `;
 
                 data.forEach(problem => {
-
                     table += `
                         <tr>
                             <td>${problem.id}</td>
@@ -161,8 +184,8 @@
         // 디버깅을 위한 로그
         const selectedOperation = document.querySelector('input[name="operation"]:checked');
 
-        // stand를 문자열로 설정
-        const mode = selectedOperation ? selectedOperation.value : 'false';
+        // mode를 문자열로 설정
+        const mode = selectedOperation ? selectedOperation.value : '';
 
         if (level && (level < 1 || level > 10)) {
             alert('난이도는 1부터 10까지의 숫자여야 합니다.');
@@ -172,7 +195,5 @@
         fetchProblems(title, level, algorithms, mode);
     });
 </script>
-
-
 </body>
 </html>
