@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.soundbar91.retrospect_project.exception.errorCode.AuthErrorCode.*;
-import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
-import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.WITHDREW_USER;
+import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class UserService {
 
     @Transactional
     public void createUser(RequestCreateUser requestCreateUser) {
-        checkUserDuplicate(requestCreateUser);
+        createUserValidation(requestCreateUser);
 
         String password = passwordEncoder.encode(requestCreateUser.password());
         userRepository.save(requestCreateUser.toEntity(password));
@@ -41,6 +40,8 @@ public class UserService {
                 .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
         if (!passwordEncoder.matches(requestPasswordChange.curPassword(), user.getPassword()))
             throw new ApplicationException(NOT_MATCH_PASSWORD);
+
+        passwordValidation(requestPasswordChange.newPassword());
 
         String newPassword = passwordEncoder.encode(requestPasswordChange.newPassword());
         user.changePassword(newPassword);
@@ -66,12 +67,48 @@ public class UserService {
         userRepository.flush();
     }
 
+    private void createUserValidation(RequestCreateUser requestCreateUser) {
+        checkUserDuplicate(requestCreateUser);
+        usernameValidation(requestCreateUser.username());
+        emailValidation(requestCreateUser.email());
+        passwordValidation(requestCreateUser.password());
+    }
+
     private void checkUserDuplicate(RequestCreateUser requestCreateUser) {
         userRepository.findByUsername(requestCreateUser.username())
                 .ifPresent(e -> {throw new ApplicationException(DUPLICATE_USERNAME);});
 
         userRepository.findByEmail(requestCreateUser.email())
                 .ifPresent(e -> {throw new ApplicationException(DUPLICATE_EMAIL);});
+    }
+
+    private void usernameValidation(String username) {
+        final String regex = "^[a-zA-Z0-9]+$";
+        final int minLength = 6, maxLength = 20;
+
+        if (username.length() < minLength || username.length() > maxLength)
+            throw new ApplicationException(INVALID_USERNAME_LEN);
+
+        if (!username.matches(regex))
+            throw new ApplicationException(INVALID_USERNAME_PATTERN);
+    }
+
+    private void emailValidation(String email) {
+        final String regex = "^[a-zA-Z0-9]+@[0-9a-zA-Z]+\\.[a-z]+$";
+
+        if (!email.matches(regex))
+            throw new ApplicationException(INVALID_EMAIL_PATTERN);
+    }
+
+    private void passwordValidation(String password) {
+        final String regex = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.+[!@#$%^&*()/]).+$";
+        final int minLength = 8, maxLength = 20;
+
+        if (password.length() < minLength || password.length() > maxLength)
+            throw new ApplicationException(INVALID_PASSWORD_LEN);
+
+        if (!password.matches(regex))
+            throw new ApplicationException(INVALID_PASSWORD_PATTERN);
     }
 
 }
