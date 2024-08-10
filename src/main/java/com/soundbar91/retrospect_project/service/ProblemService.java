@@ -140,7 +140,6 @@ public class ProblemService {
 
     private void problemTitleValidation(String title) {
         final int minLen = 1, maxLen = 100;
-        System.out.println(title.length());
 
         if (title.length() < minLen || title.length() > maxLen) throw new ApplicationException(INVALID_TITLE);
     }
