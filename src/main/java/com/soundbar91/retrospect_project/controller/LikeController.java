@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.api.LikeApi;
 import com.soundbar91.retrospect_project.service.LikeService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class LikeController {
+public class LikeController implements LikeApi {
 
     private final LikeService likesService;
 

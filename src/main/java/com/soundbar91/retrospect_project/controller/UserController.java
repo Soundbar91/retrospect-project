@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.api.UserApi;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestPasswordChange;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserApi {
 
     private final UserService userService;
     private final AuthService authService;

@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.api.ProblemApi;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateProblem;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseProblem;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-public class ProblemController {
+public class ProblemController implements ProblemApi {
 
     private final ProblemService problemService;
 

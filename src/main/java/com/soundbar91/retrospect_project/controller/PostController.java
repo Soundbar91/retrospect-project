@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.api.PostApi;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreatePost;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdatePost;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponsePost;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class PostController {
+public class PostController implements PostApi {
 
     private final PostService postService;
 
