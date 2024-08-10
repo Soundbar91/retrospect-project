@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.api.AuthApi;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseUser;
 import com.soundbar91.retrospect_project.service.AuthService;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthApi {
 
     private final AuthService authService;
 

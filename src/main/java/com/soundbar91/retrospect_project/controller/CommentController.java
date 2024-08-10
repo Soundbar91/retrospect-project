@@ -1,5 +1,6 @@
 package com.soundbar91.retrospect_project.controller;
 
+import com.soundbar91.retrospect_project.controller.api.CommentApi;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateComment;
 import com.soundbar91.retrospect_project.controller.dto.request.RequestUpdateComment;
 import com.soundbar91.retrospect_project.controller.dto.response.ResponseComment;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class CommentController {
+public class CommentController implements CommentApi {
 
     private final CommentService commentService;
 
