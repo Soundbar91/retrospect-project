@@ -42,7 +42,7 @@ public class Result {
     private String code;
 
     @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime submit_at;
+    private LocalDateTime submitAt;
 
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "user_id", nullable = false)

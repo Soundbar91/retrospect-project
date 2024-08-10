@@ -17,7 +17,7 @@ public record ResponseResult(
         String code,
 
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        LocalDateTime submit_at
+        LocalDateTime submitAt
 ) {
     public static ResponseResult from(Result result) {
         return new ResponseResult(
@@ -30,7 +30,7 @@ public record ResponseResult(
                 result.getLanguage().getName(),
                 result.getCodeLength(),
                 result.getCode(),
-                result.getSubmit_at()
+                result.getSubmitAt()
         );
     }
 }
