@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-md-3">
                     <label for="problemId" class="form-label">문제 번호</label>
-                    <input type="number" id="problemId" class="form-control">
+                    <input type="number" id="problemId" class="form-control" min="1">
                 </div>
             </div>
             <button type="button" class="btn btn-primary mt-3" onclick="fetchResults()">적용하기</button>
@@ -92,9 +92,14 @@
 </div>
 
 <script>
-    // Function to fetch results from the API
-    function fetchResults(grade = '', language = '', username = '', problemId = '') {
-        // Construct the query string with the filters
+    function fetchResults() {
+        // 필터 값 가져오기
+        const grade = document.getElementById('grade').value;
+        const language = document.getElementById('language').value;
+        const username = document.getElementElementById('username').value;
+        const problemId = document.getElementById('problemId').value;
+
+        // 쿼리 파라미터 설정
         const queryParams = [];
 
         if (grade) queryParams.push(`grade=${encodeURIComponent(grade)}`);
@@ -104,6 +109,7 @@
 
         const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
 
+        // API 호출
         fetch(`/results${queryString}`)
             .then(response => response.json())
             .then(data => {
@@ -177,12 +183,7 @@
         event.preventDefault();
 
         // 입력 값 유효성 검사
-        const grade = document.getElementById('grade').value || ''; // 기본값 빈 문자열
-        const language = document.getElementById('language').value || ''; // 기본값 빈 문자열
-        const username = document.getElementById('username').value || ''; // 기본값 빈 문자열
-        const problemId = document.getElementById('problemId').value || ''; // 기본값 빈 문자열
-
-        fetchResults(grade, language, username, problemId);
+        fetchResults();
     });
 </script>
 </body>
