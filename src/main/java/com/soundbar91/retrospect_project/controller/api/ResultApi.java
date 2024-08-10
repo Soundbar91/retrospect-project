@@ -18,7 +18,7 @@ import java.util.List;
 @Tag(name = "결과 API")
 public interface ResultApi {
     
-    @Operation(summary = "코드 제출")
+    @Operation(summary = "코드 제출", description = "제출 언어의 경우 CPP, JAVA, PYTHON 중 하나의 값을 입력해야 합니다.")
     @ApiResponse(responseCode = "200", description = "코드 제출 성공", content = @Content(mediaType = "application/json"))
     @PostMapping("/problem/{problemId}/result")
     ResponseEntity<ResponseResult> createResult(

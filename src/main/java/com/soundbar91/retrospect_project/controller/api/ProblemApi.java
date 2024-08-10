@@ -18,7 +18,10 @@ import java.util.Map;
 @Tag(name = "알고리즘 문제 API")
 public interface ProblemApi {
 
-    @Operation(summary = "알고리즘 문제 만들기")
+    @Operation(summary = "알고리즘 문제 만들기", description = """
+            알고리즘의 경우 기하, 구현, 그리디, 문자열, 자료구조, 그래프, 그리고 다이나믹 프로그래밍 중에서 입력하셔야 하며,
+            콤마를 통해 연결하셔야 합니다.(ex: 기하, 구현)
+            """)
     @ApiResponse(responseCode = "200", description = "문제 생성 성공", content = @Content(mediaType = "application/json"))
     @PostMapping("/problem")
     ResponseEntity<Void> createProblem(
