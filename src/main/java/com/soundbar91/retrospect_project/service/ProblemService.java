@@ -20,12 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUND_PROBLEM;
+import static com.soundbar91.retrospect_project.exception.errorCode.ProblemErrorCode.NOT_FOUNT_ALGORITHM_CATEGORY;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_FOUND_USER;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_PERMISSION;
 
@@ -64,10 +62,13 @@ public class ProblemService {
     public List<ResponseProblem> getProblems(
             String title, Integer level, String algorithms, String mode
     ) {
-        StringBuilder jpql = createJpql(title, level, algorithms, mode);
-
         String[] algorithm = null;
-        if (algorithms != null) algorithm = algorithms.split(",");
+        if (algorithms != null) {
+            algorithm = algorithms.split(",");
+            checkAlgorithms(algorithm);
+        }
+
+        StringBuilder jpql = createJpql(title, level, algorithms, mode);
 
         TypedQuery<Problem> query = entityManager.createQuery(jpql.toString(), Problem.class);
         queryParameterBinding(title, level, query, algorithm);
@@ -102,6 +103,14 @@ public class ProblemService {
         callApiToCreateTestcase(request, problem.getId());
 
         problemRepository.flush();
+    }
+
+    private void checkAlgorithms(String[] algorithms) {
+        final Set<String> algorithmSet = Set.of("기하", "구현", "그리디", "문자열", "자료구조", "그래프", "다이나믹 프로그래밍");
+
+        for (String algorithm : algorithms) {
+            if (!algorithmSet.contains(algorithm)) throw new ApplicationException(NOT_FOUNT_ALGORITHM_CATEGORY);
+        }
     }
 
     private StringBuilder createJpql(String title, Integer level, String algorithms, String mode) {
