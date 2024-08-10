@@ -37,16 +37,16 @@ public class Problem {
     private String algorithms;
 
     @Column(nullable = false, columnDefinition = "text")
-    private String explanation;
+    private String problemExplanation;
 
     @Column(nullable = false, columnDefinition = "text")
-    private String input_explanation;
+    private String inputExplanation;
 
     @Column(nullable = false, columnDefinition = "text")
-    private String output_explanation;
+    private String outputExplanation;
 
     @Column(nullable = false)
-    @Min(0) @Max(1024)
+    @Min(1) @Max(2048)
     private int memory;
 
     @Type(JsonType.class)
@@ -57,23 +57,23 @@ public class Problem {
     @Min(1) @Max(10)
     private int level;
 
-    @Column(insertable = false)
+    @Column(nullable = false, insertable = false)
     @ColumnDefault("0")
     private int submit;
 
-    @Column(insertable = false)
+    @Column(nullable = false, insertable = false)
     @ColumnDefault("0")
     private int answer;
 
     @Type(JsonType.class)
-    @Column(nullable = false, columnDefinition = "json")
-    private List<Map<String, Object>> example_inout;
+    @Column(name = "example_inout", nullable = false, columnDefinition = "json")
+    private List<Map<String, Object>> exampleInOut;
 
-    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime create_at;
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createAt;
 
-    @Column(insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime modify_at;
+    @Column(nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime modifyAt;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -83,30 +83,30 @@ public class Problem {
     private List<Post> posts = new ArrayList<>();
 
     @Builder
-    public Problem(String title, String algorithms, String explanation, String input_explanation, String output_explanation,
-                   int memory, Map<String, Integer> runtime, int level, List<Map<String, Object>> example_inout, User user) {
+    public Problem(String title, String algorithms, String problemExplanation, String inputExplanation, String outputExplanation,
+                   int memory, Map<String, Integer> runtime, int level, List<Map<String, Object>> exampleInOut, User user) {
         this.title = title;
         this.algorithms = algorithms;
-        this.explanation = explanation;
-        this.input_explanation = input_explanation;
-        this.output_explanation = output_explanation;
+        this.problemExplanation = problemExplanation;
+        this.inputExplanation = inputExplanation;
+        this.outputExplanation = outputExplanation;
         this.memory = memory;
         this.runtime = runtime;
         this.level = level;
-        this.example_inout = example_inout;
+        this.exampleInOut = exampleInOut;
         this.user = user;
     }
 
     public void updateProblem(RequestUpdateProblem updateProblem) {
         this.title = updateProblem.title();
         this.algorithms = updateProblem.algorithms();
-        this.explanation = updateProblem.explanation();
-        this.input_explanation = updateProblem.input_explanation();
-        this.output_explanation = updateProblem.output_explanation();
+        this.problemExplanation = updateProblem.problemExplanation();
+        this.inputExplanation = updateProblem.inputExplanation();
+        this.outputExplanation = updateProblem.outputExplanation();
         this.memory = updateProblem.memory();
         this.runtime = updateProblem.runtime();
         this.level = updateProblem.level();
-        this.example_inout = updateProblem.example_inout();
+        this.exampleInOut = updateProblem.exampleInOut();
     }
 
     public void updateSubmitInfo(boolean answer) {
