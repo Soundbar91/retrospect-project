@@ -9,12 +9,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import static com.soundbar91.retrospect_project.exception.errorCode.UserErrorCode.NOT_LOGIN;
 
 @Component
-public class CertInterceptor implements HandlerInterceptor {
+public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if ("/user".equals(request.getRequestURI()) && "POST".equals(request.getMethod())) return true;
-        else if (request.getSession().getAttribute("userId") == null) throw new ApplicationException(NOT_LOGIN);
+        if (request.getSession().getAttribute("userId") == null) throw new ApplicationException(NOT_LOGIN);
         else return true;
     }
 
