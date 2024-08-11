@@ -187,9 +187,7 @@
         exampleInOutElements.forEach((element) => {
             const input = element.querySelector('textarea[name$="[input]"]').value.trim();
             const output = element.querySelector('textarea[name$="[output]"]').value.trim();
-            if (input || output) {
-                data.exampleInOut.push({ input, output });
-            }
+            data.exampleInOut.push({ input, output });
         });
 
         // Process testcases data
@@ -197,9 +195,7 @@
         testcaseElements.forEach((element) => {
             const input = element.querySelector('textarea[name$="[input]"]').value.trim();
             const output = element.querySelector('textarea[name$="[output]"]').value.trim();
-            if (input || output) {
-                data.testcases.push({ input, output });
-            }
+            data.testcases.push({ input, output });
         });
 
         // Optionally send data to server

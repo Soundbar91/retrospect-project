@@ -1,10 +1,11 @@
 package com.soundbar91.retrospect_project.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soundbar91.retrospect_project.controller.dto.request.RequestCreateUser;
-import com.soundbar91.retrospect_project.controller.dto.request.RequestLoginUser;
-import com.soundbar91.retrospect_project.repository.UserRepository;
-import com.soundbar91.retrospect_project.service.AuthService;
+import com.soundbar91.retrospect_project.auth.controller.AuthController;
+import com.soundbar91.retrospect_project.user.controller.dto.RequestCreateUser;
+import com.soundbar91.retrospect_project.auth.controller.dto.RequestLoginUser;
+import com.soundbar91.retrospect_project.user.repository.UserRepository;
+import com.soundbar91.retrospect_project.auth.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
