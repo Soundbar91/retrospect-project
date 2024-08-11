@@ -5,10 +5,6 @@ spring:
     database: mysql
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
 springdoc:
   swagger-ui:
     operations-sorter: method
