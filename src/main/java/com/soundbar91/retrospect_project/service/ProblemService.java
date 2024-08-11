@@ -135,6 +135,7 @@ public class ProblemService {
         problemMemoryValidation(requestUpdateProblem.memory());
         problemRuntimeValidation(requestUpdateProblem.runtime());
         problemLevelValidation(requestUpdateProblem.level());
+        problemExampleValidation(requestUpdateProblem.exampleInOut());
         problemTestcasesValidation(requestUpdateProblem.testcases());
     }
 
@@ -189,7 +190,7 @@ public class ProblemService {
         final Set<String> keySet = Set.of("input", "output");
 
         for (Map<String, Object> testcase : testcases) {
-            if (!testcase.keySet().equals(keySet)) throw new ApplicationException(INVALID_EXAMPLE_KEY);
+            if (!testcase.keySet().equals(keySet)) throw new ApplicationException(INVALID_TESTCASE_KEY);
         }
     }
 

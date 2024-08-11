@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,6 @@ public record RequestCreateProblem(
         Integer memory,
 
         @NotEmpty(message = "제한 시간은 필수 입력사항입니다.")
-        @Size(message = "C++, 자바, 파이선 모두 입력해야 합니다.", min = 3, max = 3)
         @Schema(description = "제한 시간", defaultValue = """
                 {
                     "cpp": 2000,
@@ -68,7 +66,7 @@ public record RequestCreateProblem(
                     }
                   ]
                 """, requiredMode = REQUIRED)
-        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> exampleInOut,
+        List<Map<String, Object>> exampleInOut,
 
         @NotEmpty(message = "테스트 케이스는 필수 입력사항입니다.")
         @Schema(description = "테스트 케이스", defaultValue = """
@@ -79,7 +77,7 @@ public record RequestCreateProblem(
                     }
                   ]
                 """, requiredMode = REQUIRED)
-        List<@Size(message = "입력과 출력 모두 입력해야 합니다.", min = 2, max = 2)Map<String, Object>> testcases
+        List<Map<String, Object>> testcases
 ) {
     public Problem toEntity(User user) {
         return Problem.builder()
