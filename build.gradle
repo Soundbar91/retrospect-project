@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.8.1'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+	implementation 'org.flywaydb:flyway-mysql'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
