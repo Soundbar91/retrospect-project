@@ -24,7 +24,6 @@ import jakarta.transaction.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @SuppressWarnings("NonAsciiCharacters")
-@Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserApiTest {
 
@@ -66,6 +65,7 @@ public class UserApiTest {
     }
 
     @Test
+    @Transactional
     void 비밀번호_변경() throws Exception {
         String newPassword = "1q2w3e4r4$";
 
@@ -87,6 +87,7 @@ public class UserApiTest {
     }
 
     @Test
+    @Transactional
     void 유저_조회() throws Exception {
         mockMvc.perform(
                 get("/user/" + username)
