@@ -35,7 +35,7 @@ public class AuthApiTest {
     void 회원_로그인() throws Exception {
         User user = userFixture.사용자();
         String username = user.getUsername();
-        String password = "testPassword";
+        String password = "1q2w3e4r1!";
 
         mockMvc.perform(
                 post("/auth/login")
@@ -55,7 +55,7 @@ public class AuthApiTest {
     void 회원_로그아웃() throws Exception {
         User user = userFixture.사용자();
         String username = user.getUsername();
-        String password = "testPassword";
+        String password = "1q2w3e4r1!";
 
         MvcResult result = mockMvc.perform(
                 post("/auth/login")

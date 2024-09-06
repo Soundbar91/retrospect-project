@@ -23,7 +23,7 @@ public class UserFixture {
             User.builder()
                 .username("testUser")
                 .email("testUser@gmail.com")
-                .password(passwordEncoder.encode("testPassword"))
+                .password(passwordEncoder.encode("1q2w3e4r1!"))
                 .isActive(true)
                 .build()
         );
