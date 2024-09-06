@@ -23,12 +23,17 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - uses: mirromutth/mysql-action@v1.1
+      - name: Set up Mysql
+        uses: mirromutth/mysql-action@v1.1
         with:
           host port: 3307
           container port: 3307
           mysql database: ${{ secrets.MYSQL_USER }}
           mysql root password: ${{ secrets.MYSQL_PASSWORD }}
+
+      - name: Create Database
+        run: |
+          mysql -u ${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "CREATE DATABASE \`retrospect-project\`;"
 
       - name: Make Application.yml
         run: |
