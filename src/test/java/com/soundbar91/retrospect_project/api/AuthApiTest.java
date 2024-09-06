@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.soundbar91.retrospect_project.fixture.UserFixture;
 import com.soundbar91.retrospect_project.user.entity.User;
@@ -48,5 +49,38 @@ public class AuthApiTest {
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(request().sessionAttribute("username", username));
+    }
+
+    @Test
+    void 회원_로그아웃() throws Exception {
+        User user = userFixture.사용자();
+        String username = user.getUsername();
+        String password = "testPassword";
+
+        MvcResult result = mockMvc.perform(
+                post("/auth/login")
+                    .content("""
+                        {
+                          "username" : "%s",
+                          "password" : "%s"
+                        }
+                        """.formatted(username, password))
+                    .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(request().sessionAttribute("username", username))
+            .andReturn();
+
+        Long sessionUserid = (Long)result.getRequest().getSession().getAttribute("userId");
+        String sessionUsername = (String)result.getRequest().getSession().getAttribute("username");
+
+        mockMvc.perform(
+                post("/auth/logout")
+                    .sessionAttr("userId", sessionUserid)
+                    .sessionAttr("username", sessionUsername)
+            )
+            .andExpect(status().isNoContent())
+            .andExpect(request().sessionAttributeDoesNotExist("userId"))
+            .andExpect(request().sessionAttributeDoesNotExist("username"));
     }
 }
