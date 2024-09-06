@@ -1,12 +1,21 @@
 spring:
   config:
     import: application-mysql.yml, application-flask.yml
+
   jpa:
     database: mysql
     hibernate:
       ddl-auto: validate
+
   flyway:
     enabled: true
+
 springdoc:
   swagger-ui:
     operations-sorter: method
+
+cors:
+  allowed-origins:
+    - "http://localhost:8080"
+    - "https://localhost:8080"
+    - "http://localhost:5000"

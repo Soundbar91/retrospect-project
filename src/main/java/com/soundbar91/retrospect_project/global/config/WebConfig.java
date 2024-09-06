@@ -1,8 +1,11 @@
 package com.soundbar91.retrospect_project.global.config;
 
+import java.util.List;
+
 import com.soundbar91.retrospect_project.global.interceptor.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -16,6 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final ResultInterceptor resultInterceptor;
     private final PostInterceptor boardInterceptor;
     private final CommentInterceptor commentInterceptor;
+    private final CorsProperties corsProperties;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -43,6 +47,16 @@ public class WebConfig implements WebMvcConfigurer {
                 .order(1)
                 .addPathPatterns("/comment/**");
 
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
+            .allowedHeaders("GET", "POST", "PUT", "DELETE")
+            .allowedHeaders("*")
+            .allowCredentials(true)
+            .maxAge(3600);
     }
 
 }
