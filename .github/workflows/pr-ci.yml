@@ -26,14 +26,14 @@ jobs:
       - name: Set up Mysql
         uses: mirromutth/mysql-action@v1.1
         with:
-          host port: 3307
-          container port: 3307
+          host port: 3306
+          container port: 3306
           mysql database: ${{ secrets.MYSQL_USER }}
           mysql root password: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Create Database
         run: |
-          mysql -u ${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "CREATE DATABASE \`retrospect-project\`;"
+          mysql -h 127.0.0.1 -P 3306 -u ${{ secrets.MYSQL_USER }} -p${{ secrets.MYSQL_PASSWORD }} -e "CREATE DATABASE \`retrospect-project\`;"
 
       - name: Make Application.yml
         run: |
