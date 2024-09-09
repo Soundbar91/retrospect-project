@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 application-mysql.yml
 application-flask.yml
+META-INF
 
 ### STS ###
 .apt_generated

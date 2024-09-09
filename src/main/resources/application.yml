@@ -3,7 +3,6 @@ spring:
     import: application-mysql.yml, application-flask.yml
 
   jpa:
-    database: mysql
     hibernate:
       ddl-auto: validate
 
