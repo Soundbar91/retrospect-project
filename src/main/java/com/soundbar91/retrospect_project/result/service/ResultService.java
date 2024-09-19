@@ -80,7 +80,7 @@ public class ResultService {
         Result result = resultRepository.findById(resultId)
             .orElseThrow(() -> new ApplicationException(NOT_FOUND_RESULT));
 
-        if (!user.getRole().equals(Role.ADMIN) || !result.getUser().getId().equals(userId)) {
+        if (!user.getRole().equals(Role.ADMIN) && !result.getUser().getId().equals(userId)) {
             throw new ApplicationException(NOT_PERMISSION);
         }
 
