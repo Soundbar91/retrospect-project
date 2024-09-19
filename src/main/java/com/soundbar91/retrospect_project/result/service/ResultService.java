@@ -4,7 +4,7 @@ import com.soundbar91.retrospect_project.result.controller.dto.RequestSubmit;
 import com.soundbar91.retrospect_project.result.controller.dto.ResponseResult;
 import com.soundbar91.retrospect_project.problem.entity.Problem;
 import com.soundbar91.retrospect_project.result.entity.Result;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Grade;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Language;
 import com.soundbar91.retrospect_project.global.exception.ApplicationException;

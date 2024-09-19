@@ -4,7 +4,7 @@ import com.soundbar91.retrospect_project.global.exception.ApplicationException;
 import com.soundbar91.retrospect_project.user.controller.dto.RequestCreateUser;
 import com.soundbar91.retrospect_project.user.controller.dto.RequestPasswordChange;
 import com.soundbar91.retrospect_project.user.controller.dto.ResponseUser;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

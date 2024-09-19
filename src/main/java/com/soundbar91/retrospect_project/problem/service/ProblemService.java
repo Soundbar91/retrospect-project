@@ -6,7 +6,7 @@ import com.soundbar91.retrospect_project.problem.controller.dto.RequestUpdatePro
 import com.soundbar91.retrospect_project.problem.controller.dto.ResponseProblem;
 import com.soundbar91.retrospect_project.problem.entity.Problem;
 import com.soundbar91.retrospect_project.problem.repository.ProblemRepository;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;

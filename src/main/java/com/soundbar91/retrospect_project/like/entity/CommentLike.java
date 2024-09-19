@@ -1,7 +1,7 @@
 package com.soundbar91.retrospect_project.like.entity;
 
 import com.soundbar91.retrospect_project.comment.entity.Comment;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
