@@ -31,7 +31,6 @@ import com.soundbar91.retrospect_project.result.entity.keyInstance.Language;
 import com.soundbar91.retrospect_project.result.repository.ResultRepository;
 import com.soundbar91.retrospect_project.user.model.Role;
 import com.soundbar91.retrospect_project.user.model.User;
-import com.soundbar91.retrospect_project.user.repository.UserRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
