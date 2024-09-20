@@ -2,7 +2,7 @@ package com.soundbar91.retrospect_project.result.controller.dto;
 
 import com.soundbar91.retrospect_project.problem.entity.Problem;
 import com.soundbar91.retrospect_project.result.entity.Result;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Grade;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Language;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -9,7 +9,7 @@ import com.soundbar91.retrospect_project.like.repository.PostLikeRepository;
 import com.soundbar91.retrospect_project.post.entity.Post;
 import com.soundbar91.retrospect_project.post.repository.PostRepository;
 import com.soundbar91.retrospect_project.comment.repository.CommentRepository;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

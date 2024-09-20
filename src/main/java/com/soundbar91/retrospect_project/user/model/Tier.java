@@ -1,11 +1,11 @@
-package com.soundbar91.retrospect_project.user.entity.keyInstance;
+package com.soundbar91.retrospect_project.user.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Role {
+public enum Tier {
     BRONZE("브론즈", 0),
     SLIVER("실버", 50),
     GOLD("골드", 100),

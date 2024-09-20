@@ -29,8 +29,8 @@ import com.soundbar91.retrospect_project.result.entity.Result;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Grade;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Language;
 import com.soundbar91.retrospect_project.result.repository.ResultRepository;
-import com.soundbar91.retrospect_project.user.entity.User;
-import com.soundbar91.retrospect_project.user.repository.UserRepository;
+import com.soundbar91.retrospect_project.user.model.Role;
+import com.soundbar91.retrospect_project.user.model.User;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -71,15 +71,17 @@ public class ResultService {
         return ResponseResult.from(resultRepository.save(result));
     }
 
-    public ResponseResult getResult(
-        Long resultId, HttpServletRequest httpServletRequest
-    ) {
-        String username = (String)httpServletRequest.getSession().getAttribute("username");
-        if (!username.equals("choije0106"))
-            throw new ApplicationException(NOT_PERMISSION);
+    public ResponseResult getResult(Long resultId, HttpServletRequest httpServletRequest) {
+        Long userId = (Long)httpServletRequest.getSession().getAttribute("userId");
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ApplicationException(NOT_FOUND_USER));
 
         Result result = resultRepository.findById(resultId)
             .orElseThrow(() -> new ApplicationException(NOT_FOUND_RESULT));
+
+        if (!user.getRole().equals(Role.ADMIN) && !result.getUser().getId().equals(userId)) {
+            throw new ApplicationException(NOT_PERMISSION);
+        }
 
         return ResponseResult.from(result);
     }
