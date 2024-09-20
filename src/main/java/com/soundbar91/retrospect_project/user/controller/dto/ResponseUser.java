@@ -1,6 +1,6 @@
 package com.soundbar91.retrospect_project.user.controller.dto;
 
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 
 public record ResponseUser(
         String username,
@@ -12,7 +12,7 @@ public record ResponseUser(
         return new ResponseUser(
                 user.getUsername(),
                 user.getEmail(),
-                user.getRole().getRoleName(),
+                user.getTier().getRoleName(),
                 user.getExp()
         );
     }

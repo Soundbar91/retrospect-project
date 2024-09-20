@@ -3,7 +3,7 @@ package com.soundbar91.retrospect_project.fixture;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.user.repository.UserRepository;
 
 @Component

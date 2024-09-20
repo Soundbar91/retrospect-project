@@ -1,7 +1,7 @@
 package com.soundbar91.retrospect_project.problem.controller.dto;
 
 import com.soundbar91.retrospect_project.problem.entity.Problem;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;

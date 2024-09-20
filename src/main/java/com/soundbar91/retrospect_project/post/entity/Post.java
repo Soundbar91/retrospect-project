@@ -5,7 +5,7 @@ import com.soundbar91.retrospect_project.comment.entity.Comment;
 import com.soundbar91.retrospect_project.like.entity.PostLike;
 import com.soundbar91.retrospect_project.post.entity.keyInstance.Category;
 import com.soundbar91.retrospect_project.problem.entity.Problem;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

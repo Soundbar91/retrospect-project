@@ -2,7 +2,7 @@ package com.soundbar91.retrospect_project.comment.controller.dto;
 
 import com.soundbar91.retrospect_project.comment.entity.Comment;
 import com.soundbar91.retrospect_project.post.entity.Post;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 

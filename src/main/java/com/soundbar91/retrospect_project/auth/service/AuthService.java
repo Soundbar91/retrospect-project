@@ -1,7 +1,7 @@
 package com.soundbar91.retrospect_project.auth.service;
 
 import com.soundbar91.retrospect_project.auth.controller.dto.RequestLoginUser;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.global.exception.ApplicationException;
 import com.soundbar91.retrospect_project.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;

@@ -2,7 +2,7 @@ package com.soundbar91.retrospect_project.problem.entity;
 
 import com.soundbar91.retrospect_project.problem.controller.dto.RequestUpdateProblem;
 import com.soundbar91.retrospect_project.post.entity.Post;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
