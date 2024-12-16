@@ -5,7 +5,7 @@
 ## 사이트
 ~~[배포 사이트](https://retrospect-project.n-e.kr/)~~
 
-[Swagger](https://retrospect-project.n-e.kr/swagger-ui/index.html)
+~~[Swagger](https://retrospect-project.n-e.kr/swagger-ui/index.html)~~
 
 [노션](https://soundbar91.notion.site/Retrospect-Project-f88ed9e690ce480ca348c6914b9103af?pvs=4)
 
