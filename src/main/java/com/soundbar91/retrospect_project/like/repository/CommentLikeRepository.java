@@ -2,7 +2,7 @@ package com.soundbar91.retrospect_project.like.repository;
 
 import com.soundbar91.retrospect_project.comment.entity.Comment;
 import com.soundbar91.retrospect_project.like.entity.CommentLike;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -3,7 +3,7 @@ package com.soundbar91.retrospect_project.comment.entity;
 import com.soundbar91.retrospect_project.comment.controller.dto.RequestUpdateComment;
 import com.soundbar91.retrospect_project.like.entity.CommentLike;
 import com.soundbar91.retrospect_project.post.entity.Post;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

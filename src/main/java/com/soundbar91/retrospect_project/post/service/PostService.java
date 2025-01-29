@@ -5,7 +5,7 @@ import com.soundbar91.retrospect_project.post.controller.dto.RequestUpdatePost;
 import com.soundbar91.retrospect_project.post.controller.dto.ResponsePost;
 import com.soundbar91.retrospect_project.post.entity.Post;
 import com.soundbar91.retrospect_project.problem.entity.Problem;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import com.soundbar91.retrospect_project.post.entity.keyInstance.Category;
 import com.soundbar91.retrospect_project.global.exception.ApplicationException;
 import com.soundbar91.retrospect_project.post.repository.PostRepository;

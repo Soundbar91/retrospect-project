@@ -3,7 +3,7 @@ package com.soundbar91.retrospect_project.result.entity;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Grade;
 import com.soundbar91.retrospect_project.result.entity.keyInstance.Language;
 import com.soundbar91.retrospect_project.problem.entity.Problem;
-import com.soundbar91.retrospect_project.user.entity.User;
+import com.soundbar91.retrospect_project.user.model.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
