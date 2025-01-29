@@ -9,6 +9,10 @@
 
 [노션](https://soundbar91.notion.site/Retrospect-Project-f88ed9e690ce480ca348c6914b9103af?pvs=4)
 
+## 개발 일정
+- 1차 개발 : 2024.07.14 ~ 2024.10.20
+- 2차 개발 : 2025.02.01 ~ 
+
 ## 구현 기능
 
 - 유저
@@ -33,4 +37,3 @@
 
 ## 프로그램 흐름도
 ![흐름도](https://github.com/user-attachments/assets/511d80da-678f-42b3-897c-0c5683de757e)
-
